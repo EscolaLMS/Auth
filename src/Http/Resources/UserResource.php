@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Resources;
 
+use EscolaLms\Categories\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -30,7 +31,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'onboarding_completed' => $this->onboarding_completed,
             'email_verified' => $this->email_verified,
-            'interests' => CategoryResource::collection($this->interests),
+            'interests' => CategoryResource::collection($this->interests()->get()),
             'avatar' => $this->avatar_url,
         ], function ($el) {
             return !is_null($el);

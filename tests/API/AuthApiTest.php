@@ -5,7 +5,7 @@ namespace EscolaLms\Auth\Tests\API;
 use EscolaLms\Auth\Events\PasswordForgotten;
 use Carbon\Carbon;
 use EscolaLms\Auth\Tests\TestCase;
-use EscolaLms\Core\Models\User;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -45,7 +45,7 @@ class AuthApiTest extends TestCase
 
     public function testLogin(): void
     {
-        $this->makeStudent([
+        $test = $this->makeStudent([
             'email' => 'test@test.test',
             'password' => Hash::make('testtest'),
             'email_verified_at' => Carbon::now(),
