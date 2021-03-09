@@ -2,7 +2,7 @@
 
 namespace EscolaLms\Auth\Tests\API;
 
-use EscolaLms\Auth\Enum\GenderType;
+use EscolaLms\Auth\Enums\GenderType;
 use App\Models\Category;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;

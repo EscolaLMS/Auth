@@ -2,7 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use EscolaLms\Auth\Enum\GenderType;
+use EscolaLms\Auth\Enums\GenderType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileUpdateRequest extends FormRequest

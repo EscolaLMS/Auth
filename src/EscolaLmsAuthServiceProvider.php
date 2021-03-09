@@ -9,9 +9,7 @@ use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Auth\Services\UserService;
 use EscolaLms\Core\Providers\Injectable;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Passport\Passport;
 
 class EscolaLmsAuthServiceProvider extends ServiceProvider
 {

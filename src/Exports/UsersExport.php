@@ -2,7 +2,7 @@
 
 namespace EscolaLms\Auth\Exports;
 
-use EscolaLms\Auth\Enum\GenderType;
+use EscolaLms\Auth\Enums\GenderType;
 use EscolaLms\Core\Enums\UserRole;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
