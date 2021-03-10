@@ -16,7 +16,7 @@ jobs:
 
       - name: Add composer.json repository
         working-directory: ./host
-        run: composer config repositories.package path "../package"
+        run: composer config repositories.package path "package"
 
       - name: Require the package
         working-directory: ./host
