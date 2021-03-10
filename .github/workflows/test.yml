@@ -1,6 +1,6 @@
 name: tests
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   laravel-tests:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Require the package
         working-directory: ./host
-        run: composer requirepackage @dev
+        run: composer require package @dev
 
       - name: Publish things
         working-directory: ./host
