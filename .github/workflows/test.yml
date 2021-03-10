@@ -16,15 +16,11 @@ jobs:
 
       - name: Add composer.json repository
         working-directory: ./host
-        run: composer config repositories.package path "package"
+        run: composer config repositories.escolalms/auth path package
 
       - name: Require the package
         working-directory: ./host
-        run: composer require package @dev
-
-      - name: Publish things
-        working-directory: ./host
-        run: php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+        run: composer require escolalms/auth
 
       - name: Publish things
         working-directory: ./host
