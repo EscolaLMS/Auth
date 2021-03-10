@@ -5,6 +5,9 @@ on: [pull_request]
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+    container:
+      image: escolasoft1/laravel-prod-docker:fpm
+
     steps:
       - name: Install host app
         run: composer create-project --prefer-dist laravel/laravel host
