@@ -45,7 +45,7 @@ class AuthApiTest extends TestCase
 
     public function testLogin(): void
     {
-        $test = $this->makeStudent([
+        $this->makeStudent([
             'email' => 'test@test.test',
             'password' => Hash::make('testtest'),
             'email_verified_at' => Carbon::now(),

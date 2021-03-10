@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0787d8877e1115f695a128f525be9261",
+    "content-hash": "079c0f2695b98a99543134c3c3db3125",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -438,20 +438,20 @@
         },
         {
             "name": "escolalms/categories",
-            "version": "dev-main",
+            "version": "0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EscolaLMS/Categories.git",
-                "reference": "9669c1e4c3bbb7af90a8a494a81532e910c52b10"
+                "reference": "56fe3bb1626bce52ff97200ac52b65efbdc7513e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EscolaLMS/Categories/zipball/9669c1e4c3bbb7af90a8a494a81532e910c52b10",
-                "reference": "9669c1e4c3bbb7af90a8a494a81532e910c52b10",
+                "url": "https://api.github.com/repos/EscolaLMS/Categories/zipball/56fe3bb1626bce52ff97200ac52b65efbdc7513e",
+                "reference": "56fe3bb1626bce52ff97200ac52b65efbdc7513e",
                 "shasum": ""
             },
             "require": {
-                "escolalms/core": "dev-develop",
+                "escolalms/core": "^0.1",
                 "laravel/framework": "^8.0",
                 "php": "^7.4"
             },
@@ -474,6 +474,7 @@
                     "Database\\Factories\\EscolaLms\\Categories\\Models\\": "database/factories"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -484,24 +485,20 @@
                 }
             ],
             "description": "Escola Headless LMS Categories",
-            "support": {
-                "source": "https://github.com/EscolaLMS/Categories/tree/main",
-                "issues": "https://github.com/EscolaLMS/Categories/issues"
-            },
-            "time": "2021-03-09T18:30:44+00:00"
+            "time": "2021-03-10T09:28:04+00:00"
         },
         {
             "name": "escolalms/core",
-            "version": "dev-develop",
+            "version": "0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EscolaLMS/Core.git",
-                "reference": "f5b118d4a4ecd46db7ec5666dcedabbac0e7296a"
+                "reference": "66335b74b90621f6b123acd11396228c27024fae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EscolaLMS/Core/zipball/f5b118d4a4ecd46db7ec5666dcedabbac0e7296a",
-                "reference": "f5b118d4a4ecd46db7ec5666dcedabbac0e7296a",
+                "url": "https://api.github.com/repos/EscolaLMS/Core/zipball/66335b74b90621f6b123acd11396228c27024fae",
+                "reference": "66335b74b90621f6b123acd11396228c27024fae",
                 "shasum": ""
             },
             "require": {
@@ -515,7 +512,7 @@
                 "orchestra/testbench": "^6.0",
                 "phpunit/phpunit": "^9.0"
             },
-            "type": "project",
+            "type": "package",
             "extra": {
                 "laravel": {
                     "providers": [
@@ -530,6 +527,7 @@
                     "Database\\Factories\\EscolaLms\\Core\\Models\\": "database/factories"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -540,11 +538,7 @@
                 }
             ],
             "description": "Escola Headless LMS",
-            "support": {
-                "source": "https://github.com/EscolaLMS/Core/tree/develop",
-                "issues": "https://github.com/EscolaLMS/Core/issues"
-            },
-            "time": "2021-03-09T18:42:48+00:00"
+            "time": "2021-03-10T09:06:07+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -5461,16 +5455,16 @@
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v6.17.0",
+            "version": "v6.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "a82d3dc04d07620bbddef1dae3cbc105f7ce0181"
+                "reference": "a5dc831264d4192954ea5abb9f4323e286429b3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/a82d3dc04d07620bbddef1dae3cbc105f7ce0181",
-                "reference": "a82d3dc04d07620bbddef1dae3cbc105f7ce0181",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/a5dc831264d4192954ea5abb9f4323e286429b3d",
+                "reference": "a5dc831264d4192954ea5abb9f4323e286429b3d",
                 "shasum": ""
             },
             "require": {
@@ -5533,7 +5527,7 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2021-03-08T02:29:54+00:00"
+            "time": "2021-03-09T22:59:25+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -7547,10 +7541,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "escolalms/core": 20,
-        "escolalms/categories": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
