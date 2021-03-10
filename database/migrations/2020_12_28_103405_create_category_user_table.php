@@ -14,7 +14,7 @@ class CreateCategoryUserTable extends Migration
     public function up()
     {
         Schema::create('category_user', function (Blueprint $table) {
-            $table->unsignedInteger('user_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
             $table->unsignedInteger('category_id')->index();
             $table->timestamps();
 
