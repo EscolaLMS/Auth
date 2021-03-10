@@ -2,10 +2,10 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use App\Enum\OnboardingStatus;
+use EscolaLms\Auth\Enums\OnboardingStatus;
 use EscolaLms\Core\Enum\StatusEnum;
 use EscolaLms\Core\Enums\UserRole;
-use App\Http\Requests\Traits\WithRole;
+use EscolaLms\Auth\Http\Requests\Traits\WithRole;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Foundation\Http\FormRequest;
 
