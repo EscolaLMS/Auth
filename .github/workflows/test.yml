@@ -29,6 +29,9 @@ jobs:
         with:
           path: host/package
 
+      - name: Testing environment file
+        run: cp host/package/.env.testing host/.env
+
       - name: Add composer.json repository
         working-directory: ./host
         run: composer config repositories.escolalms/auth path package
