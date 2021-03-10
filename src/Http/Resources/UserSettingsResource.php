@@ -16,6 +16,6 @@ class UserSettingsResource extends ResourceCollection
     {
         $this->withoutWrapping();
 
-        return $this->collection->pluck('value', 'key')->toArray() + config('user');
+        return $this->collection->pluck('value', 'key')->toArray() + (config('user') ?? []);
     }
 }

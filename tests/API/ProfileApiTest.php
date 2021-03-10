@@ -9,6 +9,7 @@ use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -137,6 +138,7 @@ class ProfileApiTest extends TestCase
             'key-test' => 'value-test',
             'key2' => 'value2',
         ]);
+
         $this->response
             ->assertOk()
             ->assertJsonFragment(['key-test' => 'value-test']);
@@ -154,15 +156,27 @@ class ProfileApiTest extends TestCase
         ]);
     }
 
-    public function testUploadAndDeleteAvatar(): void
+    public function testUploadAvatar(): array
     {
         $user = $this->makeStudent();
 
         $this->response = $this->actingAs($user)->json('POST', '/api/profile/upload-avatar', [
-            'avatar' => new \Illuminate\Http\UploadedFile(resource_path('test-files/mj.png'), 'mj.png', 'image/png', null, true),
+            'avatar' => UploadedFile::fake()->image('mj.png')
         ]);
+
         $this->response->assertOk();
         $this->assertNotEmpty($user->path_avatar);
+
+        return [$user];
+    }
+
+    /**
+     * @param array $payload
+     * @depends testUploadAvatar
+     */
+    public function testDeleteAvatar(array $payload): void
+    {
+        [$user] = $payload;
 
         $this->response = $this->actingAs($user)->json('DELETE', '/api/profile/delete-avatar');
         $this->response->assertOk();
