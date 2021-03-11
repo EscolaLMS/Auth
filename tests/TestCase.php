@@ -33,8 +33,8 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
     {
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('passport.client_uuids', true);
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
+        $app['config']->set('database.default', env('DB_CONNECTION'));
+        $app['config']->set('database.connections.' . env('DB_CONNECTION'), [
             'driver' => env('DB_CONNECTION'),
             'host' => env('DB_HOST'),
             'port' => env('DB_PORT'),
@@ -43,6 +43,6 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             'username' => env('DB_USERNAME'),
             'prefix' => '',
         ]);
-        $app['config']->set('passport.storage.database.connection', 'testbench');
+        $app['config']->set('passport.storage.database.connection', env('DB_CONNECTION'));
     }
 }
