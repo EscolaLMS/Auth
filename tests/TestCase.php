@@ -43,7 +43,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
             'username' => 'username',
             'prefix' => '',
         ]);
-        $app['config']->set('passport.private_key', file_get_contents(storage_path('oauth-private.key')));
-        $app['config']->set('passport.public_key', file_get_contents(storage_path('oauth-public.key')));
+        $app['config']->set('passport.private_key', file_get_contents(__DIR__ . '/../../../storage/oauth-private.key'));
+        $app['config']->set('passport.public_key', file_get_contents(__DIR__ . '/../../../storage/oauth-public.key'));
     }
 }
