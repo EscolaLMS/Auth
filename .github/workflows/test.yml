@@ -48,6 +48,10 @@ jobs:
         working-directory: ./host
         run: php artisan migrate:fresh --seed
 
+      - name: Passport install
+        working-directory: ./host
+        run: vendor/bin/testbench passport:install
+
       - name: Run tests
         working-directory: ./host
         run: vendor/bin/phpunit package/tests
