@@ -38,7 +38,7 @@ jobs:
 
       - name: Require the package
         working-directory: ./host
-        run: composer require escolalms/auth --dev
+        run: composer require escolalms/auth --require-dev
 
       - name: Publish things
         working-directory: ./host
