@@ -1,10 +1,13 @@
 <?php
 
+namespace EscolaLms\Auth\Migrations;
+
+use EscolaLms\Core\Migrations\EscolaMigration;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoryUserTable extends Migration
+class CreateCategoryUserTable extends EscolaMigration
 {
     /**
      * Run the migrations.
@@ -13,8 +16,8 @@ class CreateCategoryUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_user', function (Blueprint $table) {
-            $table->unsignedInteger('user_id')->index();
+        $this->create('category_user', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->index();
             $table->unsignedInteger('category_id')->index();
             $table->timestamps();
 
