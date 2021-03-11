@@ -6,6 +6,7 @@ use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\Models\Client;
 use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
+use Illuminate\Support\Facades\Config;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
@@ -16,5 +17,6 @@ class TestCase extends \Tests\TestCase
     {
         parent::setUp();
         Passport::useClientModel(Client::class);
+        Config::set('auth.providers.users.model', User::class);
     }
 }
