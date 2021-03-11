@@ -36,9 +36,13 @@ jobs:
         working-directory: ./host
         run: composer config repositories.escolalms/auth path package
 
+      - name: Require orchestra test package
+        working-directory: ./host
+        run: composer require orchestra/testbench
+
       - name: Require the package
         working-directory: ./host
-        run: composer require escolalms/auth --dev
+        run: composer require escolalms/auth
 
       - name: Publish things
         working-directory: ./host
