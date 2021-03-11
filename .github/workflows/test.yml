@@ -48,14 +48,6 @@ jobs:
         working-directory: ./host
         run: php artisan migrate:fresh --seed
 
-      - name: Key generate for testbench
-        working-directory: ./host
-        run: vendor/bin/testbench key:generate
-
-      - name: Passport install
-        working-directory: ./host
-        run: vendor/bin/testbench passport:keys --force
-
       - name: Run tests
         working-directory: ./host
         run: vendor/bin/phpunit package/tests
