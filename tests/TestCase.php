@@ -36,7 +36,7 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver' => 'mysql',
-            'host' => '127.0.0.1',
+            'host' => 'mysql',
             'database' => 'database',
             'port' => 3306,
             'password' => 'password',
