@@ -22,16 +22,13 @@ jobs:
 
     steps:
       - name: Instantiate package
-        run: composer create-project --prefer-dist escolalms/auth host
+        uses: actions/checkout@v2
 
       - name: Clear config
-        working-directory: ./host
         run: vendor/bin/testbench config:clear
 
       - name: Publish things
-        working-directory: ./host
         run: vendor/bin/testbench migrate:fresh
 
       - name: Run tests
-        working-directory: ./host
         run: vendor/bin/phpunit

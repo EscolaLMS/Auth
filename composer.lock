@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "079c0f2695b98a99543134c3c3db3125",
+    "content-hash": "36baceb8c3159915498f2d24a7698c99",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -438,16 +438,16 @@
         },
         {
             "name": "escolalms/categories",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EscolaLMS/Categories.git",
-                "reference": "64bc060e09b78435e0b23f58348b1287f394811d"
+                "reference": "1f09c9c7121d02c5a8ccd6dd3a2724e9daf87518"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EscolaLMS/Categories/zipball/64bc060e09b78435e0b23f58348b1287f394811d",
-                "reference": "64bc060e09b78435e0b23f58348b1287f394811d",
+                "url": "https://api.github.com/repos/EscolaLMS/Categories/zipball/1f09c9c7121d02c5a8ccd6dd3a2724e9daf87518",
+                "reference": "1f09c9c7121d02c5a8ccd6dd3a2724e9daf87518",
                 "shasum": ""
             },
             "require": {
@@ -485,7 +485,7 @@
                 }
             ],
             "description": "Escola Headless LMS Categories",
-            "time": "2021-03-10T10:28:53+00:00"
+            "time": "2021-03-11T21:39:33+00:00"
         },
         {
             "name": "escolalms/core",
