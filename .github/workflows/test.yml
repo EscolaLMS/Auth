@@ -50,7 +50,7 @@ jobs:
 
       - name: Passport install
         working-directory: ./host
-        run: vendor/bin/testbench passport:install
+        run: vendor/bin/testbench passport:keys --force
 
       - name: Run tests
         working-directory: ./host
