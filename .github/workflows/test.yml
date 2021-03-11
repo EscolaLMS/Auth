@@ -21,32 +21,12 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Install host app
-        run: composer create-project --prefer-dist laravel/laravel host
-
-      - name: Checkout the package
-        uses: actions/checkout@v2
-        with:
-          path: host/package
-
-      - name: Testing environment file
-        run: cp host/package/.env.testing host/.env
-
-      - name: Add composer.json repository
-        working-directory: ./host
-        run: composer config repositories.escolalms/auth path package
-
-      - name: Require orchestra test package
-        working-directory: ./host
-        run: composer require orchestra/testbench
-
-      - name: Require the package
-        working-directory: ./host
-        run: composer require escolalms/auth
+      - name: Instatniate package
+        run: composer create-project --prefer-dist escolalms/auth host
 
       - name: Publish things
         working-directory: ./host
-        run: php artisan migrate:fresh --seed
+        run: vendor/bin/testbench migrate:fresh
 
       - name: Passport install
         working-directory: ./host
@@ -54,4 +34,4 @@ jobs:
 
       - name: Run tests
         working-directory: ./host
-        run: vendor/bin/phpunit package/tests
+        run: vendor/bin/phpunit

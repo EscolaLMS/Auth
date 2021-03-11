@@ -489,16 +489,16 @@
         },
         {
             "name": "escolalms/core",
-            "version": "0.1.3",
+            "version": "0.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EscolaLMS/Core.git",
-                "reference": "fe04a2920d560311bc1740b873b2a8234b63b104"
+                "reference": "2c13b7a646436d7f20324cd203211262e401cff6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EscolaLMS/Core/zipball/fe04a2920d560311bc1740b873b2a8234b63b104",
-                "reference": "fe04a2920d560311bc1740b873b2a8234b63b104",
+                "url": "https://api.github.com/repos/EscolaLMS/Core/zipball/2c13b7a646436d7f20324cd203211262e401cff6",
+                "reference": "2c13b7a646436d7f20324cd203211262e401cff6",
                 "shasum": ""
             },
             "require": {
@@ -538,7 +538,7 @@
                 }
             ],
             "description": "Escola Headless LMS",
-            "time": "2021-03-11T13:17:30+00:00"
+            "time": "2021-03-11T15:29:06+00:00"
         },
         {
             "name": "firebase/php-jwt",
