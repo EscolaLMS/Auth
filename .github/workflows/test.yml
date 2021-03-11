@@ -49,8 +49,8 @@ jobs:
         run: php artisan migrate:fresh --seed
 
       - name: Passport install
-          working-directory: ./host
-          run: php artisan passport:install
+        working-directory: ./host
+        run: php artisan passport:install
 
       - name: Run tests
         working-directory: ./host
