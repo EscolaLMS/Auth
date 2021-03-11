@@ -35,13 +35,15 @@ class TestCase extends \EscolaLms\Core\Tests\TestCase
         $app['config']->set('passport.client_uuids', true);
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'mysql',
-            'host'   => 'mysql',
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
             'database' => 'database',
             'port' => 3306,
             'password' => 'password',
             'username' => 'username',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
+        $app['config']->set('passport.private_key', file_get_contents(storage_path('oauth-private.key')));
+        $app['config']->set('passport.public_key', file_get_contents(storage_path('oauth-public.key')));
     }
 }

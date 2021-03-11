@@ -11,4 +11,7 @@
     <testsuite name="Escola LMS Auth">
         <directory suffix="Test.php">./tests</directory>
     </testsuite>
+    <php>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+    </php>
 </phpunit>
