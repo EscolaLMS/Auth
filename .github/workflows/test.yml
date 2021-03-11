@@ -50,7 +50,7 @@ jobs:
 
       - name: Passport install
         working-directory: ./host
-        run: vendor/bin/testbench passport:install
+        run: php artisan passport:install
 
       - name: Run tests
         working-directory: ./host
