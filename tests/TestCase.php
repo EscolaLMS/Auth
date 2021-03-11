@@ -10,7 +10,7 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 
-class TestCase extends Tests\TestCase
+class TestCase extends \Tests\TestCase
 {
     protected function setUp(): void
     {
