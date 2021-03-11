@@ -10,38 +10,11 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 
-class TestCase extends \EscolaLms\Core\Tests\TestCase
+class TestCase extends Tests\TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
         Passport::useClientModel(Client::class);
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [
-            ...parent::getPackageProviders($app),
-            EscolaLmsAuthServiceProvider::class,
-            PermissionServiceProvider::class,
-            PassportServiceProvider::class,
-            EscolaLmsCategoriesServiceProvider::class
-        ];
-    }
-
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('auth.providers.users.model', User::class);
-        $app['config']->set('passport.client_uuids', true);
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver' => 'mysql',
-            'host' => 'mysql',
-            'database' => 'database',
-            'port' => 3306,
-            'password' => 'password',
-            'username' => 'username',
-            'prefix' => '',
-        ]);
     }
 }
