@@ -42,7 +42,7 @@ jobs:
 
       - name: Publish things
         working-directory: ./host
-        run: php artisan migrate --seed
+        run: php artisan migrate:fresh --seed
 
       - name: Run tests
         working-directory: ./host

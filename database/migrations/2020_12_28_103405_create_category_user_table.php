@@ -1,7 +1,5 @@
 <?php
 
-namespace EscolaLms\Auth\Migrations;
-
 use EscolaLms\Core\Migrations\EscolaMigration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
