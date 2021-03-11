@@ -30,8 +30,7 @@ jobs:
           path: host/package
 
       - name: Testing environment file
-        working-directory: ./host
-        run: cp .env.testing .env
+        run: cp host/.env.testing host/.env
 
       - name: Clear config
         working-directory: ./host
