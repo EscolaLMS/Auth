@@ -24,6 +24,10 @@ jobs:
       - name: Instantiate package
         run: composer create-project --prefer-dist escolalms/auth host
 
+      - name: Clear config
+        working-directory: ./host
+        run: vendor/bin/testbench config:clear
+
       - name: Publish things
         working-directory: ./host
         run: vendor/bin/testbench migrate:fresh
