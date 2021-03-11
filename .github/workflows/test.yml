@@ -24,14 +24,6 @@ jobs:
       - name: Instantiate package
         run: composer create-project --prefer-dist escolalms/auth host
 
-      - name: Checkout the package
-        uses: actions/checkout@v2
-        with:
-          path: host/package
-
-      - name: Testing environment file
-        run: cp host/.env.testing host/.env
-
       - name: Clear config
         working-directory: ./host
         run: vendor/bin/testbench config:clear
