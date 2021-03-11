@@ -1,10 +1,11 @@
 <?php
 
+use EscolaLms\Core\Migrations\EscolaMigration;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserSettingsTable extends Migration
+class CreateUserSettingsTable extends EscolaMigration
 {
     /**
      * Run the migrations.
@@ -13,7 +14,7 @@ class CreateUserSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_settings', function (Blueprint $table) {
+        $this->create('user_settings', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->string('key');
             $table->string('value')->nullable();
