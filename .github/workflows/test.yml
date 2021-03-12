@@ -1,9 +1,9 @@
 name: tests
 
-on: [ pull_request ]
+on: [pull_request]
 
 jobs:
-  laravel-tests:
+  phpunit-mysql:
     runs-on: ubuntu-latest
     container:
       image: escolasoft1/laravel-prod-docker:fpm
@@ -24,8 +24,46 @@ jobs:
       - name: Instantiate package
         uses: actions/checkout@v2
 
+      - name: Setup environment
+        run: cp .env.testing.mysql .env && cp .env.testing.mysql .env.testing
+
       - name: Update composer
         run: composer update
+
+      - name: Clear config
+        run: vendor/bin/testbench config:clear
+
+      - name: Publish things
+        run: vendor/bin/testbench migrate:fresh
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+  phpunit-postgres:
+    runs-on: ubuntu-latest
+    container:
+      image: escolasoft1/laravel-prod-docker:fpm
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+          TZ: Europe/Warsaw
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Instantiate package
+        uses: actions/checkout@v2
+
+      - name: Update composer
+        run: composer update
+
+      - name: Setup environment
+        run: cp .env.testing.postgres .env && cp .env.testing.postgres .env.testing
 
       - name: Clear config
         run: vendor/bin/testbench config:clear
