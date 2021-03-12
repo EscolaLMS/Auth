@@ -37,7 +37,7 @@ jobs:
         run: vendor/bin/testbench migrate:fresh
 
       - name: Run tests
-        run: vendor/bin/phpunit  --coverage-clover coverage.xml
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit  --coverage-clover coverage.xml
 
       - name: Code Coverage upload
         uses: codecov/codecov-action@v1
