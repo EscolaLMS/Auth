@@ -1,4 +1,4 @@
-name: tests
+name: Tests PHPUnit in environments
 
 on: [pull_request]
 
@@ -39,7 +39,7 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit
 
-  php74-laravel-latest-phpunit-mysql-code-coverage:
+  php74-laravel-latest-phpunit-mysql:
     runs-on: ubuntu-latest
     container:
       image: escolalms/php:7.4
@@ -73,10 +73,7 @@ jobs:
         run: vendor/bin/testbench migrate:fresh
 
       - name: Run tests
-        run: vendor/bin/phpunit  --coverage-clover coverage.xml
-
-      - name: Code Coverage upload
-        run: bash <(curl -s https://codecov.io/bash)
+        run: vendor/bin/phpunit
 
   php74-laravel-latest-phpunit-postgres:
     runs-on: ubuntu-latest
