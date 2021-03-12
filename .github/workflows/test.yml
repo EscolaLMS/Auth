@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup environment
-        run: cp .env.testing.mysql .env  && cp phpunit.mysql.xml phpunit.xml
+        run: cp env/mysql/* .
 
       - name: Update composer
         run: composer update
@@ -63,7 +63,7 @@ jobs:
         run: composer update
 
       - name: Setup environment
-        run: cp .env.testing.postgres .env && cp phpunit.postgres.xml phpunit.xml
+        run: cp env/postgres/* .
 
       - name: Clear config
         run: vendor/bin/testbench config:clear
