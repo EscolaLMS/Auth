@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "escolalms/auth",
     "description": "Escola Headless LMS Authorization",
     "type": "package",
@@ -9,33 +10,50 @@
         "escolalms/categories": "^0.1",
         "laravel/socialite": "v5.1.3",
         "maatwebsite/excel": "^3.1"
+=======
+  "name": "escolalms/auth",
+  "description": "Escola Headless LMS Authorization",
+  "type": "package",
+  "require": {
+    "php": ">=7.4",
+    "laravel/framework": ">=7.0",
+    "escolalms/core": ">=0.1.6",
+    "escolalms/categories": ">=0.1",
+    "laravel/socialite": "v5.1.3",
+    "maatwebsite/excel": "^3.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "orchestra/testbench": ">=5.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Marcin Lenkowski",
+      "email": "marcin.lenkowski@escola.pl"
+>>>>>>> 8d5829283e16f99a2884b836208d0d4c957f2949
     },
-    "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "orchestra/testbench": ">=5.0"
-    },
-    "license": "MIT",
-    "authors": [{
-            "name": "Marcin Lenkowski",
-            "email": "marcin.lenkowski@escola.pl"
-        },
-        {
-            "name": "Mateusz Wojczal",
-            "email": "mateusz.wojczal@escola.pl"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "EscolaLms\\Auth\\": "src",
-            "EscolaLms\\Auth\\Tests\\": "tests",
-            "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "EscolaLms\\Auth\\EscolaLmsAuthServiceProvider"
-            ]
-        }
+    {
+      "name": "Mateusz Wojczal",
+      "email": "mateusz.wojczal@escola.pl"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "EscolaLms\\Auth\\": "src",
+      "EscolaLms\\Auth\\Tests\\": "tests",
+      "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "EscolaLms\\Auth\\EscolaLmsAuthServiceProvider"
+      ]
+    }
+<<<<<<< HEAD
 }
+=======
+  }
+}
+>>>>>>> 8d5829283e16f99a2884b836208d0d4c957f2949
