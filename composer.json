@@ -36,10 +36,6 @@
       "providers": [
         "EscolaLms\\Auth\\EscolaLmsAuthServiceProvider"
       ]
-    } <<
-    << << < HEAD
-  } ===
-  === =
+    }
+  }
 }
-} >>>
->>> > 8 d5829283e16f99a2884b836208d0d4c957f2949
