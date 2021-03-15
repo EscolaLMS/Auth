@@ -5,8 +5,8 @@
   "require": {
     "php": ">=7.4",
     "laravel/framework": ">=7.0",
-    "escolalms/core": "^0.1.6",
-    "escolalms/categories": "^0.1",
+    "escolalms/core": ">=0.1.6",
+    "escolalms/categories": ">=0.1",
     "laravel/socialite": "v5.1.3",
     "maatwebsite/excel": "^3.1"
   },
