@@ -4,7 +4,7 @@
   "type": "package",
   "require": {
     "php": ">=7.4",
-    "laravel/framework": ">=7.0",
+    "laravel/framework": ">=8.0",
     "escolalms/core": ">=0.1.6",
     "escolalms/categories": ">=0.1",
     "laravel/socialite": "v5.1.3",
@@ -15,7 +15,8 @@
     "orchestra/testbench": ">=5.0"
   },
   "license": "MIT",
-  "authors": [{
+  "authors": [
+    {
       "name": "Marcin Lenkowski",
       "email": "marcin.lenkowski@escola.pl"
     },
