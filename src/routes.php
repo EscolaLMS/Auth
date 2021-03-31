@@ -7,7 +7,7 @@ use EscolaLms\Auth\Http\Controllers\ProfileAPIController;
 use EscolaLms\Auth\Http\Controllers\RegisterApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'api'], function () {
+Route::group(['prefix' => 'api', 'middleware' => \Illuminate\Routing\Middleware\SubstituteBindings::class], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', [RegisterApiController::class, 'register'])->name('register.api');
         Route::post('login', [LoginApiController::class, 'login'])->name('login.api');
