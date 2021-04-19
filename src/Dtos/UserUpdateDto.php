@@ -2,21 +2,22 @@
 
 namespace EscolaLms\Auth\Dtos;
 
+use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use Illuminate\Http\Request;
 
-class UserUpdateDto implements InstantiateFromRequest
+class UserUpdateDto implements InstantiateFromRequest, DtoContract
 {
-    private string $firstName;
-    private string $lastName;
-    private int $age;
-    private int $gender;
+    private ?string $firstName;
+    private ?string $lastName;
+    private ?int $age;
+    private ?int $gender;
     private ?string $country;
     private ?string $city;
     private ?string $street;
     private ?string $postcode;
 
-    public function __construct(string $firstName, string $lastName, int $age, int $gender, ?string $country, ?string $city, ?string $street, ?string $postcode)
+    public function __construct(?string $firstName, ?string $lastName, ?int $age, ?int $gender, ?string $country, ?string $city, ?string $street, ?string $postcode)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -56,22 +57,22 @@ class UserUpdateDto implements InstantiateFromRequest
         ];
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function getAge(): int
+    public function getAge(): ?int
     {
         return $this->age;
     }
 
-    public function getGender(): int
+    public function getGender(): ?int
     {
         return $this->gender;
     }

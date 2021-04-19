@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Tests;
 
+use EscolaLms\Core\Tests\TestCase as CoreTestCase;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\Models\Client;
@@ -10,7 +11,7 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 
-class TestCase extends \EscolaLms\Core\Tests\TestCase
+class TestCase extends CoreTestCase
 {
     protected function setUp(): void
     {

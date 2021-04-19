@@ -1,33 +1,14 @@
 <?php
 
-namespace EscolaLms\Auth\Http\Requests;
+namespace EscolaLms\Auth\Http\Requests\Admin;
 
 use EscolaLms\Auth\Enums\OnboardingStatus;
 use EscolaLms\Core\Enum\StatusEnum;
 use EscolaLms\Core\Enums\UserRole;
-use EscolaLms\Auth\Http\Requests\Traits\WithRole;
 use BenSampo\Enum\Rules\EnumValue;
-use Illuminate\Foundation\Http\FormRequest;
 
-class UsersListRequest extends FormRequest
+class UsersListRequest extends AbstractAdminRequest
 {
-    use WithRole;
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return $this->hasRole(UserRole::ADMIN);
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [

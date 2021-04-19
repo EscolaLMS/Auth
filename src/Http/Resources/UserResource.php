@@ -2,11 +2,18 @@
 
 namespace EscolaLms\Auth\Http\Resources;
 
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Categories\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    public function __construct($resource)
+    {
+        assert($resource instanceof User);
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *

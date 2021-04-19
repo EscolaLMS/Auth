@@ -2,12 +2,13 @@
 
 namespace EscolaLms\Auth\Dtos;
 
+use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserSaveDto implements InstantiateFromRequest
+class UserSaveDto implements InstantiateFromRequest, DtoContract
 {
     private string $firstName;
     private string $lastName;
@@ -82,5 +83,13 @@ class UserSaveDto implements InstantiateFromRequest
     public function getRoles(): array
     {
         return $this->roles;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+        ];
     }
 }

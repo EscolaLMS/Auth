@@ -3,7 +3,7 @@
   "description": "Escola Headless LMS Authorization",
   "type": "package",
   "require": {
-    "php": ">=7.4",
+    "php": ">=7.4 | >=8.0",
     "laravel/framework": ">=8.0",
     "escolalms/core": ">=0.1.6",
     "escolalms/categories": ">=0.1",
@@ -38,5 +38,10 @@
         "EscolaLms\\Auth\\EscolaLmsAuthServiceProvider"
       ]
     }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ]
   }
 }

@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Services;
 
 use EscolaLms\Auth\Events\UserLogged;
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
@@ -33,6 +34,7 @@ class UserService implements UserServiceContract
     {
         $attributes['remember_token'] = Str::random(10);
         $user = $this->userRepository->create($userSaveDto->getUserAttributes());
+        assert($user instanceof AuthUser);
         $this->assignRole($user, $userSaveDto->getRoles());
         return $user;
     }
@@ -48,6 +50,7 @@ class UserService implements UserServiceContract
     public function login(string $email, string $password): User
     {
         $user = $this->userRepository->findByEmail($email);
+        assert($user instanceof AuthUser);
 
         if (is_null($user) || !Hash::check($password, $user->password)) {
             throw new Exception('Invalid credentials');
@@ -68,6 +71,7 @@ class UserService implements UserServiceContract
 
     public function deleteAvatar(User $user): bool
     {
+        assert($user instanceof AuthUser);
         if (!empty($user->path_avatar)) {
             $result = Storage::delete('users/' . $user->path_avatar);
             $user->update(['path_avatar' => null]);
@@ -78,6 +82,7 @@ class UserService implements UserServiceContract
 
     public function uploadAvatar(User $user, UploadedFile $avatar): ?string
     {
+        assert($user instanceof AuthUser);
         if (empty($user->path_avatar)) {
             $user->path_avatar = Str::random(40) . '.' . $avatar->clientExtension();
         }
@@ -90,6 +95,7 @@ class UserService implements UserServiceContract
 
     private function assignRole(User $user, array $roles): void
     {
+        assert($user instanceof AuthUser);
         $user->roles()->detach();
         foreach ($roles as $role_name) {
             $user->assignRole($role_name);

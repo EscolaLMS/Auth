@@ -2,10 +2,11 @@
 
 namespace EscolaLms\Auth\Dtos;
 
+use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use Illuminate\Http\Request;
 
-class UserUpdateAuthDataDto implements InstantiateFromRequest
+class UserUpdateAuthDataDto implements InstantiateFromRequest, DtoContract
 {
     private string $email;
 

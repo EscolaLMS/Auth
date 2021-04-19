@@ -2,19 +2,20 @@
 
 namespace EscolaLms\Auth\Tests\API;
 
-use EscolaLms\Auth\Events\PasswordForgotten;
 use Carbon\Carbon;
-use EscolaLms\Auth\Tests\TestCase;
+use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Laravel\Passport\Client;
+use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
 class AuthApiTest extends TestCase
@@ -181,5 +182,4 @@ class AuthApiTest extends TestCase
 
         Notification::assertSentTo($user, VerifyEmail::class);
     }
-
 }

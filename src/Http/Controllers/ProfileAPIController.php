@@ -11,11 +11,11 @@ use EscolaLms\Auth\Http\Requests\UploadAvatarRequest;
 use EscolaLms\Auth\Http\Requests\MyProfileRequest;
 use EscolaLms\Auth\Http\Requests\UpdateInterests;
 use EscolaLms\Auth\Http\Requests\UserSettingsUpdateRequest;
-use EscolaLms\Auth\Http\Resources\UserResource;
-use EscolaLms\Auth\Http\Resources\UserSettingsResource;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Auth\Http\Controllers\Swagger\ProfileSwagger;
+use EscolaLms\Auth\Http\Resources\UserResource;
+use EscolaLms\Auth\Http\Resources\UserSettingCollection;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,8 +87,8 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     public function interests(UpdateInterests $request): JsonResponse
     {
         $this->userRepository->updateInterests(
+            $request->user(),
             $request->input('interests'),
-            $request->user()->getKey(),
         );
 
         return (new UserResource($request->user()))->response();
@@ -98,7 +98,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     {
         $user = $request->user();
 
-        return (new UserSettingsResource($user->settings))->response();
+        return (new UserSettingCollection($user->settings))->response();
     }
 
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse
@@ -106,6 +106,6 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $user = $request->user();
         $this->userRepository->updateSettings($user, $request->all());
 
-        return (new UserSettingsResource($user->settings))->response();
+        return (new UserSettingCollection($user->settings))->response();
     }
 }
