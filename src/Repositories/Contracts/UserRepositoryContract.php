@@ -9,11 +9,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface UserRepositoryContract extends
-    BaseRepositoryContract,
-    RepositoryCreatableUsingDtoContract,
-    RepositoryPatchableUsingDtoContract,
-    RepositoryPutableUsingDtoContract
+interface UserRepositoryContract extends BaseRepositoryContract
 {
     public function findByEmail(string $email): ?Authenticatable;
 
@@ -24,7 +20,7 @@ interface UserRepositoryContract extends
     public function patchSettingsUsingDto(Authenticatable $user, UserUpdateSettingsDto $dto): Collection;
     public function putSettingsUsingDto(Authenticatable $user, UserUpdateSettingsDto $keysDto): Collection;
     public function updateSettings(Authenticatable $user, array $settings): Collection;
-    
+
     public function addInterestById(Authenticatable $user, int $interest_id): Collection;
     public function removeInterestById(Authenticatable $user, int $interest_id): Collection;
     public function updateInterestsUsingDto(Authenticatable $user, UserUpdateInterestsDto $dto): Collection;

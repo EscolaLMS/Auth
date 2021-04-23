@@ -16,7 +16,6 @@ trait HasOnboardingStatus
 
     public function getOnboardingCompletedAttribute()
     {
-        $this->getTraitOwner()->loadCount('interests');
-        return $this->getTraitOwner()->interests_count > 0;
+        return count($this->getTraitOwner()->interests);
     }
 }

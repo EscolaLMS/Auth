@@ -2,8 +2,12 @@
 
 namespace EscolaLms\Auth\Services;
 
-use EscolaLms\Auth\Events\UserLogged;
+use EscolaLms\Auth\Dtos\Admin\UserUpdateDto as AdminUserUpdateDto;
+use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto as AdminUserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Dtos\UserUpdateDto;
+use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
+use EscolaLms\Auth\Events\UserLogged;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
@@ -34,16 +38,39 @@ class UserService implements UserServiceContract
     {
         $attributes['remember_token'] = Str::random(10);
         $user = $this->userRepository->create($userSaveDto->getUserAttributes());
-        assert($user instanceof AuthUser);
+        assert($user instanceof User);
         $this->assignRole($user, $userSaveDto->getRoles());
         return $user;
     }
 
     public function update(User $user, UserSaveDto $userSaveDto): User
     {
-        $attributes['remember_token'] = Str::random(10);
         $this->userRepository->update($userSaveDto->getUserAttributes(), $user->id);
         $this->assignRole($user, $userSaveDto->getRoles());
+        return $user;
+    }
+
+    public function putUsingDto(UserUpdateDto $dto, int $id): User
+    {
+        $user = $this->userRepository->update($dto->toArray(), $id);
+        assert($user instanceof User);
+        if ($dto instanceof AdminUserUpdateDto) {
+            if ($dto->getRoles() !== null) {
+                $this->assignRole($user, $dto->getRoles());
+            }
+        }
+        return $user;
+    }
+
+    public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
+    {
+        $user = $this->userRepository->update(array_filter($dto->toArray(), fn ($key) => in_array($key, $keysDto->keyList()), ARRAY_FILTER_USE_KEY), $id);
+        assert($user instanceof User);
+        if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
+            if ($dto->getRoles() !== null && $keysDto->getRoles()) {
+                $this->assignRole($user, $dto->getRoles());
+            }
+        }
         return $user;
     }
 

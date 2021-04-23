@@ -4,10 +4,13 @@ namespace EscolaLms\Auth\Tests\API\Admin;
 
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
+use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserApiTest extends TestCase
 {
@@ -52,6 +55,29 @@ class UserApiTest extends TestCase
             ->assertForbidden();
     }
 
+    public function testCreateUser()
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'roles' => [UserRole::STUDENT],
+            'password' => $password
+        ]);
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+
+        unset($userData['password']);
+        unset($userData['roles']);
+
+        $this->response
+            ->assertCreated()
+            ->assertJsonFragment($userData);
+    }
+
     public function testPatchUser()
     {
         /** @var User $user */
@@ -91,7 +117,6 @@ class UserApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
             'first_name' => $new_first_name,
             'last_name' => $user->last_name,
-            'email' => $user->email,
         ]);
 
         $this->response
@@ -121,5 +146,53 @@ class UserApiTest extends TestCase
 
         $this->response
             ->assertStatus(422);
+    }
+
+    public function testCanNotSetEmailToNull()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => null
+        ]);
+
+        $this->response
+            ->assertStatus(422);
+
+        $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
+            'email' => null
+        ]);
+
+        $this->response
+            ->assertStatus(422);
+    }
+
+    public function testUpdatePassword()
+    {
+        $password = 'password';
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'password' => Hash::make($password)
+        ]);
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->assertTrue(Hash::check($password, $user->password));
+
+        $newpassword = 'newpassword';
+        $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
+            'password' => $newpassword
+        ]);
+
+        $this->response
+            ->assertStatus(200);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check($newpassword, $user->password));
     }
 }

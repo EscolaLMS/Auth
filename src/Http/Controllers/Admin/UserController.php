@@ -2,18 +2,18 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Admin;
 
+use EscolaLms\Auth\Dtos\Admin\UserUpdateDto;
+use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserFilterCriteriaDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
-use EscolaLms\Auth\Dtos\UserUpdateDto;
-use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserSwagger;
+use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
+use EscolaLms\Auth\Http\Requests\Admin\UserAvatarUploadRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserCreateRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
-use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
-use EscolaLms\Auth\Http\Requests\Admin\UserAvatarUploadRequest;
 use EscolaLms\Auth\Http\Resources\UserResource;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +40,7 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userRepository->createUsingDto($userSaveDto)))->response();
+            return (new UserResource($this->userService->create($userSaveDto)))->response();
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
@@ -51,7 +51,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userRepository->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))))->response();
+            return (new UserResource($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))))->response();
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
@@ -61,7 +61,7 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userRepository->putUsingDto($userUpdateDto, $request->route('id'))))->response();
+            return (new UserResource($this->userService->putUsingDto($userUpdateDto, $request->route('id'))))->response();
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }

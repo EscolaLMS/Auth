@@ -2,26 +2,20 @@
 
 namespace EscolaLms\Auth\Repositories;
 
-use EscolaLms\Auth\Dtos\Contracts\ModelKeysDtoContract;
-use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateInterestsDto;
-use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Models\Traits\UserHasSettings;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Models\UserSetting;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
-use EscolaLms\Core\Dtos\Contracts\DtoContract;
+use EscolaLms\Categories\Models\Traits\HasInterests;
 use EscolaLms\Core\Repositories\BaseRepository;
 use Illuminate\Contracts\Auth\Authenticatable as User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
-use EscolaLms\Categories\Models\Traits\HasInterests;
 use InvalidArgumentException;
-use EscolaLms\Auth\Models\Traits\UserHasSettings;
-use Illuminate\Support\Arr;
 
 /**
  * Class CourseRatingRepository
@@ -184,18 +178,5 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         return (bool) $this->update(['password' => Hash::make($newPassword)], $user->getKey());
     }
 
-    public function createUsingDto(DtoContract $dto): Model
-    {
-        return $this->create($dto->toArray());
-    }
 
-    public function putUsingDto(DtoContract $dto, int $id): Model
-    {
-        return $this->update($dto->toArray(), $id);
-    }
-
-    public function patchUsingDto(DtoContract $dto, ModelKeysDtoContract $keysDto, int $id): Model
-    {
-        return $this->update(array_filter($dto->toArray(), fn ($key) => in_array($key, $keysDto->keyList()), ARRAY_FILTER_USE_KEY), $id);
-    }
 }
