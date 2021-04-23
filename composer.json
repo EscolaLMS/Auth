@@ -27,9 +27,13 @@
   ],
   "autoload": {
     "psr-4": {
-      "EscolaLms\\Auth\\": "src",
-      "EscolaLms\\Auth\\Tests\\": "tests",
+      "EscolaLms\\Auth\\": "src/",
       "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EscolaLms\\Auth\\Tests\\": "tests"
     }
   },
   "extra": {

@@ -12,7 +12,7 @@ namespace EscolaLms\Auth\Models\Traits;
  */
 trait HasOnboardingStatus
 {
-    use ExtendableUserModelTrait;
+    use ExtendableModelTrait;
 
     public function getOnboardingCompletedAttribute()
     {

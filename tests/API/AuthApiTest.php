@@ -81,7 +81,10 @@ class AuthApiTest extends TestCase
 
     public function testCantLoginWithInvalidCredentials(): void
     {
-        $this->makeStudent(['email' => 'test@test.test', 'password' => Hash::make('testtest')]);
+        $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest')
+        ]);
 
         $this->response = $this->json('POST', '/api/auth/login', [
             'email' => 'test@test.test',
@@ -100,9 +103,11 @@ class AuthApiTest extends TestCase
 
     public function testLogout(): void
     {
+        /** @var User $user */
         $user = $this->makeStudent();
         Passport::actingAs($user);
-        $token = $user->createToken(config('passport.personal_access_client.secret'))->accessToken;
+        $tokenConfig = config('passport.personal_access_client.secret');
+        $token = $user->createToken($tokenConfig)->accessToken;
         $this->response = $this->json('POST', '/api/auth/logout', [], [
             'Authorization' => "Bearer $token",
         ]);

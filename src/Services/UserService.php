@@ -50,11 +50,12 @@ class UserService implements UserServiceContract
     public function login(string $email, string $password): User
     {
         $user = $this->userRepository->findByEmail($email);
-        assert($user instanceof AuthUser);
 
         if (is_null($user) || !Hash::check($password, $user->password)) {
             throw new Exception('Invalid credentials');
         }
+
+        assert($user instanceof AuthUser);
 
         if (!$user->hasVerifiedEmail()) {
             throw new Exception('Email not validated');

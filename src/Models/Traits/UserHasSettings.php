@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait UserHasSettings
 {
-    use ExtendableUserModelTrait;
+    use ExtendableModelTrait;
 
     public function settings(): HasMany
     {

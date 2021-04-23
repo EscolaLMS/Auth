@@ -2,8 +2,8 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
-use EscolaLms\Categories\Models\Category;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -13,5 +13,40 @@ class UserApiTest extends TestCase
 {
     use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
 
+    public function testGetUser(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
 
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
+        $this->response
+            ->assertOk()
+            ->assertJsonFragment([
+                'id' => $user->getKey()
+            ]);
+    }
+
+    public function testUnauthorizedIfNotUser(): void
+    {
+        $this->withMiddleware();
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+
+        $this->response = $this->json('GET', '/api/admin/users/' . $user->id);
+        $this->response
+            ->assertUnauthorized();
+    }
+
+    public function testForbiddenIfNotAdmin(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+
+        $this->response = $this->actingAs($user)->json('GET', '/api/admin/users/' . $user->id);
+        $this->response
+            ->assertForbidden();
+    }
 }

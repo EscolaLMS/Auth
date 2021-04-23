@@ -13,6 +13,9 @@ class UserSettingsUpdateRequest extends AbstractUserIdInRouteRequest
                 'required',
                 'array'
             ],
+            'settings.*' => [
+                'array'
+            ],
             'settings.*.key' => [
                 'required',
                 'string',

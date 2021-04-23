@@ -108,7 +108,6 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     public function updateSettings(User $user, array $settings): Collection
     {
         $this->ensureUserHasSettingsTrait($user);
-
         /** @var AuthUser $user */
         foreach ($settings as $key => $value) {
             $user->settings()->updateOrCreate([
@@ -143,10 +142,8 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         $this->ensureUserHasInterestsTrait($user);
 
         /** @var AuthUser $user */
-        $interests = $user->interests->pluck('id');
-        $interests[] = $interest_id;
-        $interests = array_unique($interests);
-        return $this->updateInterests($user, $interests);
+        $user->interests()->attach($interest_id);
+        return $user->interests;
     }
 
     public function removeInterestById(User $user, int $interest_id): Collection
@@ -154,9 +151,8 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         $this->ensureUserHasInterestsTrait($user);
 
         /** @var AuthUser $user */
-        $interests = $user->interests->pluck('id');
-        $interests = array_filter($interests, fn ($value) => (int) $value !== $interest_id);
-        return $this->updateInterests($user, $interests);
+        $user->interests()->detach($interest_id);
+        return $user->interests;
     }
 
     public function updateInterestsUsingDto(User $user, UserUpdateInterestsDto $dto): Collection
