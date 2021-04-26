@@ -15,7 +15,10 @@ interface UserInterestsSwagger
      *     path="/api/admin/users/{id}/interests",
      *     summary="Get user interests",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"User Interests"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -46,7 +49,7 @@ interface UserInterestsSwagger
      *     path="/api/admin/users/{id}/interests",
      *     summary="Set user interests",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"User Interests"},
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -88,7 +91,10 @@ interface UserInterestsSwagger
      *     path="/api/admin/users/{id}/interests",
      *     summary="Add single user interest",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"User Interests"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -127,7 +133,10 @@ interface UserInterestsSwagger
      *     path="/api/admin/users/{id}/interests/{interest_id}",
      *     summary="Add single user interest",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"User Interests"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,

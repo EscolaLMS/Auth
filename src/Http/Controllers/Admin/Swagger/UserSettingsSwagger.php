@@ -14,6 +14,9 @@ interface UserSettingsSwagger
      *     summary="Get user settings",
      *     description="",
      *     tags={"User Settings"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,

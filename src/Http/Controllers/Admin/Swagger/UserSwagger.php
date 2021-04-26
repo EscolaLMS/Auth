@@ -77,7 +77,7 @@ interface UserSwagger
     /**
      * @OA\Patch(
      *     path="/api/admin/user/{id}",
-     *     summary="Update user",
+     *     summary="Partial Update User (will only change sent fields)",
      *     description="",
      *     tags={"Users"},
      *      security={
@@ -115,7 +115,7 @@ interface UserSwagger
     /**
      * @OA\Put(
      *     path="/api/admin/user/{id}",
-     *     summary="Update user",
+     *     summary="Update/Replace user data (will overwrite unset fields with nulls)",
      *     description="",
      *     tags={"Users"},
      *      security={
