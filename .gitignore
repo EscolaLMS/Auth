@@ -4,3 +4,8 @@ composer.lock
 /docker
 .phpunit.cache
 coverage.xml
+/nbproject/
+/nbproject/private/
+.idea
+/bootstrap/
+artisan

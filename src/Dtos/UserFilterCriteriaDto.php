@@ -17,7 +17,7 @@ use EscolaLms\Core\Dtos\CriteriaDto;
 
 class UserFilterCriteriaDto extends CriteriaDto implements DtoContract, InstantiateFromRequest
 {
-    public static function instantiateFromRequest(Request $request): InstantiateFromRequest
+    public static function instantiateFromRequest(Request $request): self
     {
         $criteria = new Collection();
 

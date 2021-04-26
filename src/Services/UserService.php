@@ -2,8 +2,13 @@
 
 namespace EscolaLms\Auth\Services;
 
-use EscolaLms\Auth\Events\UserLogged;
+use EscolaLms\Auth\Dtos\Admin\UserUpdateDto as AdminUserUpdateDto;
+use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto as AdminUserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Dtos\UserUpdateDto;
+use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
+use EscolaLms\Auth\Events\UserLogged;
+use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
@@ -33,15 +38,39 @@ class UserService implements UserServiceContract
     {
         $attributes['remember_token'] = Str::random(10);
         $user = $this->userRepository->create($userSaveDto->getUserAttributes());
+        assert($user instanceof User);
         $this->assignRole($user, $userSaveDto->getRoles());
         return $user;
     }
 
     public function update(User $user, UserSaveDto $userSaveDto): User
     {
-        $attributes['remember_token'] = Str::random(10);
         $this->userRepository->update($userSaveDto->getUserAttributes(), $user->id);
         $this->assignRole($user, $userSaveDto->getRoles());
+        return $user;
+    }
+
+    public function putUsingDto(UserUpdateDto $dto, int $id): User
+    {
+        $user = $this->userRepository->update($dto->toArray(), $id);
+        assert($user instanceof User);
+        if ($dto instanceof AdminUserUpdateDto) {
+            if ($dto->getRoles() !== null) {
+                $this->assignRole($user, $dto->getRoles());
+            }
+        }
+        return $user;
+    }
+
+    public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
+    {
+        $user = $this->userRepository->update(array_filter($dto->toArray(), fn ($key) => in_array($key, $keysDto->keyList()), ARRAY_FILTER_USE_KEY), $id);
+        assert($user instanceof User);
+        if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
+            if ($dto->getRoles() !== null && $keysDto->getRoles()) {
+                $this->assignRole($user, $dto->getRoles());
+            }
+        }
         return $user;
     }
 
@@ -52,6 +81,8 @@ class UserService implements UserServiceContract
         if (is_null($user) || !Hash::check($password, $user->password)) {
             throw new Exception('Invalid credentials');
         }
+
+        assert($user instanceof AuthUser);
 
         if (!$user->hasVerifiedEmail()) {
             throw new Exception('Email not validated');
@@ -68,6 +99,7 @@ class UserService implements UserServiceContract
 
     public function deleteAvatar(User $user): bool
     {
+        assert($user instanceof AuthUser);
         if (!empty($user->path_avatar)) {
             $result = Storage::delete('users/' . $user->path_avatar);
             $user->update(['path_avatar' => null]);
@@ -78,6 +110,7 @@ class UserService implements UserServiceContract
 
     public function uploadAvatar(User $user, UploadedFile $avatar): ?string
     {
+        assert($user instanceof AuthUser);
         if (empty($user->path_avatar)) {
             $user->path_avatar = Str::random(40) . '.' . $avatar->clientExtension();
         }
@@ -90,6 +123,7 @@ class UserService implements UserServiceContract
 
     private function assignRole(User $user, array $roles): void
     {
+        assert($user instanceof AuthUser);
         $user->roles()->detach();
         foreach ($roles as $role_name) {
             $user->assignRole($role_name);

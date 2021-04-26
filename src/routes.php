@@ -1,5 +1,8 @@
 <?php
 
+use EscolaLms\Auth\Http\Controllers\Admin\UserController;
+use EscolaLms\Auth\Http\Controllers\Admin\UserInterestsController;
+use EscolaLms\Auth\Http\Controllers\Admin\UserSettingsController;
 use EscolaLms\Auth\Http\Controllers\AuthApiController;
 use EscolaLms\Auth\Http\Controllers\LoginApiController;
 use EscolaLms\Auth\Http\Controllers\LogoutApiController;
@@ -43,5 +46,31 @@ Route::group(['prefix' => 'api'], function () {
         Route::put('/settings', [ProfileAPIController::class, 'settingsUpdate']);
         Route::post('/upload-avatar', [ProfileAPIController::class, 'uploadAvatar']);
         Route::delete('/delete-avatar', [ProfileAPIController::class, 'deleteAvatar']);
+    });
+
+    Route::middleware('auth:api')->prefix('admin')->group(function () {
+        Route::group(['prefix' => 'users'], function () {
+            // Users
+            Route::get('/', [UserController::class, 'listUsers']);
+            Route::post('/', [UserController::class, 'createUser']);
+            // Single User
+            Route::get('/{id}', [UserController::class, 'getUser']);
+            Route::patch('/{id}', [UserController::class, 'partialUpdateUser']);
+            Route::put('/{id}', [UserController::class, 'updateUser']);
+            Route::delete('/{id}', [UserController::class, 'deleteUser']);
+            // Avatar
+            Route::post('/{id}/avatar', [UserController::class, 'uploadAvatar']);
+            Route::delete('/{id}/avatar', [UserController::class, 'deleteAvatar']);
+            // Settings
+            Route::get('/{id}/settings', [UserSettingsController::class, 'listUserSettings']);
+            Route::patch('/{id}/settings', [UserSettingsController::class, 'patchUserSettings']);
+            Route::put('/{id}/settings', [UserSettingsController::class, 'putUserSettings']);
+            // Interests
+            Route::get('/{id}/interests', [UserInterestsController::class, 'listUserInterests']);
+            Route::put('/{id}/interests', [UserInterestsController::class, 'updateUserInterests']);
+            // Single Interest
+            Route::post('/{id}/interests', [UserInterestsController::class, 'addUserInterest']);
+            Route::delete('/{id}/interests/{interest_id}', [UserInterestsController::class, 'deleteUserInterest']);
+        });
     });
 });

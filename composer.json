@@ -3,7 +3,7 @@
   "description": "Escola Headless LMS Authorization",
   "type": "package",
   "require": {
-    "php": ">=7.4",
+    "php": ">=7.4 | >=8.0",
     "laravel/framework": ">=8.0",
     "escolalms/core": ">=0.1.6",
     "escolalms/categories": ">=0.1",
@@ -23,13 +23,21 @@
     {
       "name": "Mateusz Wojczal",
       "email": "mateusz.wojczal@escola.pl"
+    },
+    {
+      "name": "Paweł Chołaj",
+      "email": "pawel.cholaj@escola.pl"
     }
   ],
   "autoload": {
     "psr-4": {
-      "EscolaLms\\Auth\\": "src",
-      "EscolaLms\\Auth\\Tests\\": "tests",
+      "EscolaLms\\Auth\\": "src/",
       "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EscolaLms\\Auth\\Tests\\": "tests"
     }
   },
   "extra": {
@@ -38,5 +46,10 @@
         "EscolaLms\\Auth\\EscolaLmsAuthServiceProvider"
       ]
     }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
+    ]
   }
 }

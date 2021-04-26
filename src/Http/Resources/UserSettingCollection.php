@@ -4,7 +4,7 @@ namespace EscolaLms\Auth\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class UserSettingsResource extends ResourceCollection
+class UserSettingCollection extends ResourceCollection
 {
     /**
      * Transform the resource into an array.
@@ -16,6 +16,6 @@ class UserSettingsResource extends ResourceCollection
     {
         $this->withoutWrapping();
 
-        return $this->collection->pluck('value', 'key')->toArray() + (config('user') ?? []);
+        return parent::toArray($request) + (config('user') ?? []);
     }
 }

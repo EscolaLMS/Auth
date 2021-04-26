@@ -2,19 +2,20 @@
 
 namespace EscolaLms\Auth\Tests\API;
 
-use EscolaLms\Auth\Events\PasswordForgotten;
 use Carbon\Carbon;
-use EscolaLms\Auth\Tests\TestCase;
+use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Laravel\Passport\Client;
+use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
 class AuthApiTest extends TestCase
@@ -80,7 +81,10 @@ class AuthApiTest extends TestCase
 
     public function testCantLoginWithInvalidCredentials(): void
     {
-        $this->makeStudent(['email' => 'test@test.test', 'password' => Hash::make('testtest')]);
+        $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest')
+        ]);
 
         $this->response = $this->json('POST', '/api/auth/login', [
             'email' => 'test@test.test',
@@ -99,9 +103,11 @@ class AuthApiTest extends TestCase
 
     public function testLogout(): void
     {
+        /** @var User $user */
         $user = $this->makeStudent();
         Passport::actingAs($user);
-        $token = $user->createToken(config('passport.personal_access_client.secret'))->accessToken;
+        $tokenConfig = config('passport.personal_access_client.secret');
+        $token = $user->createToken($tokenConfig)->accessToken;
         $this->response = $this->json('POST', '/api/auth/logout', [], [
             'Authorization' => "Bearer $token",
         ]);
@@ -181,5 +187,4 @@ class AuthApiTest extends TestCase
 
         Notification::assertSentTo($user, VerifyEmail::class);
     }
-
 }

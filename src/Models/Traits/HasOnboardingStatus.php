@@ -10,10 +10,12 @@ namespace EscolaLms\Auth\Models\Traits;
  * This trait for now only checks if user has any interest (categories) added
  * In future we should use specification pattern allowing to create any number of rules by injecting
  */
-trait HasOnboardinngStatus
+trait HasOnboardingStatus
 {
+    use ExtendableModelTrait;
+
     public function getOnboardingCompletedAttribute()
     {
-        return $this->interests()->exists();
+        return count($this->getTraitOwner()->interests);
     }
 }
