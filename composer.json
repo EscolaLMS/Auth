@@ -23,6 +23,10 @@
     {
       "name": "Mateusz Wojczal",
       "email": "mateusz.wojczal@escola.pl"
+    },
+    {
+      "name": "Paweł Chołaj",
+      "email": "pawel.cholaj@escola.pl"
     }
   ],
   "autoload": {

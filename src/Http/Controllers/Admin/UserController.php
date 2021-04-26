@@ -6,6 +6,7 @@ use EscolaLms\Auth\Dtos\Admin\UserUpdateDto;
 use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserFilterCriteriaDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserSwagger;
 use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserAvatarUploadRequest;
@@ -30,7 +31,9 @@ class UserController extends AbstractUserController implements UserSwagger
     public function getUser(UserGetRequest $request): JsonResponse
     {
         try {
-            return (new UserResource($this->userRepository->find($request->route('id'))))->response();
+            return (new UserResource($this->fetchRequestedUser($request)))->response();
+        } catch (UserNotFoundException $ex) {
+            return new JsonResponse(['error' => $ex->getMessage()], $ex->getCode());
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }

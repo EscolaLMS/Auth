@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Admin;
 
+use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Requests\Admin\AbstractUserIdInRouteRequest;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -21,6 +22,10 @@ class AbstractUserController extends EscolaLmsBaseController
 
     protected function fetchRequestedUser(AbstractUserIdInRouteRequest $request): User
     {
-        return $this->userRepository->find($request->route('id'));
+        $user = $this->userRepository->find($request->route('id'));
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+        return $user;
     }
 }

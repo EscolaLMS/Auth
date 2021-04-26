@@ -9,8 +9,8 @@ use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserApiTest extends TestCase
 {
@@ -131,7 +131,7 @@ class UserApiTest extends TestCase
             ]);
     }
 
-    public function testFailValidationTryingToPutUser()
+    public function testFailValidationTryingToPutUserWithoutAllRequiredData()
     {
         /** @var User $user */
         $user = $this->makeStudent();
@@ -175,6 +175,7 @@ class UserApiTest extends TestCase
     public function testUpdatePassword()
     {
         $password = 'password';
+
         /** @var User $user */
         $user = $this->makeStudent([
             'password' => Hash::make($password)
@@ -194,5 +195,56 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue(Hash::check($newpassword, $user->password));
+    }
+
+    public function testDeleteUser()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
+        $this->response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'email' => $user->email
+            ]);
+
+        $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/users/' . $user->getKey());
+        $this->response
+            ->assertStatus(200);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
+        $this->response
+            ->assertStatus(404)
+            ->assertJsonMissing([
+                'email' => $user->email
+            ]);
+    }
+
+    public function testUploadAndDeleteAvatar(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->assertEmpty($user->path_avatar);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/' . $user->getKey() . '/avatar', [
+            'avatar' => UploadedFile::fake()->image('mj.png')
+        ]);
+
+        $this->response->assertOk();
+
+        $user->refresh();
+        $this->assertNotEmpty($user->path_avatar);
+
+        $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/users/' . $user->getKey() . '/avatar');
+        $this->response->assertOk();
+
+        $user->refresh();
+        $this->assertEmpty($user->path_avatar);
     }
 }
