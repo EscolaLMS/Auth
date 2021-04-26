@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Admin\Swagger;
 
+use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
+use EscolaLms\Auth\Http\Requests\Admin\UserAvatarUploadRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserCreateRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
@@ -17,6 +19,9 @@ interface UserSwagger
      *     summary="Get users",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="",
      *          required=false,
@@ -48,6 +53,9 @@ interface UserSwagger
      *     summary="Get user",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -72,6 +80,9 @@ interface UserSwagger
      *     summary="Update user",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -107,6 +118,9 @@ interface UserSwagger
      *     summary="Update user",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -142,6 +156,9 @@ interface UserSwagger
      *     summary="Create user",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\RequestBody(
      *         @OA\JsonContent(ref="#/components/schemas/User")
      *     ),
@@ -160,6 +177,9 @@ interface UserSwagger
      *     summary="Delete user",
      *     description="",
      *     tags={"Users"},
+     *      security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -184,4 +204,82 @@ interface UserSwagger
      * )
      */
     public function deleteUser(UserDeleteRequest $request): JsonResponse;
+
+    /**
+     * @OA\Post(
+     *      tags={"Users"},
+     *      path="/api/admin/users/{id}/avatar",
+     *      description="Upload avatar",
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  @OA\Property(property="avatar", type="file", @OA\Items(type="string", format="binary")),
+     *              )
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Bad request",
+     *          @OA\MediaType(
+     *              mediaType="application/json"
+     *          )
+     *      )
+     *   )
+     */
+    public function uploadAvatar(UserAvatarUploadRequest $request): JsonResponse;
+
+    /**
+     * @OA\Delete(
+     *      tags={"Users"},
+     *      path="/api/admin/users/{id}/avatar",
+     *      description="Delete avatar",
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Bad request",
+     *          @OA\MediaType(
+     *              mediaType="application/json"
+     *          )
+     *      )
+     *   )
+     */
+    public function deleteAvatar(UserAvatarDeleteRequest $request): JsonResponse;
 }

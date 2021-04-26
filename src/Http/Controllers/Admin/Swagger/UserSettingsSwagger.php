@@ -13,7 +13,7 @@ interface UserSettingsSwagger
      *     path="/api/admin/users/{id}/settings",
      *     summary="Get user settings",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"User Settings"},
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -39,7 +39,79 @@ interface UserSettingsSwagger
      */
     public function listUserSettings(UserSettingsListRequest $request): JsonResponse;
 
+    /**
+     * @OA\Patch(
+     *     path="/api/profile/settings",
+     *     summary="Update user setting(s) without changing other settings",
+     *     tags={"User Settings"},
+     *     security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\RequestBody(
+     *         @OA\Property(
+     *              name="settings",
+     *              type="array",
+     *              @OA\Items(
+     *                  type="object",
+     *                  @OA\Schema(
+     *                      @OA\Property(
+     *                          name="key",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          name="value",
+     *                          type="string"
+     *                      ),
+     *                  )
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *     )
+     * )
+     */
     public function patchUserSettings(UserSettingsUpdateRequest $request): JsonResponse;
 
+    /**
+     * @OA\Put(
+     *     path="/api/profile/settings",
+     *     summary="Set user setting (removes settings not sent)",
+     *     tags={"User Settings"},
+     *     security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\RequestBody(
+     *         @OA\Property(
+     *              name="settings",
+     *              type="array",
+     *              @OA\Items(
+     *                  type="object",
+     *                  @OA\Schema(
+     *                      @OA\Property(
+     *                          name="key",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          name="value",
+     *                          type="string"
+     *                      ),
+     *                  )
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *     )
+     * )
+     */
     public function putUserSettings(UserSettingsUpdateRequest $request): JsonResponse;
 }
