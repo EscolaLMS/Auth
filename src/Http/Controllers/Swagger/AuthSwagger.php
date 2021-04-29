@@ -16,7 +16,7 @@ interface AuthSwagger
     /**
      * @OA\Post(
      *     path="/api/auth/password/forgot",
-     *     summary="Password forget",
+     *     summary="Password forget call",
      *     tags={"Auth"},
      *     @OA\RequestBody(
      *         @OA\JsonContent(
