@@ -33,7 +33,7 @@ interface UserSettingsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/UserSetting"
+     *                      ref="#/components/schemas/UserSetting"
      *                  )
      *              )
      *          )
@@ -44,7 +44,7 @@ interface UserSettingsSwagger
 
     /**
      * @OA\Patch(
-     *     path="/api/profile/settings",
+     *     path="/api/admin/profile/settings",
      *     summary="Update user setting(s) without changing other settings",
      *     tags={"User Settings"},
      *     security={
@@ -52,17 +52,17 @@ interface UserSettingsSwagger
      *      },
      *     @OA\RequestBody(
      *         @OA\Property(
-     *              name="settings",
+     *              property="settings",
      *              type="array",
      *              @OA\Items(
      *                  type="object",
      *                  @OA\Schema(
      *                      @OA\Property(
-     *                          name="key",
+     *                          property="key",
      *                          type="string"
      *                      ),
      *                      @OA\Property(
-     *                          name="value",
+     *                          property="value",
      *                          type="string"
      *                      ),
      *                  )
@@ -82,7 +82,7 @@ interface UserSettingsSwagger
 
     /**
      * @OA\Put(
-     *     path="/api/profile/settings",
+     *     path="/api/admin/profile/settings",
      *     summary="Set user setting (removes settings not sent)",
      *     tags={"User Settings"},
      *     security={
@@ -90,17 +90,17 @@ interface UserSettingsSwagger
      *      },
      *     @OA\RequestBody(
      *         @OA\Property(
-     *              name="settings",
+     *              property="settings",
      *              type="array",
      *              @OA\Items(
      *                  type="object",
      *                  @OA\Schema(
      *                      @OA\Property(
-     *                          name="key",
+     *                          property="key",
      *                          type="string"
      *                      ),
      *                      @OA\Property(
-     *                          name="value",
+     *                          property="value",
      *                          type="string"
      *                      ),
      *                  )

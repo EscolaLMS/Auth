@@ -35,7 +35,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -61,12 +61,12 @@ interface UserInterestsSwagger
      *     ),
      *     @OA\RequestBody(
      *              @OA\Property(
-     *                  name="interests",
+     *                  property="interests",
      *                  type="array",
      *                  description="Ids of categories to be set",
      *                  @OA\Items(
-     *                      type="integer"
-     *                      format="int64",
+     *                      type="integer",
+     *                      format="int64"
      *                  )
      *              )
      *     ),
@@ -77,7 +77,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -106,7 +106,7 @@ interface UserInterestsSwagger
      *     ),
      *     @OA\RequestBody(
      *              @OA\Property(
-     *                  name="interest_id",
+     *                  property="interest_id",
      *                  type="integer",
      *                  format="int64",
      *                  description="Id of category to be added"
@@ -119,7 +119,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -162,7 +162,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )

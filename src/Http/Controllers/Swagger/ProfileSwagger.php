@@ -16,7 +16,6 @@ interface ProfileSwagger
 {
     /**
      * @OA\Get(
-     *      tags={"profile"},
      *      path="/api/profile/me",
      *      description="Get logged user info",
      *      tags={"Profile"},
@@ -43,7 +42,6 @@ interface ProfileSwagger
 
     /**
      * @OA\Put(
-     *      tags={"profile"},
      *      path="/api/profile/me",
      *      description="Update the profile",
      *      tags={"Profile"},
@@ -170,7 +168,6 @@ interface ProfileSwagger
 
     /**
      * @OA\Put(
-     *      tags={"profile"},
      *      path="/api/profile/password",
      *      description="Update password",
      *      tags={"Profile"},
@@ -252,7 +249,6 @@ interface ProfileSwagger
 
     /**
      * @OA\Post(
-     *      tags={"profile"},
      *      path="/api/profile/upload-avatar",
      *      description="Upload avatar",
      *      tags={"Profile"},
@@ -287,7 +283,6 @@ interface ProfileSwagger
 
     /**
      * @OA\Delete(
-     *      tags={"profile"},
      *      path="/api/profile/delete-avatar",
      *      description="Delete avatar",
      *      tags={"Profile"},
@@ -314,7 +309,6 @@ interface ProfileSwagger
 
     /**
      * @OA\Get(
-     *      tags={"profile"},
      *      path="/api/profile/settings",
      *      description="Get user settings",
      *      tags={"Profile"},

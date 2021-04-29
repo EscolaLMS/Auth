@@ -38,7 +38,7 @@ interface UserSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/User"
+     *                      ref="#/components/schemas/User"
      *                  )
      *              )
      *          )
@@ -68,7 +68,7 @@ interface UserSwagger
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns User data",
-     *          @OA\JsonContent($ref="#/components/schemas/User")
+     *          @OA\JsonContent(ref="#/components/schemas/User")
      *     ),
      * )
      */
