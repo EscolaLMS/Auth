@@ -11,6 +11,9 @@ use EscolaLms\Auth\Services\UserService;
 use EscolaLms\Core\Providers\Injectable;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * SWAGGER_VERSION
+ */
 class EscolaLmsAuthServiceProvider extends ServiceProvider
 {
     use Injectable;

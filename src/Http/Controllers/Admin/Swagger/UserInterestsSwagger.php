@@ -35,7 +35,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -77,7 +77,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -119,7 +119,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )
@@ -162,7 +162,7 @@ interface UserInterestsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/Category"
+     *                      ref="#/components/schemas/Category"
      *                  )
      *              )
      *          )

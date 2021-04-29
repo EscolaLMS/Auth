@@ -33,7 +33,7 @@ interface UserSettingsSwagger
      *              @OA\Schema(
      *                  type="array",
      *                  @OA\Items(
-     *                      $ref="#/components/schemas/UserSetting"
+     *                      ref="#/components/schemas/UserSetting"
      *                  )
      *              )
      *          )
