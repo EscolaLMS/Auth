@@ -8,6 +8,25 @@ use EscolaLms\Auth\Models\Traits\UserHasSettings;
 use EscolaLms\Categories\Models\Traits\HasInterests;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @OA\Schema(
+ *     description="User model",
+ *     title="User",
+ *     required={},
+ *     @OA\Xml(
+ *         name="User"
+ *     ),
+ *     @OA\Property(
+ *          type="integer",
+ *          format="int64",
+ *          property="id",
+ *     ),
+ *     @OA\Property(
+ *          property="email",
+ *          type="string"
+ *     )
+ * )
+ */
 class User extends \EscolaLms\Core\Models\User
 {
     use HasInterests, HasOnboardingStatus, UserHasSettings;
