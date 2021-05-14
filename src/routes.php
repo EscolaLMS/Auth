@@ -74,5 +74,3 @@ Route::group(['prefix' => 'api'], function () {
         });
     });
 });
-
-// overwrite `login` route so you being redirected fine after verification email from message
