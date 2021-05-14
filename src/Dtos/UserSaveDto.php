@@ -48,7 +48,7 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
         return new self(
             $request->input('first_name'),
             $request->input('last_name'),
-            $request->input('is_active', false),
+            $request->input('is_active', true),
             $request->input('roles', [UserRole::STUDENT]),
             $request->input('email'),
             $request->input('password'),
