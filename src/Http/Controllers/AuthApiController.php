@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
 
 class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 {
@@ -76,7 +77,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         return redirect(config('app.frontend_url') . '/#/social-login?token=' . $token);
     }
 
-    public function verifyEmail(EmailVerificationRequest $request, string $id, string $hash): RedirectResponse
+    public function verifyEmail(Request $request, string $id, string $hash): RedirectResponse
     {
         $user = $this->userRepository->find($id);
 
