@@ -25,9 +25,9 @@ Route::group(['prefix' => 'api'], function () {
             Route::get('{provider}/callback', [AuthApiController::class, 'socialCallback']);
         });
 
-        Route::group(['prefix' => 'email'], function () {
+        Route::group(['prefix' => 'email', 'middleware' => 'auth:api'], function () {
             Route::get('verify/{id}/{hash}', [AuthApiController::class, 'verifyEmail'])->name('verification.verify');
-            Route::post('resend', [AuthApiController::class, 'resendEmailVerification'])->middleware(['auth:api', 'throttle:6,1'])->name('verification.send');
+            Route::post('resend', [AuthApiController::class, 'resendEmailVerification'])->middleware(['throttle:6,1'])->name('verification.send');
         });
 
         Route::group(['middleware' => 'auth:api'], function () {
