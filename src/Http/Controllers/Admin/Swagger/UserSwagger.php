@@ -11,6 +11,18 @@ use EscolaLms\Auth\Http\Requests\Admin\UserDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
+/**
+* @OA\Schema(
+*      schema="UserAvatar",
+*      type="object",
+*                  @OA\Property(
+*                      property="avatar",
+*                      description="avatar",
+*                      type="file",
+*                      format="binary"
+*                  ),
+* )
+*/
 interface UserSwagger
 {
     /**
@@ -222,14 +234,13 @@ interface UserSwagger
      *              format="int64",
      *          ),
      *      ),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *              @OA\Schema(
-     *                  @OA\Property(property="avatar", type="file", @OA\Items(type="string", format="binary")),
-     *              )
-     *         )
-     *     ),
+    *      @OA\RequestBody(
+    *          required=true,
+    *          @OA\MediaType(
+    *              mediaType="multipart/form-data",
+    *              @OA\Schema(ref="#/components/schemas/UserAvatar")
+    *          )
+    *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
