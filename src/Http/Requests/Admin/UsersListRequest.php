@@ -3,7 +3,7 @@
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
 use EscolaLms\Auth\Enums\OnboardingStatus;
-use EscolaLms\Core\Enum\StatusEnum;
+use EscolaLms\Core\Enums\StatusEnum;
 use EscolaLms\Core\Enums\UserRole;
 use BenSampo\Enum\Rules\EnumValue;
 
