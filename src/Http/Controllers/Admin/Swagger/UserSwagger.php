@@ -35,6 +35,14 @@ interface UserSwagger
      *          {"passport": {}},
      *      },
      *     @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
      *          name="search",
      *          required=false,
      *          in="query",

@@ -8,6 +8,7 @@ use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Core\Dtos\PaginationDto;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
@@ -28,4 +29,6 @@ interface UserServiceContract
     public function login(string $email, string $password): User;
 
     public function search(CriteriaDto $criteriaDto, PaginationDto $paginationDto): Collection;
+
+    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator;
 }

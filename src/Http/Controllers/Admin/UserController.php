@@ -16,7 +16,6 @@ use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserResource;
-use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends AbstractUserController implements UserSwagger
@@ -24,8 +23,7 @@ class UserController extends AbstractUserController implements UserSwagger
     public function listUsers(UsersListRequest $request): JsonResponse
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
-        $paginationDto = PaginationDto::instantiateFromRequest($request);
-        return UserResource::collection($this->userService->search($userFilterDto, $paginationDto))->response();
+        return UserResource::collection($this->userService->searchAndPaginate($userFilterDto, $request->except('page')))->toResponse($request);
     }
 
     public function getUser(UserGetRequest $request): JsonResponse

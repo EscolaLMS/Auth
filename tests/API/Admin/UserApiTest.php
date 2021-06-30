@@ -321,7 +321,6 @@ class UserApiTest extends TestCase
             'email' => $admin->email
         ]);
 
-
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan&role=student');
         $this->response->assertOk();
         $this->response->assertJsonFragment([
