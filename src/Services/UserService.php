@@ -15,6 +15,7 @@ use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -133,5 +134,10 @@ class UserService implements UserServiceContract
     public function search(CriteriaDto $criteriaDto, PaginationDto $paginationDto): Collection
     {
         return $this->userRepository->searchByCriteria($criteriaDto->toArray(), $paginationDto->getSkip(), $paginationDto->getLimit());
+    }
+
+    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
+    {
+        return $this->userRepository->queryWithAppliedCriteria($criteriaDto->toArray())->paginate($perPage, ['*'], 'page', $page)->appends($appends);
     }
 }
