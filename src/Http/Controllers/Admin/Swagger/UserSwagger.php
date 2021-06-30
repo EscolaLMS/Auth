@@ -12,17 +12,17 @@ use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
 /**
-* @OA\Schema(
-*      schema="UserAvatar",
-*      type="object",
-*                  @OA\Property(
-*                      property="avatar",
-*                      description="avatar",
-*                      type="file",
-*                      format="binary"
-*                  ),
-* )
-*/
+ * @OA\Schema(
+ *      schema="UserAvatar",
+ *      type="object",
+ *                  @OA\Property(
+ *                      property="avatar",
+ *                      description="avatar",
+ *                      type="file",
+ *                      format="binary"
+ *                  ),
+ * )
+ */
 interface UserSwagger
 {
     /**
@@ -35,13 +35,59 @@ interface UserSwagger
      *          {"passport": {}},
      *      },
      *     @OA\Parameter(
-     *          name="",
+     *          name="search",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
-     *              type="integer",
-     *              format="int64",
+     *              type="string",
      *          ),
+     *          description="will search through first_name, last_name and email"
+     *      ),
+     *     @OA\Parameter(
+     *          name="role",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              enum={"admin","tutor","student"}
+     *          ),
+     *          description="user role"
+     *      ),
+     *     @OA\Parameter(
+     *          name="status",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="boolean",
+     *          ),
+     *          description="will check if user is_active"
+     *      ),
+     *     @OA\Parameter(
+     *          name="onboarding",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="boolean",
+     *          ),
+     *          description="will check if user completed onboarding"
+     *      ),
+     *     @OA\Parameter(
+     *          name="from",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="datetime",
+     *          ),
+     *          description="users created after this date"
+     *      ),
+     *     @OA\Parameter(
+     *          name="to",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="datetime",
+     *          ),
+     *          description="users created before this date"
      *      ),
      *     @OA\Response(
      *          response=200,
@@ -234,13 +280,13 @@ interface UserSwagger
      *              format="int64",
      *          ),
      *      ),
-    *      @OA\RequestBody(
-    *          required=true,
-    *          @OA\MediaType(
-    *              mediaType="multipart/form-data",
-    *              @OA\Schema(ref="#/components/schemas/UserAvatar")
-    *          )
-    *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(ref="#/components/schemas/UserAvatar")
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
