@@ -247,4 +247,91 @@ class UserApiTest extends TestCase
         $user->refresh();
         $this->assertEmpty($user->path_avatar);
     }
+
+    public function testSearchUsers(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'first_name' => 'Jan'
+        ]);
+        /** @var User $user */
+        $user2 = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin([
+            'first_name' => 'Jan'
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/');
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?role=admin');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=' . $user->email);
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan');
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan&role=admin');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan&role=student');
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+    }
 }
