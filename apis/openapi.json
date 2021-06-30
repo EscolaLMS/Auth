@@ -241,6 +241,14 @@
                 "operationId": "599183ff92f15962448cd009aec3c581",
                 "parameters": [
                     {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "description": "will search through first_name, last_name and email",
