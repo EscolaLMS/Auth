@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserApiTest extends TestCase
 {
@@ -250,6 +251,9 @@ class UserApiTest extends TestCase
 
     public function testSearchUsers(): void
     {
+        $date = now();
+        //dd(new Carbon($date));
+
         /** @var User $user */
         $user = $this->makeStudent([
             'first_name' => 'Jan'
@@ -261,7 +265,14 @@ class UserApiTest extends TestCase
             'first_name' => 'Jan'
         ]);
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/');
+
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users');
+        $meta = $this->response->getData()->meta;
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?page='.$meta->last_page);
+
+
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'email' => $user->email
