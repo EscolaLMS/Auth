@@ -270,7 +270,7 @@ class UserApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users');
         $meta = $this->response->getData()->meta;
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?page='.$meta->last_page);
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?per_page='.$meta->total);
 
 
         $this->response->assertOk();
