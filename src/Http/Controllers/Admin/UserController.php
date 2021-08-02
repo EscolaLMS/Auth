@@ -23,7 +23,7 @@ class UserController extends AbstractUserController implements UserSwagger
     public function listUsers(UsersListRequest $request): JsonResponse
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
-        return UserResource::collection($this->userService->searchAndPaginate($userFilterDto, $request->except('page')))->toResponse($request);
+        return UserResource::collection($this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page')))->toResponse($request);
     }
 
     public function getUser(UserGetRequest $request): JsonResponse
