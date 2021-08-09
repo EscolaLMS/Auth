@@ -33,29 +33,31 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
 
     public function me(MyProfileRequest $request): JsonResponse
     {
-        return (new UserResource($request->user()))->response();
+        return $this->sendResponse(UserResource::make($request->user())->toArray($request), 'My profile');
     }
 
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
-        $success = (bool)$this->userRepository->update(
+
+        $user = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        return $this->sendResponse(UserResource::make($user)->toArray($request), __('Updated profile'));
     }
 
     public function updateAuthData(ProfileUpdateAuthDataRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateAuthDataDto::instantiateFromRequest($request);
-        $success = (bool)$this->userRepository->update(
+
+        $user = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        return $this->sendSuccess(UserResource::make($user)->toArray($user), __('Updated email'));
     }
 
     public function updatePassword(ProfileUpdatePasswordRequest $request): JsonResponse
@@ -66,6 +68,11 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         );
 
         return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        if ($success) {
+            return $this->sendSuccess(__('Password updated'));
+        } else {
+            $this->sendError(__('Password not updated', 422));
+        }
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
@@ -74,14 +81,21 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->user(),
             $request->file('avatar'),
         );
-        $success = (bool)$avatarUrl;
-        return new JsonResponse(['success' => $success, 'avatar_url' => $avatarUrl], $success ? 200 : 422);
+        if (!empty($avatarUrl)) {
+            return $this->sendResponse(['avatar_url' => $avatarUrl], __('Avatar uploaded'));
+        } else {
+            return $this->sendError(__('Avatar not uploaded'), 422);
+        }
     }
 
     public function deleteAvatar(Request $request): JsonResponse
     {
         $success = $this->userService->deleteAvatar($request->user());
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        if ($success) {
+            return $this->sendSuccess(__('Avatar deleted'));
+        } else {
+            return $this->sendError(__('Avatar not deleted'), 422);
+        }
     }
 
     public function interests(UpdateInterests $request): JsonResponse
@@ -91,14 +105,14 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('interests'),
         );
 
-        return (new UserResource($request->user()))->response();
+        return $this->sendResponse(UserResource::make($request->user())->toArray($request), '');
     }
 
     public function settings(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        return (new UserSettingCollection($user->settings))->response();
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
     }
 
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse
@@ -106,6 +120,6 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $user = $request->user();
         $this->userRepository->updateSettings($user, $request->all());
 
-        return (new UserSettingCollection($user->settings))->response();
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
     }
 }

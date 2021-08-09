@@ -9,20 +9,14 @@ use EscolaLms\Auth\Http\Requests\Admin\UserSettingsUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserSettingCollection;
 use EscolaLms\Auth\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserSettingsController extends AbstractUserController implements UserSettingsSwagger
 {
     public function listUserSettings(UserSettingsListRequest $request): JsonResponse
     {
         $user = $this->fetchRequestedUser($request);
-        return $this->generateUserSettingsCollectionResponse($user);
-    }
-
-    private function generateUserSettingsCollectionResponse(User $user): JsonResponse
-    {
-        $user = $user->refresh();
-        $collectionJsonResource = new UserSettingCollection($user->settings);
-        return $collectionJsonResource->response();
+        return $this->generateUserSettingsCollectionResponse($request, $user);
     }
 
     public function patchUserSettings(UserSettingsUpdateRequest $request): JsonResponse
@@ -31,7 +25,7 @@ class UserSettingsController extends AbstractUserController implements UserSetti
         $dto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $this->userRepository->patchSettingsUsingDto($user, $dto);
-            return $this->generateUserSettingsCollectionResponse($user);
+            return $this->generateUserSettingsCollectionResponse($request, $user);
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
@@ -43,9 +37,15 @@ class UserSettingsController extends AbstractUserController implements UserSetti
         $dto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $this->userRepository->putSettingsUsingDto($user, $dto);
-            return $this->generateUserSettingsCollectionResponse($user);
+            return $this->generateUserSettingsCollectionResponse($request, $user);
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
+    }
+
+    private function generateUserSettingsCollectionResponse(Request $request, User $user): JsonResponse
+    {
+        $user = $user->refresh();
+        return $this->sendResponseForResource($request, UserSettingCollection::make($user->settings));
     }
 }

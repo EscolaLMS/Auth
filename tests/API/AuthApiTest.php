@@ -58,9 +58,14 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token'
+            ]
+        ]);
 
-        $response = $this->response->json();
-        $this->assertTrue((bool)strlen($response['token']));
+        $responseContent = $this->response->json();
+        $this->assertGreaterThan(0, strlen($responseContent['data']['token']));
     }
 
     public function testCantLoginWithoutEmailVerified(): void
@@ -171,8 +176,14 @@ class AuthApiTest extends TestCase
         $this->response = $this->actingAs($user)->json('GET', '/api/auth/refresh');
         $this->assertApiSuccess();
 
-        $response = $this->response->json();
-        $this->assertTrue((bool)strlen($response['token']));
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token'
+            ]
+        ]);
+
+        $responseContent = $this->response->json();
+        $this->assertGreaterThan(0, strlen($responseContent['data']['token']));
     }
 
     public function testResendEmailVerification(): void

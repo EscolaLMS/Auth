@@ -16,6 +16,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserResource;
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends AbstractUserController implements UserSwagger
@@ -23,17 +24,16 @@ class UserController extends AbstractUserController implements UserSwagger
     public function listUsers(UsersListRequest $request): JsonResponse
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
-        return UserResource::collection($this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page')))->toResponse($request);
+        $paginator = $this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
+        return $this->sendResponseForResource($request, UserResource::collection($paginator));
     }
 
     public function getUser(UserGetRequest $request): JsonResponse
     {
         try {
-            return (new UserResource($this->fetchRequestedUser($request)))->response();
-        } catch (UserNotFoundException $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], $ex->getCode());
-        } catch (\Exception $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], 400);
+            return $this->sendResponseForResource($request, UserResource::make($this->fetchRequestedUser($request)));
+        } catch (Exception $ex) {
+            return $this->sendError($ex->getMessage(), $ex instanceof UserNotFoundException ? $ex->getCode() : 400);
         }
     }
 
@@ -41,9 +41,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userService->create($userSaveDto)))->response();
-        } catch (\Exception $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], 400);
+            return $this->sendResponseForResource($request, UserResource::make($this->userService->create($userSaveDto)));
+        } catch (Exception $ex) {
+            return $this->sendError($ex->getMessage(), 400);
         }
     }
 
@@ -52,9 +52,9 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))))->response();
-        } catch (\Exception $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], 400);
+            return $this->sendResponseForResource($request, UserResource::make($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))));
+        } catch (Exception $ex) {
+            return $this->sendError($ex->getMessage(), 400);
         }
     }
 
@@ -62,9 +62,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
-            return (new UserResource($this->userService->putUsingDto($userUpdateDto, $request->route('id'))))->response();
+            return $this->sendResponseForResource($request, UserResource::make($this->userService->putUsingDto($userUpdateDto, $request->route('id'))));
         } catch (\Exception $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], 400);
+            return $this->sendError($ex->getMessage(), 400);
         }
     }
 
@@ -73,11 +73,12 @@ class UserController extends AbstractUserController implements UserSwagger
         try {
             $deleted = $this->userRepository->delete($request->route('id'));
             if ($deleted) {
-                return new JsonResponse("User deleted", 200);
+                return $this->sendSuccess("User deleted");
             } else {
+                return $this->sendError("User not deleted", 422);
             }
-        } catch (\Exception $ex) {
-            return new JsonResponse(['error' => $ex->getMessage()], 400);
+        } catch (Exception $ex) {
+            return $this->sendError($ex->getMessage(), 400);
         }
     }
 
@@ -88,15 +89,19 @@ class UserController extends AbstractUserController implements UserSwagger
             $request->file('avatar'),
         );
         if (!empty($avatarUrl)) {
-            return new JsonResponse(['success' => true, 'avatar_url' => $avatarUrl], 200);
+            return $this->sendResponse(['avatar_url' => $avatarUrl], '');
         } else {
-            return new JsonResponse(['error' => ''], 422);
+            return $this->sendError('', 422);
         }
     }
 
     public function deleteAvatar(UserAvatarDeleteRequest $request): JsonResponse
     {
         $success = $this->userService->deleteAvatar($this->fetchRequestedUser($request));
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        if ($success) {
+            return $this->sendSuccess("Avatar deleted");
+        } else {
+            return $this->sendError('Avatar not deleted', 422);
+        }
     }
 }

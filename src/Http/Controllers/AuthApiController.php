@@ -40,7 +40,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             $request->input('return_url'),
         );
 
-        return new JsonResponse(['success' => true], 200);
+        return $this->sendSuccess(__('Password reset email sent'));
     }
 
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
@@ -52,9 +52,9 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
                 $request->input('password'),
             );
 
-            return new JsonResponse(['success' => true], 200);
+            return $this->sendSuccess(__('New password saved'));
         } catch (AuthorizationException $e) {
-            return new JsonResponse(['error' => $e->getMessage()], 401);
+            return $this->sendError($e->getMessage(), 401);
         }
     }
 
@@ -62,7 +62,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     {
         $token = $request->user()->createToken(config('passport.personal_access_client.secret'))->accessToken;
 
-        return new JsonResponse(['success' => true, 'token' => $token]);
+        return $this->sendResponse(['token' => $token], __('Token refreshed'));
     }
 
     public function socialRedirect(SocialAuthRequest $request): RedirectResponse
@@ -101,6 +101,6 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             $user->sendEmailVerificationNotification();
         }
 
-        return new JsonResponse(['success' => true]);
+        return $this->sendSuccess(__('Verification message resent if email exists in database'));
     }
 }

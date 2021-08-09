@@ -8,6 +8,11 @@ use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Response;
 
 class AbstractUserController extends EscolaLmsBaseController
 {
@@ -27,5 +32,43 @@ class AbstractUserController extends EscolaLmsBaseController
             throw new UserNotFoundException();
         }
         return $user;
+    }
+
+    // TODO: move this to EscolaLmsBaseController?
+    public function sendResponseForResource(Request $request, JsonResource $resource, string $message = ''): JsonResponse
+    {
+        $wrappedResource = $resource->resource;
+        if ($wrappedResource instanceof LengthAwarePaginator) {
+            $meta = $wrappedResource->toArray();
+            unset($meta['data']);
+            return $this->sendResponseWithMeta($resource->toArray($request), $meta, $message);
+        }
+        if ($wrappedResource->wasRecentlyCreated ?? false) {
+            return $this->sendCreatedResponse($resource->toArray($request), $message);
+        }
+        return $this->sendResponse($resource->toArray($request), $message);
+    }
+
+    // TODO: move this to EscolaLmsBaseController?
+    public function sendResponseWithMeta(array $data, array $meta, string $message = ''): JsonResponse
+    {
+        return Response::json([
+            'success' => true,
+            'data'    => [
+                'data' => $data,
+                'meta' => $meta,
+            ],
+            'message' => $message,
+        ]);
+    }
+
+    // TODO: move this to EscolaLmsBaseController or refactor ->sendResponse to accept status as argument?
+    public function sendCreatedResponse(array $data, string $message = ''): JsonResponse
+    {
+        return Response::json([
+            'success' => true,
+            'data'    => $data,
+            'message' => $message,
+        ], 201);
     }
 }

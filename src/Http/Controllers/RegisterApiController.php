@@ -25,6 +25,6 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $user = $this->userService->create($userSaveDto);
         event(new Registered($user));
 
-        return new JsonResponse(['success' => true], 200);
+        return $this->sendSuccess(__('Registered'));
     }
 }
