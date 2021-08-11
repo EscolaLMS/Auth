@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Resources;
 
 use EscolaLms\Categories\Models\Category;
 use Illuminate\Http\Resources\Json\JsonResource;
+use EscolaLms\Auth\Traits\ResourceExtandable;
 
 class UserInterestResource extends JsonResource
 {
