@@ -20,8 +20,12 @@ class UserSettingResource extends JsonResource
     {
         /** @var UserSetting $resource */
         $resource = $this->resource;
-        return [
+        $fields = [
             $resource->key => $resource->value
         ];
+
+        return self::apply($fields, $this);
+
+
     }
 }
