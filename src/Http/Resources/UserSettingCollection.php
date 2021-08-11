@@ -7,6 +7,8 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 
 class UserSettingCollection extends ResourceCollection
 {
+    use ResourceExtandable;
+    
     /**
      * Transform the resource into an array.
      *

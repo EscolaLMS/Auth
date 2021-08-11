@@ -7,5 +7,5 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 
 class UserInterestCollection extends ResourceCollection
 {
-
+    use ResourceExtandable;
 }

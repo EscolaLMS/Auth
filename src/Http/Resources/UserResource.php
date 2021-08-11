@@ -9,6 +9,8 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 
 class UserResource extends JsonResource
 {
+    use ResourceExtandable;
+    
     public function __construct($resource)
     {
         assert($resource instanceof User);
