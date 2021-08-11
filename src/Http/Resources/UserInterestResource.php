@@ -9,9 +9,8 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 class UserInterestResource extends JsonResource
 {
     use ResourceExtandable;
-    public function __construct($resource)
+    public function __construct(Category $resource)
     {
-        assert($resource instanceof Category);
         parent::__construct($resource);
     }
 
@@ -21,6 +20,6 @@ class UserInterestResource extends JsonResource
         $resource = $this->resource;
         $array = $resource->toArray();
         unset($array['users']);
-        return $array;
+        return self::apply($array, $this);
     }
 }

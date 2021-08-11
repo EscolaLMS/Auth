@@ -10,9 +10,8 @@ class UserSettingResource extends JsonResource
 {
     use ResourceExtandable;
     
-    public function __construct($resource)
+    public function __construct(UserSetting $resource)
     {
-        assert($resource instanceof UserSetting);
         parent::__construct($resource);
     }
 
