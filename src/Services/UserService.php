@@ -65,7 +65,10 @@ class UserService implements UserServiceContract
 
     public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
     {
+
         $user = $this->userRepository->update($dto->toArray(), $id);
+
+
 
         assert($user instanceof User);
         if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {

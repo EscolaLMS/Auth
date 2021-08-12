@@ -2,10 +2,18 @@
 
 namespace EscolaLms\Auth\Dtos;
 use EscolaLms\Auth\Dtos\ExtendableDto;
+use Illuminate\Http\Request;
 
 class UserUpdateDto extends ExtendableDto
 {
-
+    public static function instantiateFromRequest(Request $request): self
+    {
+        $value = new self();
+        foreach (self::$constructorTypes as $key => $valueCallable) {
+            $value->$key = $valueCallable($request);
+        }
+        return $value;
+    }
 }
 
 UserUpdateDto::extendConstructor([

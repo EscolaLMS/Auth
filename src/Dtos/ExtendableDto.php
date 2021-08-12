@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 
 class ExtendableDto implements InstantiateFromRequest, DtoContract
 {
-    private static $constructorTypes = [];
-    private static $returnTypes = [];
+    protected static $constructorTypes = [];
+    protected static $returnTypes = [];
 
     /**
      * @param array $types of Callable
@@ -43,8 +43,13 @@ class ExtendableDto implements InstantiateFromRequest, DtoContract
 
     public function toArray(): array
     {
-        return array_map(function ($returnType) {
-            return $returnType($this);
-        }, self::$returnTypes);
+        return array_filter(
+            array_map(function ($returnType) {
+                return $returnType($this);
+            }, self::$returnTypes),
+            function ($item) {
+                return isset($item);
+            }
+        );
     }
 }
