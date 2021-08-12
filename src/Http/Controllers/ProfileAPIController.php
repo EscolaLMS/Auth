@@ -39,23 +39,27 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
-        $success = (bool)$this->userRepository->update(
+        $model = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        $success = isset($model);
+
+        return new JsonResponse(['success' => $success, 'data' => $model], $success ? 200 : 422);
     }
 
     public function updateAuthData(ProfileUpdateAuthDataRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateAuthDataDto::instantiateFromRequest($request);
-        $success = (bool)$this->userRepository->update(
+        $model = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        $success = isset($model);
+
+        return new JsonResponse(['success' => $success, 'data' => $model], $success ? 200 : 422);
     }
 
     public function updatePassword(ProfileUpdatePasswordRequest $request): JsonResponse
