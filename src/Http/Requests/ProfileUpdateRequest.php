@@ -4,8 +4,9 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Enums\GenderType;
 use Illuminate\Foundation\Http\FormRequest;
+use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 
-class ProfileUpdateRequest extends FormRequest
+class ProfileUpdateRequest extends ExtendableRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,19 +17,11 @@ class ProfileUpdateRequest extends FormRequest
     {
         return (bool)$this->user();
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'age' => ['required', 'numeric'],
-            'gender' => ['required', 'in:' . implode(',', GenderType::getValues())],
-        ];
-    }
 }
+
+ProfileUpdateRequest::extendRules([
+    'first_name' => ['string', 'max:255'],
+    'last_name' => ['string', 'max:255'],
+    'age' => ['numeric'],
+    'gender' => ['in:' . implode(',', GenderType::getValues())],
+]);
