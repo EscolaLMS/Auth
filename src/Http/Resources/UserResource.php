@@ -54,5 +54,5 @@ class UserResource extends JsonResource
 
 
 UserResource::extend(fn ($thisObj) => [
-    'avatar_path' => $thisObj->path_avatar
+    'path_avatar' => $thisObj->path_avatar
 ]);
