@@ -51,3 +51,8 @@ class UserResource extends JsonResource
         
     }
 }
+
+
+UserResource::extend(fn ($thisObj) => [
+    'avatar_path' => $thisObj->path_avatar
+]);

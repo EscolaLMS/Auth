@@ -113,7 +113,7 @@ class UserService implements UserServiceContract
         return false;
     }
 
-    public function uploadAvatar(User $user, UploadedFile $avatar): ?string
+    public function uploadAvatar(User $user, UploadedFile $avatar): ?User
     {
         assert($user instanceof AuthUser);
         if (empty($user->path_avatar)) {
@@ -121,7 +121,7 @@ class UserService implements UserServiceContract
         }
         if ($avatar->storeAs('users', $user->path_avatar)) {
             $user->save();
-            return $user->avatar_url;
+            return $user;
         }
         return null;
     }
