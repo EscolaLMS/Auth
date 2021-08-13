@@ -65,7 +65,11 @@ class UserService implements UserServiceContract
 
     public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
     {
-        $user = $this->userRepository->update(array_filter($dto->toArray(), fn ($key) => in_array($key, $keysDto->keyList()), ARRAY_FILTER_USE_KEY), $id);
+
+        $user = $this->userRepository->update($dto->toArray(), $id);
+
+
+
         assert($user instanceof User);
         if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
             if ($dto->getRoles() !== null && $keysDto->getRoles()) {
@@ -109,7 +113,7 @@ class UserService implements UserServiceContract
         return false;
     }
 
-    public function uploadAvatar(User $user, UploadedFile $avatar): ?string
+    public function uploadAvatar(User $user, UploadedFile $avatar): ?User
     {
         assert($user instanceof AuthUser);
         if (empty($user->path_avatar)) {
@@ -117,7 +121,7 @@ class UserService implements UserServiceContract
         }
         if ($avatar->storeAs('users', $user->path_avatar)) {
             $user->save();
-            return $user->avatar_url;
+            return $user;
         }
         return null;
     }

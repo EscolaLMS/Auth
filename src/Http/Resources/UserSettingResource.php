@@ -4,12 +4,14 @@ namespace EscolaLms\Auth\Http\Resources;
 
 use EscolaLms\Auth\Models\UserSetting;
 use Illuminate\Http\Resources\Json\JsonResource;
+use EscolaLms\Auth\Traits\ResourceExtandable;
 
 class UserSettingResource extends JsonResource
 {
-    public function __construct($resource)
+    use ResourceExtandable;
+    
+    public function __construct(UserSetting $resource)
     {
-        assert($resource instanceof UserSetting);
         parent::__construct($resource);
     }
 
@@ -17,8 +19,12 @@ class UserSettingResource extends JsonResource
     {
         /** @var UserSetting $resource */
         $resource = $this->resource;
-        return [
+        $fields = [
             $resource->key => $resource->value
         ];
+
+        return self::apply($fields, $this);
+
+
     }
 }

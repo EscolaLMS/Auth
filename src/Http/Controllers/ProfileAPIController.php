@@ -45,7 +45,11 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->user()->getKey(),
         );
 
-        return $this->sendResponse(UserResource::make($user)->toArray($request), __('Updated profile'));
+        if (!is_null($user)) {
+            return $this->sendResponse(UserResource::make($user)->toArray($request), __('Updated profile'));
+        }
+
+        return $this->sendError(__('Profile not updated'), 422);
     }
 
     public function updateAuthData(ProfileUpdateAuthDataRequest $request): JsonResponse
@@ -57,7 +61,11 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->user()->getKey(),
         );
 
-        return $this->sendSuccess(UserResource::make($user)->toArray($user), __('Updated email'));
+        if (!is_null($user)) {
+            return $this->sendSuccess(UserResource::make($user)->toArray($user), __('Updated email'));
+        }
+
+        return $this->sendError(__('Email not updated'), 422);
     }
 
     public function updatePassword(ProfileUpdatePasswordRequest $request): JsonResponse
@@ -67,35 +75,36 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('new_password'),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
         if ($success) {
             return $this->sendSuccess(__('Password updated'));
-        } else {
-            $this->sendError(__('Password not updated', 422));
         }
+
+        $this->sendError(__('Password not updated', 422));
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
     {
-        $avatarUrl = $this->userService->uploadAvatar(
+        $user = $this->userService->uploadAvatar(
             $request->user(),
             $request->file('avatar'),
         );
-        if (!empty($avatarUrl)) {
-            return $this->sendResponse(['avatar_url' => $avatarUrl], __('Avatar uploaded'));
-        } else {
-            return $this->sendError(__('Avatar not uploaded'), 422);
+
+        if (!is_null($user)) {
+            return $this->sendResponse(UserResource::make($user)->toArray($user), __('Avatar uploaded'));
         }
+
+        return $this->sendError(__('Avatar not uploaded'), 422);
     }
 
     public function deleteAvatar(Request $request): JsonResponse
     {
         $success = $this->userService->deleteAvatar($request->user());
+
         if ($success) {
             return $this->sendSuccess(__('Avatar deleted'));
-        } else {
-            return $this->sendError(__('Avatar not deleted'), 422);
         }
+
+        return $this->sendError(__('Avatar not deleted'), 422);
     }
 
     public function interests(UpdateInterests $request): JsonResponse
