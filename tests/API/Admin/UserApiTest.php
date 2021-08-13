@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+
 
 class UserApiTest extends TestCase
 {
@@ -200,6 +202,8 @@ class UserApiTest extends TestCase
 
     public function testDeleteUser()
     {
+        Storage::fake('avatars');
+
         /** @var User $user */
         $user = $this->makeStudent();
         /** @var User $admin */
@@ -226,6 +230,8 @@ class UserApiTest extends TestCase
 
     public function testUploadAndDeleteAvatar(): void
     {
+        Storage::fake('avatars');
+
         /** @var User $user */
         $user = $this->makeStudent();
         /** @var User $admin */
@@ -237,12 +243,14 @@ class UserApiTest extends TestCase
             'avatar' => UploadedFile::fake()->image('mj.png')
         ]);
 
+
         $this->response->assertOk();
 
         $user->refresh();
         $this->assertNotEmpty($user->path_avatar);
 
         $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/users/' . $user->getKey() . '/avatar');
+
         $this->response->assertOk();
 
         $user->refresh();
