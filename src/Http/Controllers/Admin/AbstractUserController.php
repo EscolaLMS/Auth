@@ -8,6 +8,7 @@ use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -43,7 +44,7 @@ class AbstractUserController extends EscolaLmsBaseController
             unset($meta['data']);
             return $this->sendResponseWithMeta($resource->toArray($request), $meta, $message);
         }
-        if ($wrappedResource->wasRecentlyCreated ?? false) {
+        if ($wrappedResource instanceof Model && $wrappedResource->wasRecentlyCreated) {
             return $this->sendCreatedResponse($resource->toArray($request), $message);
         }
         return $this->sendResponse($resource->toArray($request), $message);
