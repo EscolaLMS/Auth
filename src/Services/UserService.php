@@ -106,7 +106,7 @@ class UserService implements UserServiceContract
     {
         assert($user instanceof AuthUser);
         if (!empty($user->path_avatar)) {
-            $result = Storage::delete('users/' . $user->path_avatar);
+            $result = Storage::delete($user->path_avatar);
             $user->update(['path_avatar' => null]);
             return $result;
         }
@@ -116,14 +116,9 @@ class UserService implements UserServiceContract
     public function uploadAvatar(User $user, UploadedFile $avatar): ?User
     {
         assert($user instanceof AuthUser);
-        if (empty($user->path_avatar)) {
-            $user->path_avatar = Str::random(40) . '.' . $avatar->clientExtension();
-        }
-        if ($avatar->storeAs('users', $user->path_avatar)) {
-            $user->save();
-            return $user;
-        }
-        return null;
+        $user->path_avatar = $avatar->store('avatars/'.$user->id);
+        $user->save();
+        return $user;
     }
 
     private function assignRole(User $user, array $roles): void
