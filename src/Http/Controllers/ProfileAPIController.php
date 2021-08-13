@@ -74,12 +74,12 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
     {
-        $avatarUrl = $this->userService->uploadAvatar(
+        $user = $this->userService->uploadAvatar(
             $request->user(),
             $request->file('avatar'),
         );
-        $success = (bool)$avatarUrl;
-        return new JsonResponse(['success' => $success, 'avatar_url' => $avatarUrl], $success ? 200 : 422);
+        $success = (bool)$user;
+        return new JsonResponse(['success' => $success, 'data' => $user], $success ? 200 : 422);
     }
 
     public function deleteAvatar(Request $request): JsonResponse
