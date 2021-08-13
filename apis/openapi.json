@@ -249,6 +249,14 @@
                         }
                     },
                     {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "description": "will search through first_name, last_name and email",
