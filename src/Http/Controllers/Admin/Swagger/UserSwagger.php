@@ -43,6 +43,14 @@ interface UserSwagger
      *          ),
      *      ),
      *     @OA\Parameter(
+     *          name="per_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
      *          name="search",
      *          required=false,
      *          in="query",

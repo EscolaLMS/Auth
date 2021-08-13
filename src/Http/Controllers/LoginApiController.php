@@ -2,13 +2,12 @@
 
 namespace EscolaLms\Auth\Http\Controllers;
 
-use EscolaLms\Auth\Http\Requests\LoginRequest;
 use EscolaLms\Auth\Http\Controllers\Swagger\LoginSwagger;
+use EscolaLms\Auth\Http\Requests\LoginRequest;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Laravel\Passport\Passport;
 
 class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
 {
@@ -29,9 +28,10 @@ class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
 
             $token = $user->createToken("EscolaLMS User Token")->accessToken;
 
-            return new JsonResponse(['success' => true, 'token' => $token], 200);
+            return $this->sendResponse(['token' => $token], __('Login successful'));
         } catch (Exception $exception) {
             return new JsonResponse(['message' => $exception->getMessage()], 422);
+            return $this->sendError($exception->getMessage(), 422);
         }
     }
 }

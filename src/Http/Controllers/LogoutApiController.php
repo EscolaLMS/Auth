@@ -13,6 +13,6 @@ class LogoutApiController extends EscolaLmsBaseController implements LogoutSwagg
     {
         $token = $request->user()->token();
         $token->revoke();
-        return new JsonResponse(['success' => true, 'message' => 'You have been successfully logged out!'], 200);
+        return $this->sendSuccess(__('You have been successfully logged out!'));
     }
 }

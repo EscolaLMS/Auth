@@ -33,33 +33,39 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
 
     public function me(MyProfileRequest $request): JsonResponse
     {
-        return (new UserResource($request->user()))->response();
+        return $this->sendResponse(UserResource::make($request->user())->toArray($request), 'My profile');
     }
 
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
-        $model = $this->userRepository->update(
+
+        $user = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        $success = isset($model);
+        if (!is_null($user)) {
+            return $this->sendResponse(UserResource::make($user)->toArray($request), __('Updated profile'));
+        }
 
-        return new JsonResponse(['success' => $success, 'data' => $model], $success ? 200 : 422);
+        return $this->sendError(__('Profile not updated'), 422);
     }
 
     public function updateAuthData(ProfileUpdateAuthDataRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateAuthDataDto::instantiateFromRequest($request);
-        $model = $this->userRepository->update(
+
+        $user = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
 
-        $success = isset($model);
+        if (!is_null($user)) {
+            return $this->sendSuccess(UserResource::make($user)->toArray($user), __('Updated email'));
+        }
 
-        return new JsonResponse(['success' => $success, 'data' => $model], $success ? 200 : 422);
+        return $this->sendError(__('Email not updated'), 422);
     }
 
     public function updatePassword(ProfileUpdatePasswordRequest $request): JsonResponse
@@ -69,7 +75,11 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('new_password'),
         );
 
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+        if ($success) {
+            return $this->sendSuccess(__('Password updated'));
+        }
+
+        $this->sendError(__('Password not updated', 422));
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
@@ -78,14 +88,23 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->user(),
             $request->file('avatar'),
         );
-        $success = (bool)$user;
-        return new JsonResponse(['success' => $success, 'data' => $user], $success ? 200 : 422);
+
+        if (!is_null($user)) {
+            return $this->sendResponse(UserResource::make($user)->toArray($user), __('Avatar uploaded'));
+        }
+
+        return $this->sendError(__('Avatar not uploaded'), 422);
     }
 
     public function deleteAvatar(Request $request): JsonResponse
     {
         $success = $this->userService->deleteAvatar($request->user());
-        return new JsonResponse(['success' => $success], $success ? 200 : 422);
+
+        if ($success) {
+            return $this->sendSuccess(__('Avatar deleted'));
+        }
+
+        return $this->sendError(__('Avatar not deleted'), 422);
     }
 
     public function interests(UpdateInterests $request): JsonResponse
@@ -95,14 +114,14 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('interests'),
         );
 
-        return (new UserResource($request->user()))->response();
+        return $this->sendResponse(UserResource::make($request->user())->toArray($request), '');
     }
 
     public function settings(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        return (new UserSettingCollection($user->settings))->response();
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
     }
 
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse
@@ -110,6 +129,6 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $user = $request->user();
         $this->userRepository->updateSettings($user, $request->all());
 
-        return (new UserSettingCollection($user->settings))->response();
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
     }
 }

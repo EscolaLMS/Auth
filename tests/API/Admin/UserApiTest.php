@@ -273,15 +273,32 @@ class UserApiTest extends TestCase
             'first_name' => 'Jan'
         ]);
 
-
-
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users');
-        $meta = $this->response->getData()->meta;
-
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?per_page='.$meta->total);
-
 
         $this->response->assertOk();
+        $this->response->assertJsonStructure([
+            'success',
+            'data' => [
+                'data',
+                'meta'
+            ],
+            'message',
+        ]);
+
+        $meta = $this->response->json('data.meta');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?per_page=' . $meta['total']);
+
+        $this->response->assertOk();
+        $this->response->assertJsonStructure([
+            'success',
+            'data' => [
+                'data',
+                'meta'
+            ],
+            'message',
+        ]);
+
         $this->response->assertJsonFragment([
             'email' => $user->email
         ]);

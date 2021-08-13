@@ -11,20 +11,14 @@ use EscolaLms\Auth\Http\Requests\Admin\UserInterestsUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserInterestCollection;
 use Illuminate\Http\JsonResponse;
 use EscolaLms\Auth\Models\User;
+use Illuminate\Http\Request;
 
 class UserInterestsController extends AbstractUserController implements UserInterestsSwagger
 {
     public function listUserInterests(UserInterestsListRequest $request): JsonResponse
     {
         $user = $this->fetchRequestedUser($request);
-        return $this->generateUserInterestsCollectionResponse($user);
-    }
-
-    private function generateUserInterestsCollectionResponse(User $user): JsonResponse
-    {
-        $user = $user->refresh();
-        $collectionJsonResource = new UserInterestCollection($user->interests);
-        return $collectionJsonResource->response();
+        return $this->generateUserInterestsCollectionResponse($request, $user);
     }
 
     public function updateUserInterests(UserInterestsUpdateRequest $request): JsonResponse
@@ -33,7 +27,7 @@ class UserInterestsController extends AbstractUserController implements UserInte
         $dto = UserUpdateInterestsDto::instantiateFromRequest($request);
         try {
             $this->userRepository->updateInterestsUsingDto($user, $dto);
-            return $this->generateUserInterestsCollectionResponse($user);
+            return $this->generateUserInterestsCollectionResponse($request, $user);
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
@@ -45,7 +39,7 @@ class UserInterestsController extends AbstractUserController implements UserInte
         $interest_id = $request->validated()['interest_id'];
         try {
             $this->userRepository->addInterestById($user, $interest_id);
-            return $this->generateUserInterestsCollectionResponse($user);
+            return $this->generateUserInterestsCollectionResponse($request, $user);
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
@@ -57,9 +51,15 @@ class UserInterestsController extends AbstractUserController implements UserInte
         $interest_id = $request->validated()['interest_id'];
         try {
             $this->userRepository->removeInterestById($user, $interest_id);
-            return $this->generateUserInterestsCollectionResponse($user);
+            return $this->generateUserInterestsCollectionResponse($request, $user);
         } catch (\Exception $ex) {
             return new JsonResponse(['error' => $ex->getMessage()], 400);
         }
+    }
+
+    private function generateUserInterestsCollectionResponse(Request $request, User $user): JsonResponse
+    {
+        $user = $user->refresh();
+        return $this->sendResponseForResource($request, UserInterestCollection::make($user->interests));
     }
 }
