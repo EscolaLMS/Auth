@@ -7,6 +7,11 @@ use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends AbstractUserIdInRouteRequest
 {
+    public function authorize()
+    {
+        return $this->user()->can('update', $this->getRouteUser());
+    }
+
     public function rules()
     {
         $rules = [

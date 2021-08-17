@@ -6,6 +6,11 @@ use EscolaLms\Auth\Http\Requests\Admin\AbstractUserIdInRouteRequest;
 
 class UserAvatarUploadRequest extends AbstractUserIdInRouteRequest
 {
+    public function authorize()
+    {
+        return $this->user()->can('update', $this->getRouteUser());
+    }
+
     public function rules()
     {
         $rules = [

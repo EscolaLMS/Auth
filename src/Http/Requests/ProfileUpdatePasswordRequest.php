@@ -3,9 +3,8 @@
 namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Rules\MatchOldPassword;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileUpdatePasswordRequest extends FormRequest
+class ProfileUpdatePasswordRequest extends ExtendableRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class ProfileUpdatePasswordRequest extends FormRequest
      */
     public function authorize()
     {
-        return (bool)$this->user();
+        return $this->user()->can('update', $this->user());
     }
 
     /**

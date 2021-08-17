@@ -2,9 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class ProfileUpdateAuthDataRequest extends FormRequest
+class ProfileUpdateAuthDataRequest extends ExtendableRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +11,7 @@ class ProfileUpdateAuthDataRequest extends FormRequest
      */
     public function authorize()
     {
-        return (bool)$this->user();
+        return $this->user()->can('update', $this->user());
     }
 
     /**

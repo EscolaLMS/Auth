@@ -2,9 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class SocialAuthRequest extends FormRequest
+class SocialAuthRequest extends ExtendableRequest
 {
     protected function prepareForValidation()
     {

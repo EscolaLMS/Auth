@@ -2,9 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class RefreshTokenRequest extends FormRequest
+class RefreshTokenRequest extends ExtendableRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +11,7 @@ class RefreshTokenRequest extends FormRequest
      */
     public function authorize()
     {
-        return (bool)$this->user();
+        return !empty($this->user());
     }
 
     /**

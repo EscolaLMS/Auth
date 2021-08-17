@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Tests;
 
+use Database\Seeders\EscolaLms\Auth\AuthPermissionSeeder;
 use EscolaLms\Core\Tests\TestCase as CoreTestCase;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
@@ -17,6 +18,7 @@ class TestCase extends CoreTestCase
     {
         parent::setUp();
         Passport::useClientModel(Client::class);
+        $this->seed(AuthPermissionSeeder::class);
     }
 
     protected function getPackageProviders($app)

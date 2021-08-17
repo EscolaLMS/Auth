@@ -6,6 +6,11 @@ use EscolaLms\Categories\Models\Category;
 
 class UserInterestAddRequest extends AbstractUserIdInRouteRequest
 {
+    public function authorize()
+    {
+        return $this->user()->can('updateInterests', $this->getRouteUser());
+    }
+
     public function rules()
     {
         $rules = [

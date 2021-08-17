@@ -2,8 +2,16 @@
 
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
-class UserCreateRequest extends AbstractAdminRequest
+use EscolaLms\Auth\Http\Requests\ExtendableRequest;
+use EscolaLms\Auth\Models\User;
+
+class UserCreateRequest extends ExtendableRequest
 {
+    public function authorize()
+    {
+        return $this->user()->can('create', User::class);
+    }
+
     public function rules()
     {
         return [
