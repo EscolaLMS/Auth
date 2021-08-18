@@ -2,9 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class LogoutRequest extends FormRequest
+class LogoutRequest extends ExtendableRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +11,7 @@ class LogoutRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user();
+        return !empty($this->user());
     }
 
     /**
@@ -23,7 +21,6 @@ class LogoutRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-        ];
+        return [];
     }
 }

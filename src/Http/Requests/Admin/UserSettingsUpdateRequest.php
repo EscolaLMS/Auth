@@ -2,9 +2,12 @@
 
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
-
 class UserSettingsUpdateRequest extends AbstractUserIdInRouteRequest
 {
+    public function authorize()
+    {
+        return $this->user()->can('updateSettings', $this->getRouteUser());
+    }
 
     public function rules()
     {

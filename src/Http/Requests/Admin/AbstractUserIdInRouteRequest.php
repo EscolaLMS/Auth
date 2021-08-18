@@ -4,7 +4,7 @@ namespace EscolaLms\Auth\Http\Requests\Admin;
 
 use EscolaLms\Auth\Models\User;
 
-abstract class AbstractUserIdInRouteRequest extends AbstractAdminRequest
+abstract class AbstractUserIdInRouteRequest extends AbstractAdminOnlyRequest
 {
     protected function prepareForValidation()
     {
@@ -20,5 +20,10 @@ abstract class AbstractUserIdInRouteRequest extends AbstractAdminRequest
                 'exists:' . User::query()->getQuery()->from . ',id'
             ]
         ];
+    }
+
+    public function getRouteUser(): User
+    {
+        return User::query()->findOrFail($this->route('id'));
     }
 }

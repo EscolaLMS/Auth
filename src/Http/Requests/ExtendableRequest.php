@@ -3,25 +3,28 @@
 namespace EscolaLms\Auth\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
-class ExtendableRequest extends FormRequest
+abstract class ExtendableRequest extends FormRequest
 {
-
-    private static array $rules = [];
+    private static array $additional_rules = [];
 
     public static function extendRules(array $rules): array
     {
-        self::$rules += $rules;
-        return self::$rules;
+        self::$additional_rules += $rules;
+        return self::$additional_rules;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function rules()
+    protected function createDefaultValidator(ValidationFactory $factory)
     {
-        return self::$rules;        
+        return $factory->make(
+            $this->validationData(),
+            array_merge($this->container->call([$this, 'rules']), self::$additional_rules ?? []),
+            $this->messages(),
+            $this->attributes()
+        )->stopOnFirstFailure($this->stopOnFirstFailure);
     }
 }

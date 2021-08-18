@@ -33,7 +33,8 @@
     "psr-4": {
       "EscolaLms\\Auth\\": "src",
       "EscolaLms\\Auth\\Tests\\": "tests",
-      "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories"
+      "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories",
+      "Database\\Seeders\\EscolaLms\\Auth\\": "database/seeders"
     }
   },
   "extra": {

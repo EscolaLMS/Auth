@@ -3,7 +3,6 @@
 namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Enums\GenderType;
-use Illuminate\Foundation\Http\FormRequest;
 use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 
 class ProfileUpdateRequest extends ExtendableRequest
@@ -15,13 +14,16 @@ class ProfileUpdateRequest extends ExtendableRequest
      */
     public function authorize()
     {
-        return (bool)$this->user();
+        return $this->user()->can('update', $this->user());
+    }
+
+    public function rules()
+    {
+        return [
+            'first_name' => ['string', 'max:255'],
+            'last_name' => ['string', 'max:255'],
+            'age' => ['numeric'],
+            'gender' => ['in:' . implode(',', GenderType::getValues())],
+        ];
     }
 }
-
-ProfileUpdateRequest::extendRules([
-    'first_name' => ['string', 'max:255'],
-    'last_name' => ['string', 'max:255'],
-    'age' => ['numeric'],
-    'gender' => ['in:' . implode(',', GenderType::getValues())],
-]);
