@@ -42,6 +42,7 @@ class UserResource extends JsonResource
             'email_verified' => $this->email_verified,
             'interests' => CategoryResource::collection($this->interests()->get()),
             'avatar' => $this->avatar_url,
+            'roles' => $this->roles ? array_map(function($role) { return $role['name']; }, $this->roles->toArray()) : []
         ], function ($el) {
             return !is_null($el);
         });
