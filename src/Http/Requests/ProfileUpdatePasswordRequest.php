@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Rules\MatchOldPassword;
 
 class ProfileUpdatePasswordRequest extends ExtendableRequest
@@ -24,8 +25,8 @@ class ProfileUpdatePasswordRequest extends ExtendableRequest
     public function rules()
     {
         return [
-            'current_password' => ['required', new MatchOldPassword],
-            'new_password' => ['required', 'min:6'],
+            'current_password' => [...User::PASSWORD_RULES, new MatchOldPassword],
+            'new_password' => User::PASSWORD_RULES,
             'new_confirm_password' => ['same:new_password'],
         ];
     }

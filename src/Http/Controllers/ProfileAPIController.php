@@ -114,14 +114,14 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('interests'),
         );
 
-        return $this->sendResponse(UserResource::make($request->user())->toArray($request), '');
+        return $this->sendResponse(UserResource::make($request->user())->toArray($request), __('Updated user interests'));
     }
 
     public function settings(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), __('User settings'));
     }
 
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse
@@ -129,6 +129,6 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $user = $request->user();
         $this->userRepository->updateSettings($user, $request->all());
 
-        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), '');
+        return $this->sendResponse(UserSettingCollection::make($user->settings)->toArray($request), __('User interests'));
     }
 }

@@ -17,6 +17,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserResource;
 use Exception;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends AbstractUserController implements UserSwagger
@@ -41,7 +42,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
         try {
-            return $this->sendResponseForResource($request, UserResource::make($this->userService->create($userSaveDto)));
+            $user = $this->userService->create($userSaveDto);
+            event(new Registered($user));
+            return $this->sendResponseForResource($request, UserResource::make($user));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -84,14 +87,14 @@ class UserController extends AbstractUserController implements UserSwagger
 
     public function uploadAvatar(UserAvatarUploadRequest $request): JsonResponse
     {
-        $avatarUrl = $this->userService->uploadAvatar(
+        $user = $this->userService->uploadAvatar(
             $this->fetchRequestedUser($request),
             $request->file('avatar'),
         );
-        if (!empty($avatarUrl)) {
-            return $this->sendResponse(['avatar_url' => $avatarUrl], '');
+        if (!empty($user->path_avatar)) {
+            return $this->sendResponse(UserResource::make($user)->toArray(), __('Avatar uploaded'));
         } else {
-            return $this->sendError('', 422);
+            return $this->sendError(__('Avatar not uploaded'), 422);
         }
     }
 
@@ -99,9 +102,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $success = $this->userService->deleteAvatar($this->fetchRequestedUser($request));
         if ($success) {
-            return $this->sendSuccess("Avatar deleted");
+            return $this->sendSuccess(__('Avatar deleted'));
         } else {
-            return $this->sendError('Avatar not deleted', 422);
+            return $this->sendError(__('Avatar not deleted'), 422);
         }
     }
 }

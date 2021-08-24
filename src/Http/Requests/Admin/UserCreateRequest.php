@@ -19,7 +19,8 @@ class UserCreateRequest extends ExtendableRequest
             'last_name' => ['required', 'string', 'max:255'],
             'roles' => ['sometimes', 'array'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6'],
+            'verified' => ['sometimes', 'boolean'],
+            'password' => User::PASSWORD_RULES
         ];
     }
 }

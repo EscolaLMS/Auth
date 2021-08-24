@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -60,6 +62,8 @@ class UserApiTest extends TestCase
 
     public function testCreateUser()
     {
+        Event::fake();
+
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
@@ -79,6 +83,41 @@ class UserApiTest extends TestCase
         $this->response
             ->assertCreated()
             ->assertJsonFragment($userData);
+
+        Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
+            return $userData['email'] === $event->user->email && is_null($event->user->email_verified_at);
+        });
+    }
+
+    public function testCreateVerifiedUser()
+    {
+        Event::fake();
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'roles' => [UserRole::STUDENT],
+            'password' => $password
+        ]);
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+        $userData['verified'] = true;
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+
+        unset($userData['password']);
+        unset($userData['roles']);
+        unset($userData['verified']);
+
+        $this->response
+            ->assertCreated()
+            ->assertJsonFragment($userData);
+
+        Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
+            return $userData['email'] === $event->user->email && !is_null($event->user->email_verified_at);
+        });
     }
 
     public function testPatchUser()
@@ -242,7 +281,6 @@ class UserApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/' . $user->getKey() . '/avatar', [
             'avatar' => UploadedFile::fake()->image('mj.png')
         ]);
-
 
         $this->response->assertOk();
 

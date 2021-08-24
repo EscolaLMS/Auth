@@ -13,7 +13,7 @@ interface UserSettingsSwagger
      *     path="/api/admin/users/{id}/settings",
      *     summary="Get user settings",
      *     description="",
-     *     tags={"User Settings"},
+     *     tags={"Admin User Settings"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -46,7 +46,7 @@ interface UserSettingsSwagger
      * @OA\Patch(
      *     path="/api/admin/profile/settings",
      *     summary="Update user setting(s) without changing other settings",
-     *     tags={"User Settings"},
+     *     tags={"Admin User Settings"},
      *     security={
      *          {"passport": {}},
      *      },
@@ -84,7 +84,7 @@ interface UserSettingsSwagger
      * @OA\Put(
      *     path="/api/admin/profile/settings",
      *     summary="Set user setting (removes settings not sent)",
-     *     tags={"User Settings"},
+     *     tags={"Admin User Settings"},
      *     security={
      *          {"passport": {}},
      *      },

@@ -15,6 +15,7 @@ use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -38,7 +39,11 @@ class UserService implements UserServiceContract
     public function create(UserSaveDto $userSaveDto): User
     {
         $attributes['remember_token'] = Str::random(10);
+        /** @var \EscolaLms\Auth\Models\User $user */
         $user = $this->userRepository->create($userSaveDto->getUserAttributes());
+        if ($user instanceof MustVerifyEmail && $userSaveDto->getVerified()) {
+            $user->markEmailAsVerified();
+        }
         assert($user instanceof User);
         $this->assignRole($user, $userSaveDto->getRoles());
         return $user;
@@ -65,10 +70,7 @@ class UserService implements UserServiceContract
 
     public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
     {
-
         $user = $this->userRepository->update($dto->toArray(), $id);
-
-
 
         assert($user instanceof User);
         if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
@@ -116,7 +118,7 @@ class UserService implements UserServiceContract
     public function uploadAvatar(User $user, UploadedFile $avatar): ?User
     {
         assert($user instanceof AuthUser);
-        $user->path_avatar = $avatar->store('avatars/'.$user->id);
+        $user->path_avatar = $avatar->store('avatars/' . $user->id);
         $user->save();
         return $user;
     }

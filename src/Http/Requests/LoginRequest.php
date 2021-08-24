@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
+use EscolaLms\Auth\Models\User;
+
 class LoginRequest extends ExtendableRequest
 {
     /**
@@ -23,7 +25,7 @@ class LoginRequest extends ExtendableRequest
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => User::PASSWORD_RULES
         ];
     }
 }
