@@ -46,6 +46,6 @@ class UserSettingsController extends AbstractUserController implements UserSetti
     private function generateUserSettingsCollectionResponse(Request $request, User $user): JsonResponse
     {
         $user = $user->refresh();
-        return $this->sendResponseForResource($request, UserSettingCollection::make($user->settings));
+        return $this->sendResponseForResource(UserSettingCollection::make($user->settings), __('User settings'));
     }
 }

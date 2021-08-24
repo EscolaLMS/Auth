@@ -60,6 +60,6 @@ class UserInterestsController extends AbstractUserController implements UserInte
     private function generateUserInterestsCollectionResponse(Request $request, User $user): JsonResponse
     {
         $user = $user->refresh();
-        return $this->sendResponseForResource($request, UserInterestCollection::make($user->interests));
+        return $this->sendResponseForResource(UserInterestCollection::make($user->interests), __('User interests'));
     }
 }
