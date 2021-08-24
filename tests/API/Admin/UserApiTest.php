@@ -316,24 +316,20 @@ class UserApiTest extends TestCase
         $this->response->assertOk();
         $this->response->assertJsonStructure([
             'success',
-            'data' => [
-                'data',
-                'meta'
-            ],
+            'data',
+            'meta',
             'message',
         ]);
 
-        $meta = $this->response->json('data.meta');
+        $meta = $this->response->json('meta');
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?per_page=' . $meta['total']);
 
         $this->response->assertOk();
         $this->response->assertJsonStructure([
             'success',
-            'data' => [
-                'data',
-                'meta'
-            ],
+            'data',
+            'meta',
             'message',
         ]);
 
