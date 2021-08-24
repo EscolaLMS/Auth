@@ -26,13 +26,13 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
         $paginator = $this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
-        return $this->sendResponseForResource($request, UserResource::collection($paginator));
+        return $this->sendResponseForResource(UserResource::collection($paginator), __('Users search results'));
     }
 
     public function getUser(UserGetRequest $request): JsonResponse
     {
         try {
-            return $this->sendResponseForResource($request, UserResource::make($this->fetchRequestedUser($request)));
+            return $this->sendResponseForResource(UserResource::make($this->fetchRequestedUser($request)), __('User details'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), $ex instanceof UserNotFoundException ? $ex->getCode() : 400);
         }
@@ -44,7 +44,7 @@ class UserController extends AbstractUserController implements UserSwagger
         try {
             $user = $this->userService->create($userSaveDto);
             event(new Registered($user));
-            return $this->sendResponseForResource($request, UserResource::make($user));
+            return $this->sendResponseForResource(UserResource::make($user), __('Created user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -55,7 +55,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
-            return $this->sendResponseForResource($request, UserResource::make($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))));
+            return $this->sendResponseForResource(UserResource::make($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))), __('Updated user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -65,7 +65,7 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
-            return $this->sendResponseForResource($request, UserResource::make($this->userService->putUsingDto($userUpdateDto, $request->route('id'))));
+            return $this->sendResponseForResource(UserResource::make($this->userService->putUsingDto($userUpdateDto, $request->route('id'))), __('Updated user'));
         } catch (\Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -92,7 +92,7 @@ class UserController extends AbstractUserController implements UserSwagger
             $request->file('avatar'),
         );
         if (!empty($user->path_avatar)) {
-            return $this->sendResponse(UserResource::make($user)->toArray($request), __('Avatar uploaded'));
+            return $this->sendResponseForResource(UserResource::make($user), __('Avatar uploaded'));
         } else {
             return $this->sendError(__('Avatar not uploaded'), 422);
         }
