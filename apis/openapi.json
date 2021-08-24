@@ -8,7 +8,7 @@
         "/api/admin/users/{id}/interests": {
             "get": {
                 "tags": [
-                    "User Interests"
+                    "Admin User Interests"
                 ],
                 "summary": "Get user interests",
                 "description": "",
@@ -42,7 +42,7 @@
             },
             "put": {
                 "tags": [
-                    "User Interests"
+                    "Admin User Interests"
                 ],
                 "summary": "Set user interests",
                 "description": "",
@@ -72,7 +72,7 @@
             },
             "post": {
                 "tags": [
-                    "User Interests"
+                    "Admin User Interests"
                 ],
                 "summary": "Add single user interest",
                 "description": "",
@@ -109,7 +109,7 @@
         "/api/admin/users/{id}/interests/{interest_id}": {
             "delete": {
                 "tags": [
-                    "User Interests"
+                    "Admin User Interests"
                 ],
                 "summary": "Add single user interest",
                 "description": "",
@@ -154,7 +154,7 @@
         "/api/admin/users/{id}/settings": {
             "get": {
                 "tags": [
-                    "User Settings"
+                    "Admin User Settings"
                 ],
                 "summary": "Get user settings",
                 "description": "",
@@ -190,7 +190,7 @@
         "/api/admin/profile/settings": {
             "put": {
                 "tags": [
-                    "User Settings"
+                    "Admin User Settings"
                 ],
                 "summary": "Set user setting (removes settings not sent)",
                 "operationId": "c708b42f7a3384f7dac4948cd32067ae",
@@ -211,7 +211,7 @@
             },
             "patch": {
                 "tags": [
-                    "User Settings"
+                    "Admin User Settings"
                 ],
                 "summary": "Update user setting(s) without changing other settings",
                 "operationId": "05262dc638d68856b1576634c71637ff",
@@ -234,7 +234,7 @@
         "/api/admin/users": {
             "get": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Get users",
                 "description": "",
@@ -334,7 +334,7 @@
             },
             "post": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Create user",
                 "description": "",
@@ -350,7 +350,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "successful operation,  returns created User data",
+                        "description": "successful operation, returns created User data",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -370,7 +370,7 @@
         "/api/admin/users/{id}": {
             "get": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Get user",
                 "description": "",
@@ -406,7 +406,7 @@
             },
             "delete": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Delete user",
                 "description": "",
@@ -443,7 +443,7 @@
         "/api/admin/user/{id}": {
             "put": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Update/Replace user data (will overwrite unset fields with nulls)",
                 "description": "",
@@ -494,7 +494,7 @@
             },
             "patch": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "summary": "Partial Update User (will only change sent fields)",
                 "description": "",
@@ -547,7 +547,7 @@
         "/api/admin/users/{id}/avatar": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "description": "Upload avatar",
                 "operationId": "2de6cd14e4c60b991ab75296bff312af",
@@ -594,7 +594,7 @@
             },
             "delete": {
                 "tags": [
-                    "Users"
+                    "Admin Users"
                 ],
                 "description": "Delete avatar",
                 "operationId": "fc79782cd69e58bcf60ff83ca025bbc3",
