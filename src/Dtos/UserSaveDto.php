@@ -16,8 +16,9 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
     private ?string $password;
     private bool $isActive;
     private array $roles;
+    private bool $verified;
 
-    public function __construct(string $firstName, string $lastName, bool $isActive, array $roles, ?string $email = null, ?string $password = null)
+    public function __construct(string $firstName, string $lastName, bool $isActive, array $roles, ?string $email = null, ?string $password = null, bool $verified = false)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -25,6 +26,7 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
         $this->password = $password;
         $this->isActive = $isActive;
         $this->roles = $roles;
+        $this->verified = $verified;
     }
 
     public function getUserAttributes(): array
@@ -52,6 +54,7 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
             $request->input('roles', [UserRole::STUDENT]),
             $request->input('email'),
             $request->input('password'),
+            $request->has('verified') ? $request->input('verified') : false
         );
     }
 
@@ -83,6 +86,11 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
     public function getRoles(): array
     {
         return $this->roles;
+    }
+
+    public function getVerified(): bool
+    {
+        return $this->verified;
     }
 
     public function toArray(): array

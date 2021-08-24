@@ -191,6 +191,9 @@ class AuthApiTest extends TestCase
         Notification::fake();
 
         $user = $this->makeStudent();
+        $user->email_verified_at = null;
+        $user->save();
+
         $this->response = $this->json('POST', '/api/auth/email/resend', [
             'email' => $user->email,
         ]);

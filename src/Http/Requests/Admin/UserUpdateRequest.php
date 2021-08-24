@@ -28,8 +28,7 @@ class UserUpdateRequest extends AbstractUserIdInRouteRequest
             ],
             'password' => [
                 'sometimes',
-                'required',
-                'string',
+                ...User::PASSWORD_RULES
             ],
             'roles' => [
                 'sometimes',

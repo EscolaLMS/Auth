@@ -30,7 +30,7 @@ interface UserSwagger
      *     path="/api/admin/users",
      *     summary="Get users",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -126,7 +126,7 @@ interface UserSwagger
      *     path="/api/admin/users/{id}",
      *     summary="Get user",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -153,7 +153,7 @@ interface UserSwagger
      *     path="/api/admin/user/{id}",
      *     summary="Partial Update User (will only change sent fields)",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -191,7 +191,7 @@ interface UserSwagger
      *     path="/api/admin/user/{id}",
      *     summary="Update/Replace user data (will overwrite unset fields with nulls)",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -229,7 +229,7 @@ interface UserSwagger
      *     path="/api/admin/users",
      *     summary="Create user",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -238,7 +238,7 @@ interface UserSwagger
      *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="successful operation,  returns created User data",
+     *          description="successful operation, returns created User data",
      *          @OA\JsonContent(ref="#/components/schemas/User")
      *     ),
      * )
@@ -250,7 +250,7 @@ interface UserSwagger
      *     path="/api/admin/users/{id}",
      *     summary="Delete user",
      *     description="",
-     *     tags={"Users"},
+     *     tags={"Admin Users"},
      *      security={
      *          {"passport": {}},
      *      },
@@ -281,7 +281,7 @@ interface UserSwagger
 
     /**
      * @OA\Post(
-     *      tags={"Users"},
+     *      tags={"Admin Users"},
      *      path="/api/admin/users/{id}/avatar",
      *      description="Upload avatar",
      *      security={
@@ -323,7 +323,7 @@ interface UserSwagger
 
     /**
      * @OA\Delete(
-     *      tags={"Users"},
+     *      tags={"Admin Users"},
      *      path="/api/admin/users/{id}/avatar",
      *      description="Delete avatar",
      *      security={

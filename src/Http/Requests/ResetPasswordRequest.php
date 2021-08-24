@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
+use EscolaLms\Auth\Models\User;
+
 class ResetPasswordRequest extends ExtendableRequest
 {
     /**
@@ -24,7 +26,7 @@ class ResetPasswordRequest extends ExtendableRequest
         return [
             'email' => ['required', 'string', 'exists:users,email'],
             'token' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => User::PASSWORD_RULES,
         ];
     }
 }

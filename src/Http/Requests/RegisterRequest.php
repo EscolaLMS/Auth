@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
+use EscolaLms\Auth\Models\User;
+
 class RegisterRequest extends ExtendableRequest
 {
     /**
@@ -25,7 +27,8 @@ class RegisterRequest extends ExtendableRequest
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => [...User::PASSWORD_RULES, 'confirmed'],
+            'verified' => ['prohibited'],
         ];
     }
 }

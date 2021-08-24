@@ -31,6 +31,12 @@ class User extends \EscolaLms\Core\Models\User
 {
     use HasInterests, HasOnboardingStatus, UserHasSettings;
 
+    public const PASSWORD_RULES = [
+        'required',
+        'string',
+        'min:6'
+    ];
+
     protected function getTraitOwner(): self
     {
         return $this;

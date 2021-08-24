@@ -13,6 +13,7 @@ use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -82,6 +83,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         $user = $this->userRepository->find($id);
 
         if (
+            $user instanceof MustVerifyEmail &&
             hash_equals($id, (string)$user->getKey()) &&
             hash_equals($hash, sha1($user->getEmailForVerification())) &&
             !$user->hasVerifiedEmail()
@@ -97,7 +99,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     {
         $user = $this->userRepository->findByEmail($request->input('email'));
 
-        if ($user) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
             $user->sendEmailVerificationNotification();
         }
 
