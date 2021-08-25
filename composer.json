@@ -34,7 +34,7 @@
       "EscolaLms\\Auth\\": "src",
       "EscolaLms\\Auth\\Tests\\": "tests",
       "Database\\Factories\\EscolaLms\\Auth\\Models\\": "database/factories",
-      "Database\\Seeders\\EscolaLms\\Auth\\": "database/seeders"
+      "EscolaLms\\Auth\\Database\\Seeders\\": "database/seeders"
     }
   },
   "extra": {
