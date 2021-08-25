@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\EscolaLms\Auth;
+namespace EscolaLms\Auth\Database\Seeders;
 
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Core\Enums\UserRole;
