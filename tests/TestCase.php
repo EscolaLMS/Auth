@@ -2,7 +2,7 @@
 
 namespace EscolaLms\Auth\Tests;
 
-use Database\Seeders\EscolaLms\Auth\AuthPermissionSeeder;
+use EscolaLms\Auth\Database\Seeders\AuthPermissionSeeder;
 use EscolaLms\Core\Tests\TestCase as CoreTestCase;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
