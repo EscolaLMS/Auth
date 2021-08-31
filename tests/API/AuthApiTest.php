@@ -4,10 +4,12 @@ namespace EscolaLms\Auth\Tests\API;
 
 use Carbon\Carbon;
 use EscolaLms\Auth\Events\PasswordForgotten;
+use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -122,6 +124,7 @@ class AuthApiTest extends TestCase
     public function testForgotPassword(): void
     {
         Event::fake();
+        Notification::fake();
 
         $user = $this->makeStudent();
 
@@ -132,6 +135,12 @@ class AuthApiTest extends TestCase
 
         $this->assertApiSuccess();
         Event::assertDispatched(PasswordForgotten::class);
+
+        $event = new PasswordForgotten($user, 'http://localhost/password-forgot');
+        $listener = app(CreatePasswordResetToken::class);
+        $listener->handle($event);
+
+        Notification::assertSentTo($user, ResetPassword::class);
     }
 
     public function testForgotPasswordWithoutUser(): void

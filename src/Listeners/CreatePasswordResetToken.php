@@ -4,6 +4,8 @@ namespace EscolaLms\Auth\Listeners;
 
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
+use EscolaLms\Core\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Str;
 
 class CreatePasswordResetToken
@@ -25,10 +27,12 @@ class CreatePasswordResetToken
 
         $user->refresh();
 
-        $url = $event->getReturnUrl() .
-            '?email=' . $user->email .
-            '&token=' . $user->password_reset_token;
+        ResetPassword::createUrlUsing(function (User $user, string $token) use ($event) {
+            return $event->getReturnUrl() .
+                '?email=' . $user->email .
+                '&token=' . $token;
+        });
 
-        $user->notify(new PasswordForgotten($user, $url));
+        $user->notify(new ResetPassword($user->password_reset_token));
     }
 }
