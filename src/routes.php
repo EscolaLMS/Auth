@@ -1,6 +1,7 @@
 <?php
 
 use EscolaLms\Auth\Http\Controllers\Admin\UserController;
+use EscolaLms\Auth\Http\Controllers\Admin\UserGroupsController;
 use EscolaLms\Auth\Http\Controllers\Admin\UserInterestsController;
 use EscolaLms\Auth\Http\Controllers\Admin\UserSettingsController;
 use EscolaLms\Auth\Http\Controllers\AuthApiController;
@@ -71,6 +72,18 @@ Route::group(['prefix' => 'api'], function () {
             // Single Interest
             Route::post('/{id}/interests', [UserInterestsController::class, 'addUserInterest']);
             Route::delete('/{id}/interests/{interest_id}', [UserInterestsController::class, 'deleteUserInterest']);
+        });
+
+        Route::group(['prefix' => 'user-groups'], function () {
+            Route::get('/', [UserGroupsController::class, 'listGroups']);
+            Route::post('/', [UserGroupsController::class, 'createGroup']);
+            Route::get('/{id}', [UserGroupsController::class, 'getGroup']);
+            Route::put('/{id}', [UserGroupsController::class, 'updateGroup']);
+            Route::patch('/{id}', [UserGroupsController::class, 'updateGroup']);
+            Route::delete('/{id}', [UserGroupsController::class, 'deleteGroup']);
+            //
+            Route::post('/{id}/members/', [UserGroupsController::class, 'addMember']);
+            Route::delete('/{id}/members/{user_id}', [UserGroupsController::class, 'removeMember']);
         });
     });
 });

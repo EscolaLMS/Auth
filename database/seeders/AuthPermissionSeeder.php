@@ -23,6 +23,13 @@ class AuthPermissionSeeder extends Seeder
         $admin->givePermissionTo([
             AuthPermissionsEnum::USER_CREATE,
             AuthPermissionsEnum::USER_DELETE,
+            AuthPermissionsEnum::USER_GROUP_CREATE,
+            AuthPermissionsEnum::USER_GROUP_DELETE,
+            AuthPermissionsEnum::USER_GROUP_LIST,
+            AuthPermissionsEnum::USER_GROUP_MEMBER_ADD,
+            AuthPermissionsEnum::USER_GROUP_MEMBER_REMOVE,
+            AuthPermissionsEnum::USER_GROUP_READ,
+            AuthPermissionsEnum::USER_GROUP_UPDATE,
             AuthPermissionsEnum::USER_INTEREST_UPDATE,
             AuthPermissionsEnum::USER_LIST,
             AuthPermissionsEnum::USER_READ,
@@ -30,6 +37,8 @@ class AuthPermissionSeeder extends Seeder
             AuthPermissionsEnum::USER_UPDATE,
         ]);
         $tutor->givePermissionTo([
+            AuthPermissionsEnum::USER_GROUP_LIST_SELF,
+            AuthPermissionsEnum::USER_GROUP_READ_SELF,
             AuthPermissionsEnum::USER_INTEREST_UPDATE_SELF,
             AuthPermissionsEnum::USER_LIST_OWNED,
             AuthPermissionsEnum::USER_READ_OWNED,
@@ -38,6 +47,8 @@ class AuthPermissionSeeder extends Seeder
             AuthPermissionsEnum::USER_UPDATE_SELF,
         ]);
         $student->givePermissionTo([
+            AuthPermissionsEnum::USER_GROUP_LIST_SELF,
+            AuthPermissionsEnum::USER_GROUP_READ_SELF,
             AuthPermissionsEnum::USER_INTEREST_UPDATE_SELF,
             AuthPermissionsEnum::USER_READ_SELF,
             AuthPermissionsEnum::USER_SETTING_UPDATE_SELF,
