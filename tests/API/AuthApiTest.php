@@ -6,18 +6,16 @@ use Carbon\Carbon;
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Notifications\ResetPassword;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
 class AuthApiTest extends TestCase
@@ -177,6 +175,38 @@ class AuthApiTest extends TestCase
         $user->refresh();
 
         $this->assertTrue(Hash::check('zaq1@WSX', $user->password));
+    }
+
+    public function testForgotAndResetPassword(): void
+    {
+        Notification::fake();
+
+        $user = $this->makeStudent();
+
+        $this->response = $this->json('POST', '/api/auth/password/forgot', [
+            'email' => $user->email,
+            'return_url' => 'http://localhost/password-forgot',
+        ]);
+        $this->assertApiSuccess();
+
+        $user->refresh();
+        $newPassword = 'zaq1@WSX';
+
+        $this->response = $this->json('POST', '/api/auth/password/reset', [
+            'email' => $user->email,
+            'token' => $user->password_reset_token,
+            'password' => $newPassword,
+        ]);
+
+        $this->assertApiSuccess();
+        $this->assertDatabaseHas('users', [
+            'id' => $user->getKey(),
+            'password_reset_token' => null,
+        ]);
+
+        $user->refresh();
+
+        $this->assertTrue(Hash::check($newPassword, $user->password));
     }
 
     public function testRefreshToken(): void
