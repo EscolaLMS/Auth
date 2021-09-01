@@ -10,7 +10,7 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 class UserResource extends JsonResource
 {
     use ResourceExtandable;
-    
+
     public function __construct(User $resource)
     {
         parent::__construct($resource);
@@ -42,14 +42,14 @@ class UserResource extends JsonResource
             'email_verified' => $this->email_verified,
             'interests' => CategoryResource::collection($this->interests()->get()),
             'avatar' => $this->avatar_url,
-            'roles' => $this->roles ? array_map(function($role) { return $role['name']; }, $this->roles->toArray()) : []
+            'roles' => $this->roles ? array_map(function ($role) {
+                return $role['name'];
+            }, $this->roles->toArray()) : []
         ], function ($el) {
             return !is_null($el);
         });
 
         return self::apply($fields, $this);
- 
-        
     }
 }
 

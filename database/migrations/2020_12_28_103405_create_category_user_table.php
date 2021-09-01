@@ -19,7 +19,7 @@ class CreateCategoryUserTable extends EscolaMigration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-//            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            // $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
 
             $table->primary(['user_id', 'category_id']);
         });

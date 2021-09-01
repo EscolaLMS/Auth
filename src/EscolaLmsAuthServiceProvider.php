@@ -2,11 +2,15 @@
 
 namespace EscolaLms\Auth;
 
+use EscolaLms\Auth\Repositories\Contracts\UserGroupRepositoryContract;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
+use EscolaLms\Auth\Repositories\UserGroupRepository;
 use EscolaLms\Auth\Repositories\UserRepository;
 use EscolaLms\Auth\Services\AuthService;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
+use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
+use EscolaLms\Auth\Services\UserGroupService;
 use EscolaLms\Auth\Services\UserService;
 use EscolaLms\Core\Providers\Injectable;
 use Illuminate\Support\ServiceProvider;
@@ -20,8 +24,10 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
 
     private const CONTRACTS = [
         AuthServiceContract::class => AuthService::class,
+        UserGroupRepositoryContract::class => UserGroupRepository::class,
+        UserGroupServiceContract::class => UserGroupService::class,
+        UserRepositoryContract::class => UserRepository::class,
         UserServiceContract::class => UserService::class,
-        UserRepositoryContract::class => UserRepository::class
     ];
 
     public function register()

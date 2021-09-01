@@ -2,7 +2,9 @@
 
 namespace EscolaLms\Auth;
 
+use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Policies\GroupPolicy;
 use EscolaLms\Auth\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         User::class => UserPolicy::class,
+        Group::class => GroupPolicy::class,
     ];
 
     /**
