@@ -2,6 +2,7 @@
 
 use EscolaLms\Core\Migrations\EscolaMigration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserGroupsTables extends EscolaMigration
 {
@@ -22,5 +23,11 @@ class CreateUserGroupsTables extends EscolaMigration
 
             $table->primary(['user_id', 'group_id']);
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('group_user');
+        Schema::dropIfExists('groups');
     }
 }
