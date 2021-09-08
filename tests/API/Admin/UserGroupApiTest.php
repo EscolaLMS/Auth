@@ -47,7 +47,7 @@ class UserGroupApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/');
         $this->response->assertOk();
-        $this->assertGreaterThanOrEqual(count($this->response->getData()->data), 5);
+        $this->assertGreaterThanOrEqual(count(5, $this->response->getData()->data));
         // $this->response->assertJsonCount(5, 'data');
     }
 
