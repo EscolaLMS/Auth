@@ -2,10 +2,10 @@
 
 namespace EscolaLms\Auth\Dtos;
 
+use EscolaLms\Auth\Repositories\Criteria\UserGroupSearchCriterion;
 use EscolaLms\Core\Dtos\Contracts\DtoContract;
 use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use EscolaLms\Core\Dtos\CriteriaDto;
-use EscolaLms\Core\Repositories\Criteria\UserGroupSearchCriterion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
