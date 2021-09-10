@@ -42,13 +42,29 @@ class UserGroupApiTest extends TestCase
     {
         /** @var User $admin */
         $admin = $this->makeAdmin();
-        /** @var Group $group */
         $group = Group::factory()->count(5)->create();
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/');
         $this->response->assertOk();
         $this->assertGreaterThanOrEqual(5, count($this->response->getData()->data));
         // $this->response->assertJsonCount(5, 'data');
+    }
+
+    public function testSearchGroups(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+        Group::factory()->count(4)->create();
+        /** @var Group $group */
+        $group = Group::factory()->create(['name' => 'asdfasdf']);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', ['search' => 'asdfasdf']);
+        $this->response->assertOk();
+        $this->response->assertJsonCount(1, 'data');
+        $this->response->assertJsonFragment([
+            'id' => $group->getKey(),
+            'name' => $group->name,
+        ]);
     }
 
     public function testCreateGroup(): void
