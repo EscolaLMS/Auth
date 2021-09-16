@@ -38,6 +38,21 @@ class UserApiTest extends TestCase
             ]);
     }
 
+    public function testGetSelf(): void
+    {
+        /** @var User $tutor */
+        $tutor = $this->makeInstructor();
+
+        $this->response = $this->actingAs($tutor)->json('GET', '/api/admin/users/' . $tutor->getKey());
+        $this->response
+            ->assertOk()
+            ->assertJsonFragment([
+                'id' => $tutor->getKey(),
+                'email' => $tutor->email,
+                'first_name' => $tutor->first_name
+            ]);
+    }
+
     public function testUnauthorizedIfNotUser(): void
     {
         $this->withMiddleware();
