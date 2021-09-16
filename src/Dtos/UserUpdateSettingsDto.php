@@ -24,8 +24,11 @@ class UserUpdateSettingsDto implements InstantiateFromRequest, DtoContract
 
     public static function instantiateFromRequest(Request $request): self
     {
-        assert($request instanceof UserSettingsUpdateRequest);
-        $settings = Arr::pluck($request->input('settings'), 'value', 'key');
+        if ($request->has('settings')) {
+            $settings = Arr::pluck($request->input('settings'), 'value', 'key');
+        } else {
+            $settings = [];
+        }
         $map = new TypedMap('string', 'mixed', $settings);
         return new self($map);
     }

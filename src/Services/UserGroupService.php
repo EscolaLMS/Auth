@@ -42,6 +42,15 @@ class UserGroupService implements UserGroupServiceContract
         return $group->refresh()->users;
     }
 
+    public function addMemberIfGroupIsRegisterable(Group $group, User $user): bool
+    {
+        if ($group->registerable) {
+            $this->addMember($group, $user);
+            return true;
+        }
+        return false;
+    }
+
     public function removeMember(Group $group, User $user): Collection
     {
         $group->users()->detach($user->getKey());

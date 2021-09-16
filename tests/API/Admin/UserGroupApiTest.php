@@ -67,7 +67,45 @@ class UserGroupApiTest extends TestCase
         ]);
     }
 
+    public function testListTree()
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $groups = Group::factory()->count(4)->create();
+        /** @var Group $group */
+        $group = Group::factory()->create(['name' => 'Parent']);
+        $group->children()->saveMany($groups);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/tree/');
+        $this->response->assertOk();
+        $this->response->assertJsonCount(1, 'data');
+        $this->response->assertJsonCount(4, 'data.0.subgroups');
+    }
+
     public function testCreateGroup(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+        /** @var Group $group */
+        $group = Group::factory()->make([
+            'registerable' => true,
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/user-groups/', $group->toArray());
+        $this->response->assertStatus(201);
+
+        $id = $this->response->json('data.id');
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $id);
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'name' => $group->name,
+            'registerable' => $group->registerable,
+            'parent_id' => null,
+        ]);
+    }
+
+    public function testCreateGroupWithParent(): void
     {
         /** @var User $admin */
         $admin = $this->makeAdmin();
@@ -78,10 +116,28 @@ class UserGroupApiTest extends TestCase
         $this->response->assertStatus(201);
 
         $id = $this->response->json('data.id');
+
+        $group2 = Group::factory()->make(['parent_id' => $id]);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/user-groups/', $group2->toArray());
+        $this->response->assertStatus(201);
+
+        $id2 = $this->response->json('data.id');
+
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $id);
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'name' => $group->name,
+            'registerable' => $group->registerable,
+            'parent_id' => null,
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $id2);
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'name' => $group2->name,
+            'registerable' => $group2->registerable,
+            'parent_id' => $id,
         ]);
     }
 

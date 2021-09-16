@@ -6,6 +6,7 @@ use EscolaLms\Auth\Dtos\Admin\UserUpdateDto;
 use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserFilterCriteriaDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserSwagger;
 use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
@@ -41,8 +42,12 @@ class UserController extends AbstractUserController implements UserSwagger
     public function createUser(UserCreateRequest $request): JsonResponse
     {
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
+        $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
-            $user = $this->userService->create($userSaveDto);
+            $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
+            if ($request->has('group_id')) {
+                $this->userGroupService->addMember($request->getGroup(), $user);
+            }
             event(new Registered($user));
             return $this->sendResponseForResource(UserResource::make($user), __('Created user'));
         } catch (Exception $ex) {

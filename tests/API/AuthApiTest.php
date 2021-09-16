@@ -5,6 +5,7 @@ namespace EscolaLms\Auth\Tests\API;
 use Carbon\Carbon;
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
+use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Notifications\ResetPassword;
 use EscolaLms\Auth\Tests\TestCase;
@@ -42,6 +43,45 @@ class AuthApiTest extends TestCase
         ]);
 
         Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+    }
+
+    public function testRegisterWithSettingsAndGroup(): void
+    {
+        Notification::fake();
+
+        /** @var Group $group */
+        $group = Group::factory()->create(['registerable' => true]);
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+            'group_id' => $group->getKey(),
+            'settings' => [
+                [
+                    'key' => 'test-setting-key',
+                    'value' => 'test-setting-value',
+                ]
+            ]
+        ]);
+
+        $this->assertApiSuccess();
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+
+        /** @var User $user */
+        $user = User::where('email', 'test@test.test')->first();
+
+        $this->assertEquals($group->getKey(), $user->groups->get(0)->id);
+        $this->assertEquals('test-setting-value', $user->settings->get(0)->value);
+        $this->assertEquals('test-setting-key', $user->settings->get(0)->key);
     }
 
     public function testLogin(): void
