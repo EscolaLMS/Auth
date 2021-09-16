@@ -64,6 +64,31 @@
                 ]
             }
         },
+        "/api/admin/user-groups/tree/": {
+            "get": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "List groups in a tree",
+                "description": "",
+                "operationId": "6655f9b0a9e4a3b5091bd2ac677e757a",
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/api/admin/user-groups/{id}": {
             "get": {
                 "tags": [
@@ -1596,6 +1621,13 @@
                     },
                     "name": {
                         "type": "string"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "registerable": {
+                        "type": "boolean"
                     },
                     "users": {
                         "type": "array",
