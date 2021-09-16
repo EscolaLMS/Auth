@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable as User;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
+use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +16,8 @@ use Illuminate\Support\Collection;
 interface UserServiceContract
 {
     public function create(UserSaveDto $userSaveDto): ?User;
+
+    public function createWithSettings(UserSaveDto $userSaveDto, UserUpdateSettingsDto $userSettingsDto): User;
 
     public function update(User $user, UserSaveDto $userSaveDto): ?User;
 

@@ -24,6 +24,8 @@ interface UserGroupServiceContract
      */
     public function addMember(Group $group, User $user): Collection;
 
+    public function addMemberIfGroupIsRegisterable(Group $group, User $user): bool;
+
     /**
      * Remove member from group and return collection of members
      */

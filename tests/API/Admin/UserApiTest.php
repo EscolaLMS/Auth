@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use EscolaLms\Auth\Models\Group;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -102,6 +103,54 @@ class UserApiTest extends TestCase
         Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
             return $userData['email'] === $event->user->email && is_null($event->user->email_verified_at);
         });
+    }
+
+    public function testCreateUserWithSettingsAndGroup()
+    {
+        Event::fake();
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        /** @var Group $group */
+        $group = Group::factory()->create();
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'roles' => [UserRole::STUDENT],
+            'password' => $password,
+            'group_id' => $group->getKey(),
+            'settings' => [
+                [
+                    'key' => 'test-setting-key',
+                    'value' => 'test-setting-value',
+                ]
+            ]
+        ]);
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+
+        unset($userData['password']);
+        unset($userData['roles']);
+        unset($userData['group_id']);
+        unset($userData['settings']);
+
+        $this->response
+            ->assertCreated()
+            ->assertJsonFragment($userData);
+
+        Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
+            return $userData['email'] === $event->user->email && is_null($event->user->email_verified_at);
+        });
+
+        /** @var User $user */
+        $user = User::where('email', $userData['email'])->first();
+
+        $this->assertEquals($group->getKey(), $user->groups->get(0)->id);
+        $this->assertEquals('test-setting-value', $user->settings->get(0)->value);
+        $this->assertEquals('test-setting-key', $user->settings->get(0)->key);
     }
 
     public function testCreateVerifiedUser()

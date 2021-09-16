@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Controllers\Admin;
 
 use EscolaLms\Auth\Dtos\UserGroupDto;
 use EscolaLms\Auth\Dtos\UserGroupFilterCriteriaDto;
+use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserGroupsSwagger;
 use EscolaLms\Auth\Http\Requests\Admin\UserGroupCreateRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGroupDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGroupGetRequest;
@@ -13,13 +14,14 @@ use EscolaLms\Auth\Http\Requests\Admin\UserGroupMemberRemoveRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGroupUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserGroupDetailedResource;
 use EscolaLms\Auth\Http\Resources\UserGroupResource;
+use EscolaLms\Auth\Http\Resources\UserGroupTreeResource;
 use EscolaLms\Auth\Http\Resources\UserResource;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class UserGroupsController extends EscolaLmsBaseController
+class UserGroupsController extends EscolaLmsBaseController implements UserGroupsSwagger
 {
     private UserGroupServiceContract $userGroupService;
 
@@ -33,6 +35,13 @@ class UserGroupsController extends EscolaLmsBaseController
         $filterDto = UserGroupFilterCriteriaDto::instantiateFromRequest($request);
         $paginator = $this->userGroupService->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
         return $this->sendResponseForResource(UserGroupResource::collection($paginator), __('Group list'));
+    }
+
+    public function listGroupsTree(UserGroupListRequest $request): JsonResponse
+    {
+        $filterDto = UserGroupFilterCriteriaDto::instantiateFromRequest($request, true);
+        $paginator = $this->userGroupService->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
+        return $this->sendResponseForResource(UserGroupTreeResource::collection($paginator), __('Group tree list'));
     }
 
     public function getGroup(UserGroupGetRequest $request): JsonResponse

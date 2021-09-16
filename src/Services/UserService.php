@@ -7,6 +7,7 @@ use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto as AdminUserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
+use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Events\UserLogged;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -46,6 +47,13 @@ class UserService implements UserServiceContract
         }
         assert($user instanceof User);
         $this->assignRole($user, $userSaveDto->getRoles());
+        return $user;
+    }
+
+    public function createWithSettings(UserSaveDto $userSaveDto, UserUpdateSettingsDto $userSettingsDto): User
+    {
+        $user = $this->create($userSaveDto);
+        $this->userRepository->putSettingsUsingDto($user, $userSettingsDto);
         return $user;
     }
 

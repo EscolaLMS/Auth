@@ -40,6 +40,31 @@ interface UserGroupsSwagger
 
     /**
      * @OA\Get(
+     *     path="/api/admin/user-groups/tree/",
+     *     summary="List groups in a tree",
+     *     description="",
+     *     tags={"Admin User Groups"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation, returns list of groups",
+     *          @OA\JsonContent(
+     *              @OA\Schema(
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Group"
+     *                  )
+     *              )
+     *          )
+     *     ),
+     * )
+     */
+    public function listGroupsTree(UserGroupListRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
      *     path="/api/admin/user-groups/{id}",
      *     summary="Get group details",
      *     description="",

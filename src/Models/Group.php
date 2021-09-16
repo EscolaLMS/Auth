@@ -7,7 +7,9 @@ use EscolaLms\Auth\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @OA\Schema(
@@ -25,6 +27,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     @OA\Property(
  *          property="name",
  *          type="string"
+ *     ),
+ *     @OA\Property(
+ *          type="integer",
+ *          format="int64",
+ *          property="parent_id",
+ *     ),
+ *     @OA\Property(
+ *          type="boolean",
+ *          property="registerable",
  *     ),
  *     @OA\Property(
  *          property="users",
@@ -45,7 +56,9 @@ class Group extends Model
         'id'
     ];
 
-    protected $casts = [];
+    protected $casts = [
+        'registerable' => 'bool'
+    ];
 
     protected static function newFactory()
     {
@@ -62,5 +75,15 @@ class Group extends Model
         return $this->relationLoaded('users')
             ? $this->users->contains('id', '=', $user->getKey())
             : $this->users()->wherePivot('user_id',  '=', $user->getKey())->exists();
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Group::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Group::class, 'parent_id')->with('children');
     }
 }

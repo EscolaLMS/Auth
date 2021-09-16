@@ -22,6 +22,8 @@ class UserGroupResource extends JsonResource
         return [
             'id' => $this->getResource()->getKey(),
             'name' => $this->getResource()->name,
+            'parent_id' => $this->getResource()->parent_id,
+            'registerable' => $this->getResource()->registerable,
         ];
     }
 }
