@@ -47,7 +47,6 @@ class UserGroupApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/');
         $this->response->assertOk();
         $this->assertGreaterThanOrEqual(5, count($this->response->getData()->data));
-        // $this->response->assertJsonCount(5, 'data');
     }
 
     public function testSearchGroups(): void
@@ -79,8 +78,34 @@ class UserGroupApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/tree/');
         $this->response->assertOk();
-        $this->response->assertJsonCount(1, 'data');
-        $this->response->assertJsonCount(4, 'data.0.subgroups');
+
+        $count = Group::where('parent_id', null)->count();
+
+        $this->response->assertJsonCount($count, 'data');
+
+        $data = $this->response->json('data');
+        foreach ($data as $parent_group) {
+            if ($parent_group['name'] === 'Parent') {
+                $this->assertEquals(4, count($parent_group['subgroups']));
+            }
+        }
+    }
+
+    public function testSearchTree()
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $groups = Group::factory()->count(4)->create();
+        /** @var Group $group */
+        $group = Group::factory()->create(['name' => 'Parent']);
+        $group->children()->saveMany($groups);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/tree/', [
+            'parent_id' => $group->getKey()
+        ]);
+        $this->response->assertOk();
+        $this->response->assertJsonCount(4, 'data');
     }
 
     public function testCreateGroup(): void
