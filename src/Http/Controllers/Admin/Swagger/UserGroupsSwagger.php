@@ -22,6 +22,23 @@ interface UserGroupsSwagger
      *      security={
      *          {"passport": {}},
      *      },
+     *     @OA\Parameter(
+     *          name="search",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="parent_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns list of groups",
@@ -47,6 +64,23 @@ interface UserGroupsSwagger
      *      security={
      *          {"passport": {}},
      *      },
+     *     @OA\Parameter(
+     *          name="search",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="parent_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns list of groups",
