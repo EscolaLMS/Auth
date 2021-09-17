@@ -13,6 +13,25 @@
                 "summary": "List groups",
                 "description": "",
                 "operationId": "b4631bcf8030edaa73072b86b87a2f23",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation, returns list of groups",
@@ -72,6 +91,25 @@
                 "summary": "List groups in a tree",
                 "description": "",
                 "operationId": "6655f9b0a9e4a3b5091bd2ac677e757a",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation, returns list of groups",
