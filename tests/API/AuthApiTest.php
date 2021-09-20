@@ -179,6 +179,10 @@ class AuthApiTest extends TestCase
         $listener->handle($event);
 
         Notification::assertSentTo($user, ResetPassword::class);
+
+        $notification = new ResetPassword($user->password_reset_token, $event->getReturnUrl());
+        $mail = $notification->toMail($user);
+        $this->assertTrue($mail instanceof \Illuminate\Notifications\Messages\MailMessage);
     }
 
     public function testForgotPasswordWithoutUser(): void
