@@ -10,7 +10,6 @@ use EscolaLms\Auth\Http\Requests\SocialAuthRequest;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 interface AuthSwagger
 {
@@ -176,24 +175,6 @@ interface AuthSwagger
      *     summary="List registerable groups",
      *     description="",
      *     tags={"Auth"},
-     *     @OA\Parameter(
-     *          name="page",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="integer",
-     *              format="int64",
-     *          ),
-     *      ),
-     *     @OA\Parameter(
-     *          name="page_size",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="integer",
-     *              format="int64",
-     *          ),
-     *      ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns list of groups",
@@ -208,5 +189,5 @@ interface AuthSwagger
      *     ),
      * )
      */
-    public function registerableGroups(Request $request, UserGroupServiceContract $userGroupService): JsonResponse;
+    public function registerableGroups(UserGroupServiceContract $userGroupService): JsonResponse;
 }

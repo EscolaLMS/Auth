@@ -107,8 +107,8 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         return $this->sendSuccess(__('Verification message resent if email exists in database'));
     }
 
-    public function registerableGroups(Request $request, UserGroupServiceContract $userGroupService): JsonResponse
+    public function registerableGroups(UserGroupServiceContract $userGroupService): JsonResponse
     {
-        return $this->sendResponseForResource(UserGroupResource::collection($userGroupService->paginateRegisterableGroups($request)), __('Registerable groups list'));
+        return $this->sendResponseForResource(UserGroupResource::collection($userGroupService->getRegisterableGroups()), __('Registerable groups list'));
     }
 }
