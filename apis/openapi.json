@@ -1125,6 +1125,26 @@
                 }
             }
         },
+        "/api/auth/registerable-groups/": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "List registerable groups",
+                "description": "",
+                "operationId": "a627c12cb5a66bbde697875c6efd56e3",
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
