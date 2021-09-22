@@ -2,14 +2,19 @@
 
 namespace EscolaLms\Auth\Services;
 
+
 use EscolaLms\Auth\Dtos\UserGroupDto;
+use EscolaLms\Auth\Dtos\UserGroupFilterCriteriaDto;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserGroupRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
+use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 
 class UserGroupService implements UserGroupServiceContract
 {
@@ -60,5 +65,11 @@ class UserGroupService implements UserGroupServiceContract
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
     {
         return $this->userGroupRepository->queryWithAppliedCriteria($criteriaDto->toArray())->paginate($perPage, ['*'], 'page', $page)->appends($appends);
+    }
+
+    public function paginateRegisterableGroups(Request $request): LengthAwarePaginator
+    {
+        $filterDto = new UserGroupFilterCriteriaDto(new SupportCollection([new EqualCriterion('registerable', true)]));
+        return $this->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
     }
 }

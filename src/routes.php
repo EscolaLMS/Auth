@@ -16,6 +16,8 @@ Route::group(['prefix' => 'api'], function () {
         Route::post('register', [RegisterApiController::class, 'register'])->name('register.api');
         Route::post('login', [LoginApiController::class, 'login'])->name('login.api');
 
+        Route::get('registerable-groups', [AuthApiController::class, 'registerableGroups']);
+
         Route::group(['prefix' => 'password'], function () {
             Route::post('forgot', [AuthApiController::class, 'forgotPassword']);
             Route::post('reset', [AuthApiController::class, 'resetPassword']);

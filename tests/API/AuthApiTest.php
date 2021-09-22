@@ -284,4 +284,20 @@ class AuthApiTest extends TestCase
 
         Notification::assertSentTo($user, VerifyEmail::class);
     }
+
+    public function testRegisterableGroups(): void
+    {
+        Group::factory()->count(2)->create([
+            'registerable' => true
+        ]);
+        Group::factory()->count(3)->create([
+            'registerable' => false
+        ]);
+        $groupsCount = Group::count();
+
+        $this->response = $this->json('GET', '/api/auth/registerable-groups/');
+        $this->response->assertOk();
+        $this->assertGreaterThanOrEqual(2, count($this->response->getData()->data));
+        $this->assertLessThanOrEqual($groupsCount - 3, count($this->response->getData()->data));
+    }
 }

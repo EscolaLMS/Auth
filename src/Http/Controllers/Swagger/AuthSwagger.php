@@ -7,6 +7,7 @@ use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
 use EscolaLms\Auth\Http\Requests\ResendVerificationEmailRequest;
 use EscolaLms\Auth\Http\Requests\ResetPasswordRequest;
 use EscolaLms\Auth\Http\Requests\SocialAuthRequest;
+use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -168,4 +169,44 @@ interface AuthSwagger
      * )
      */
     public function resendEmailVerification(ResendVerificationEmailRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/auth/registerable-groups/",
+     *     summary="List registerable groups",
+     *     description="",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="page_size",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation, returns list of groups",
+     *          @OA\JsonContent(
+     *              @OA\Schema(
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Group"
+     *                  )
+     *              )
+     *          )
+     *     ),
+     * )
+     */
+    public function registerableGroups(Request $request, UserGroupServiceContract $userGroupService): JsonResponse;
 }

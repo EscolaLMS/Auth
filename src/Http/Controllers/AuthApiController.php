@@ -8,17 +8,18 @@ use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
 use EscolaLms\Auth\Http\Requests\ResendVerificationEmailRequest;
 use EscolaLms\Auth\Http\Requests\ResetPasswordRequest;
 use EscolaLms\Auth\Http\Requests\SocialAuthRequest;
+use EscolaLms\Auth\Http\Resources\UserGroupResource;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
+use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 {
@@ -104,5 +105,10 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         }
 
         return $this->sendSuccess(__('Verification message resent if email exists in database'));
+    }
+
+    public function registerableGroups(Request $request, UserGroupServiceContract $userGroupService): JsonResponse
+    {
+        return $this->sendResponseForResource(UserGroupResource::collection($userGroupService->paginateRegisterableGroups($request)), __('Registerable groups list'));
     }
 }
