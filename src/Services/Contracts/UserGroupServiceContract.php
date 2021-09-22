@@ -19,6 +19,8 @@ interface UserGroupServiceContract
 
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator;
 
+    public function getRegisterableGroups(): Collection;
+
     /**
      * Add member to group and return collection of members
      */
