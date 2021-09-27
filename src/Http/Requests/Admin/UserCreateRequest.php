@@ -23,7 +23,8 @@ class UserCreateRequest extends ExtendableRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'verified' => ['sometimes', 'boolean'],
             'password' => User::PASSWORD_RULES,
-            'group_id' => ['sometimes', 'integer', Rule::exists((new Group())->getTable(), (new Group())->getKeyName())],
+            'groups' => ['sometimes', 'array'],
+            'groups.*' => ['integer', Rule::exists((new Group())->getTable(), (new Group())->getKeyName())],
             'settings' => [
                 'sometimes',
                 'array'
@@ -41,13 +42,5 @@ class UserCreateRequest extends ExtendableRequest
                 'string',
             ],
         ];
-    }
-
-    public function getGroup(): ?Group
-    {
-        if ($this->has('group_id')) {
-            return Group::find($this->input('group_id'));
-        }
-        return null;
     }
 }

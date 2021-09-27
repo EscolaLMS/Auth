@@ -44,6 +44,30 @@ class UserGroupService implements UserGroupServiceContract
         return $group->refresh()->users;
     }
 
+    public function addMemberToMultipleGroups(array $groups, User $user): void
+    {
+        foreach ($groups as $group) {
+            if (is_numeric($group)) {
+                $group = $this->userGroupRepository->find($group);
+            }
+            if ($group instanceof Group) {
+                $this->addMember($group, $user);
+            }
+        }
+    }
+
+    public function registerMemberToMultipleGroups(array $groups, User $user): void
+    {
+        foreach ($groups as $group) {
+            if (is_numeric($group)) {
+                $group = $this->userGroupRepository->find($group);
+            }
+            if ($group instanceof Group) {
+                $this->addMemberIfGroupIsRegisterable($group, $user);
+            }
+        }
+    }
+
     public function addMemberIfGroupIsRegisterable(Group $group, User $user): bool
     {
         if ($group->registerable) {

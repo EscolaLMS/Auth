@@ -119,7 +119,9 @@ class UserApiTest extends TestCase
         $userData = User::factory()->raw([
             'roles' => [UserRole::STUDENT],
             'password' => $password,
-            'group_id' => $group->getKey(),
+            'groups' => [
+                $group->getKey(),
+            ],
             'settings' => [
                 [
                     'key' => 'test-setting-key',
@@ -134,7 +136,7 @@ class UserApiTest extends TestCase
 
         unset($userData['password']);
         unset($userData['roles']);
-        unset($userData['group_id']);
+        unset($userData['groups']);
         unset($userData['settings']);
 
         $this->response

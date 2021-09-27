@@ -47,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * )
  * 
  * @property-read Collection $users
+ * @property-read Group|null $parent
  */
 class Group extends Model
 {
@@ -85,5 +86,27 @@ class Group extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Group::class, 'parent_id')->with('children');
+    }
+
+    public function getNameWithBreadcrumbsAttribute(): string
+    {
+        if ($this->parent) {
+            return $this->parent->generateBreadcrumbs([$this->getKey()]) . ucfirst($this->name);
+        }
+        return $this->name;
+    }
+
+    // There is no checking for cycles in parent<->child relation so for safety this method will stop concatenating names when a cycle is found
+    protected function generateBreadcrumbs(array $included_ids = []): string
+    {
+        $result = '';
+        if (!in_array($this->getKey(), $included_ids)) {
+            $included_ids[] = $this->getKey();
+            if ($this->parent) {
+                $result .= $this->parent->generateBreadcrumbs($included_ids);
+            }
+            $result .= ucfirst($this->name) . '. ';
+        }
+        return $result;
     }
 }

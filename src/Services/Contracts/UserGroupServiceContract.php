@@ -26,6 +26,10 @@ interface UserGroupServiceContract
      */
     public function addMember(Group $group, User $user): Collection;
 
+    public function addMemberToMultipleGroups(array $groups, User $user): void;
+
+    public function registerMemberToMultipleGroups(array $groups, User $user): void;
+
     public function addMemberIfGroupIsRegisterable(Group $group, User $user): bool;
 
     /**
