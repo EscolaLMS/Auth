@@ -45,9 +45,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
-            if ($request->has('group_id')) {
-                $this->userGroupService->addMember($request->getGroup(), $user);
-            }
+            $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
             return $this->sendResponseForResource(UserResource::make($user), __('Created user'));
         } catch (Exception $ex) {

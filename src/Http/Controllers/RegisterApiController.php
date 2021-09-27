@@ -28,9 +28,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
-        if ($request->has('group_id')) {
-            $this->userGroupService->addMemberIfGroupIsRegisterable($request->getGroup(), $user);
-        }
+        $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
         event(new Registered($user));
 
         return $this->sendSuccess(__('Registered'));

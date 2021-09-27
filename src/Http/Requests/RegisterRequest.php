@@ -31,7 +31,8 @@ class RegisterRequest extends ExtendableRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => [...User::PASSWORD_RULES, 'confirmed'],
             'verified' => ['prohibited'],
-            'group_id' => ['sometimes', 'integer', Rule::exists((new Group())->getTable(), (new Group())->getKeyName())],
+            'groups' => ['sometimes', 'array'],
+            'groups.*' => ['integer', Rule::exists((new Group())->getTable(), (new Group())->getKeyName())],
             'settings' => [
                 'sometimes',
                 'array'
@@ -49,13 +50,5 @@ class RegisterRequest extends ExtendableRequest
                 'string',
             ],
         ];
-    }
-
-    public function getGroup(): ?Group
-    {
-        if ($this->has('group_id')) {
-            return Group::find($this->input('group_id'));
-        }
-        return null;
     }
 }

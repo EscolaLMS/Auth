@@ -87,6 +87,7 @@ class UserGroupApiTest extends TestCase
         foreach ($data as $parent_group) {
             if ($parent_group['name'] === 'Parent') {
                 $this->assertEquals(4, count($parent_group['subgroups']));
+                $this->assertEquals('Parent. ' . ucfirst($groups->get(0)->name), $parent_group['subgroups'][0]['name_with_breadcrumbs']);
             }
         }
     }

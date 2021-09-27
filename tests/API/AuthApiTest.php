@@ -58,7 +58,9 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
-            'group_id' => $group->getKey(),
+            'groups' => [
+                $group->getKey(),
+            ],
             'settings' => [
                 [
                     'key' => 'test-setting-key',
