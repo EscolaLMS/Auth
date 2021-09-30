@@ -49,6 +49,7 @@ class RegisterRequest extends ExtendableRequest
                 'nullable',
                 'string',
             ],
+            'roles' => ['prohibited'],
         ];
     }
 }
