@@ -33,13 +33,13 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
     public function register()
     {
         $this->injectContract(self::CONTRACTS);
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(AuthServiceProvider::class);
     }
 
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(AuthServiceProvider::class);
     }
 }
