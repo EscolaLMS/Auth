@@ -76,7 +76,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     {
         $token = $this->authService->getTokenBySocial($request->route('provider'));
 
-        return redirect(config('app.frontend_url') . '/#/social-login?token=' . $token);
+        return redirect(config('app.frontend_url') . '/authentication?token=' . $token);
     }
 
     public function verifyEmail(Request $request, string $id, string $hash): RedirectResponse
