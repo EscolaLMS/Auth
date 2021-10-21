@@ -8,6 +8,7 @@ use EscolaLms\Auth\Http\Controllers\Swagger\RegisterSwagger;
 use EscolaLms\Auth\Http\Requests\RegisterRequest;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
+use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -25,7 +26,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $userSaveDto = UserSaveDto::instantiateFromRequest($request);
+        $userSaveDto = UserSaveDto::instantiateFromRequest($request)->setRoles([UserRole::STUDENT]);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);

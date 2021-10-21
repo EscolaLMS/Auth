@@ -88,6 +88,12 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
         return $this->roles;
     }
 
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
     public function getVerified(): bool
     {
         return $this->verified;

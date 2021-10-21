@@ -3,11 +3,12 @@
 namespace EscolaLms\Auth\Services;
 
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Events\PasswordForgotten;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
-use EscolaLms\Auth\Events\PasswordForgotten;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -47,6 +48,7 @@ class AuthService implements AuthServiceContract
 
     public function getTokenBySocial(string $provider): string
     {
+        /** @var \Laravel\Socialite\AbstractUser $socialUser */
         $socialUser = Socialite::driver($provider)->stateless()->user();
         $user = $this->userRepository->findByEmail($socialUser->email);
 
@@ -61,11 +63,18 @@ class AuthService implements AuthServiceContract
                 true,
                 [UserRole::STUDENT],
                 $socialUser->email,
+                null,
+                true,
             );
 
             $user = $this->userService->create($userSaveDto);
         }
 
+        return $this->createTokenForUser($user);
+    }
+
+    public function createTokenForUser(User $user): string
+    {
         return $user->createToken(config('passport.personal_access_client.secret'))->accessToken;
     }
 }
