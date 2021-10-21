@@ -62,8 +62,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function refresh(RefreshTokenRequest $request): JsonResponse
     {
-        $token = $request->user()->createToken(config('passport.personal_access_client.secret'))->accessToken;
-
+        $token = $this->authService->createTokenForUser($request->user());
         return $this->sendResponse(['token' => $token], __('Token refreshed'));
     }
 
@@ -93,7 +92,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             event(new Verified($user));
         }
 
-        return redirect(config('app.frontend_url'));
+        return redirect(config('app.frontend_url') . '/email_verified');
     }
 
     public function resendEmailVerification(ResendVerificationEmailRequest $request): JsonResponse

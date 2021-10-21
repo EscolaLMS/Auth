@@ -46,7 +46,7 @@ class UserService implements UserServiceContract
             $user->markEmailAsVerified();
         }
         assert($user instanceof User);
-        $this->assignRole($user, $userSaveDto->getRoles());
+        $this->syncRoles($user, $userSaveDto->getRoles());
         return $user;
     }
 
@@ -60,7 +60,7 @@ class UserService implements UserServiceContract
     public function update(User $user, UserSaveDto $userSaveDto): User
     {
         $this->userRepository->update($userSaveDto->getUserAttributes(), $user->id);
-        $this->assignRole($user, $userSaveDto->getRoles());
+        $this->syncRoles($user, $userSaveDto->getRoles());
         return $user;
     }
 
@@ -70,7 +70,7 @@ class UserService implements UserServiceContract
         assert($user instanceof User);
         if ($dto instanceof AdminUserUpdateDto) {
             if ($dto->getRoles() !== null) {
-                $this->assignRole($user, $dto->getRoles());
+                $this->syncRoles($user, $dto->getRoles());
             }
         }
         return $user;
@@ -83,7 +83,7 @@ class UserService implements UserServiceContract
         assert($user instanceof User);
         if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
             if ($dto->getRoles() !== null && $keysDto->getRoles()) {
-                $this->assignRole($user, $dto->getRoles());
+                $this->syncRoles($user, $dto->getRoles());
             }
         }
         return $user;
@@ -131,13 +131,10 @@ class UserService implements UserServiceContract
         return $user;
     }
 
-    private function assignRole(User $user, array $roles): void
+    private function syncRoles(User $user, array $roles): void
     {
         assert($user instanceof AuthUser);
-        $user->roles()->detach();
-        foreach ($roles as $role_name) {
-            $user->assignRole($role_name);
-        }
+        $user->syncRoles($roles);
     }
 
     public function search(CriteriaDto $criteriaDto, PaginationDto $paginationDto): Collection
