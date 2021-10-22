@@ -92,7 +92,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             event(new Verified($user));
         }
 
-        return redirect(config('app.frontend_url') . '/email_verified');
+        return redirect(config('app.frontend_url') . '/email-verified');
     }
 
     public function resendEmailVerification(ResendVerificationEmailRequest $request): JsonResponse
