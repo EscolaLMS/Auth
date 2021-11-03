@@ -239,6 +239,29 @@ class UserApiTest extends TestCase
             ]);
     }
 
+    public function testVerifyUser()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
+        $this->assertFalse($user->hasVerifiedEmail());
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $new_first_name = $user->first_name . ' new';
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $new_first_name,
+            'last_name' => $user->last_name,
+            'email_verified' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertTrue($user->hasVerifiedEmail());
+    }
+
     public function testFailValidationTryingToPutUserWithoutAllRequiredData()
     {
         /** @var User $user */

@@ -21,8 +21,12 @@ class UserUpdateDto extends BasicUserUpdateDto
     {
         return $this->roles;
     }
-}
 
+    public function getEmailVerified(): ?bool
+    {
+        return $this->email_verified ?? null;
+    }
+}
 
 UserUpdateDto::extendConstructor([
     'firstName' => fn ($request) => $request->input('first_name'),
@@ -36,6 +40,7 @@ UserUpdateDto::extendConstructor([
     'email' => fn ($request) => $request->input('email'),
     'roles' => fn ($request) => $request->input('roles'),
     'password' => fn ($request) => $request->input('password'),
+    'email_verified' => fn ($request) => $request->input('email_verified'),
 ]);
 
 UserUpdateDto::extendToArray([
@@ -49,5 +54,5 @@ UserUpdateDto::extendToArray([
     'postcode' => fn ($thisObj) => $thisObj->postcode,
     'email' => fn ($thisObj) => $thisObj->email,
     //'roles' => fn ($thisObj) => $thisObj->roles,
-    'password' => fn ($thisObj) => $thisObj->password ? Hash::make($thisObj->password) : null
+    'password' => fn ($thisObj) => $thisObj->password ? Hash::make($thisObj->password) : null,
 ]);

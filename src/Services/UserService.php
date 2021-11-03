@@ -19,6 +19,7 @@ use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -66,22 +67,44 @@ class UserService implements UserServiceContract
 
     public function putUsingDto(UserUpdateDto $dto, int $id): User
     {
-        $user = $this->userRepository->update($dto->toArray(), $id);
-        assert($user instanceof User);
+        $data = $dto->toArray();
+
+        $user = $this->userRepository->update($data, $id);
+
+        assert($user instanceof AuthUser);
         if ($dto instanceof AdminUserUpdateDto) {
+            if (!is_null($dto->getEmailVerified())) {
+                if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                } else {
+                    $user->email_verified_at = null;
+                    $user->save();
+                }
+            }
             if ($dto->getRoles() !== null) {
                 $this->syncRoles($user, $dto->getRoles());
             }
         }
+
         return $user;
     }
 
     public function patchUsingDto(UserUpdateDto $dto, UserUpdateKeysDto $keysDto, int $id): User
     {
-        $user = $this->userRepository->update($dto->toArray(), $id);
+        $data = $dto->toArray();
 
-        assert($user instanceof User);
+        $user = $this->userRepository->update($data, $id);
+
+        assert($user instanceof AuthUser);
         if ($dto instanceof AdminUserUpdateDto && $keysDto instanceof AdminUserUpdateKeysDto) {
+            if (!is_null($dto->getEmailVerified())) {
+                if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                } else {
+                    $user->email_verified_at = null;
+                    $user->save();
+                }
+            }
             if ($dto->getRoles() !== null && $keysDto->getRoles()) {
                 $this->syncRoles($user, $dto->getRoles());
             }
