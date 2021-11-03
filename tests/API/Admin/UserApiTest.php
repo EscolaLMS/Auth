@@ -262,6 +262,67 @@ class UserApiTest extends TestCase
         $this->assertTrue($user->hasVerifiedEmail());
     }
 
+    public function testPatchVerifyUser()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
+        $this->assertFalse($user->hasVerifiedEmail());
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
+            'email_verified' => true,
+        ]);
+
+        $user->refresh();
+        $this->assertTrue($user->hasVerifiedEmail());
+    }
+
+    public function testUnverifyUser()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'email_verified_at' => Carbon::now()
+        ]);
+        $this->assertTrue($user->hasVerifiedEmail());
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $new_first_name = $user->first_name . ' new';
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $new_first_name,
+            'last_name' => $user->last_name,
+            'email_verified' => false,
+        ]);
+
+        $user->refresh();
+        $this->assertFalse($user->hasVerifiedEmail());
+    }
+
+    public function testPatchUnverifyUser()
+    {
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'email_verified_at' => Carbon::now()
+        ]);
+        $this->assertTrue($user->hasVerifiedEmail());
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
+            'email_verified' => false,
+        ]);
+
+        $user->refresh();
+        $this->assertFalse($user->hasVerifiedEmail());
+    }
+
     public function testFailValidationTryingToPutUserWithoutAllRequiredData()
     {
         /** @var User $user */
