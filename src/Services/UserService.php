@@ -121,7 +121,7 @@ class UserService implements UserServiceContract
 
         assert($user instanceof AuthUser);
 
-        if (!$user->hasVerifiedEmail()) {
+        if (!$user->hasVerifiedEmail() && !$this->checkIfSuperadmin($user->getEmailForVerification())) {
             throw new Exception('Email not validated');
         }
 
@@ -132,6 +132,12 @@ class UserService implements UserServiceContract
         event(new UserLogged($user));
 
         return $user;
+    }
+
+    private function checkIfSuperadmin(string $email): bool
+    {
+        $superadmins = array_filter(config('escola_auth.superadmins', []), fn ($item) => !empty($item));
+        return in_array($email, $superadmins);
     }
 
     public function deleteAvatar(User $user): bool
