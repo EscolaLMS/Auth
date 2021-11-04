@@ -121,7 +121,12 @@ class UserService implements UserServiceContract
 
         assert($user instanceof AuthUser);
 
-        if (!$user->hasVerifiedEmail() && !$this->checkIfSuperadmin($user->getEmailForVerification())) {
+        if (!$user->hasVerifiedEmail() && $this->checkIfSuperadmin($user->getEmailForVerification())) {
+            $user->markEmailAsVerified();
+            $user->refresh();
+        }
+
+        if (!$user->hasVerifiedEmail()) {
             throw new Exception('Email not validated');
         }
 
