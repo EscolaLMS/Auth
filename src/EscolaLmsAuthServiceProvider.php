@@ -32,6 +32,8 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__ . '/config.php', 'escola_auth');
+
         $this->injectContract(self::CONTRACTS);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
@@ -41,5 +43,16 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        if ($this->app->runningInConsole()) {
+            $this->bootForConsole();
+        }
+    }
+
+    protected function bootForConsole(): void
+    {
+        $this->publishes([
+            __DIR__ . '/config.php' => config_path('escola_auth.php'),
+        ], 'escola_auth.config');
     }
 }

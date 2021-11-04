@@ -14,6 +14,7 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -124,6 +125,31 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->response->assertStatus(422);
+    }
+
+    public function testCanLoginWithoutEmailVerifiedIfSuperadmin(): void
+    {
+        $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest'),
+            'email_verified_at' => null,
+        ]);
+
+        Config::set('escola_auth.superadmins', ['test@test.test']);
+
+        $this->response = $this->json('POST', '/api/auth/login', [
+            'email' => 'test@test.test',
+            'password' => 'testtest',
+        ]);
+
+        $this->assertApiSuccess();
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token'
+            ]
+        ]);
+        $responseContent = $this->response->json();
+        $this->assertGreaterThan(0, strlen($responseContent['data']['token']));
     }
 
     public function testCantLoginWithInvalidCredentials(): void
