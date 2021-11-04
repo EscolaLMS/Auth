@@ -19,7 +19,6 @@ use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -76,7 +75,7 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                } else {
+                } elseif (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
                     $user->save();
                 }
@@ -100,7 +99,7 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                } else {
+                } elseif (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
                     $user->save();
                 }

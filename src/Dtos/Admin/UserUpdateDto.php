@@ -40,7 +40,7 @@ UserUpdateDto::extendConstructor([
     'email' => fn ($request) => $request->input('email'),
     'roles' => fn ($request) => $request->input('roles'),
     'password' => fn ($request) => $request->input('password'),
-    'email_verified' => fn ($request) => $request->input('email_verified'),
+    'email_verified' => fn ($request) => $request->input('email_verified', null),
 ]);
 
 UserUpdateDto::extendToArray([
