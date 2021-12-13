@@ -13,6 +13,7 @@ class UserResource extends JsonResource
 
     public function __construct(User $resource)
     {
+        $this->permissions = $resource->getAllPermissions();
         parent::__construct($resource);
     }
 
@@ -44,7 +45,10 @@ class UserResource extends JsonResource
             'avatar' => $this->avatar_url,
             'roles' => $this->roles ? array_map(function ($role) {
                 return $role['name'];
-            }, $this->roles->toArray()) : []
+            }, $this->roles->toArray()) : [],
+            'permissions' => $this->permissions ? array_map(function ($role) {
+                return $role['name'];
+            }, $this->permissions->toArray()) : [],
         ], function ($el) {
             return !is_null($el);
         });
