@@ -116,18 +116,12 @@ class ProfileApiTest extends TestCase
             'key' => 'key2',
             'value' => 'value2',
         ]);
-        config(['user' => [
-            'default' => 'default',
-            'key3' => 'value3',
-        ]]);
 
         $this->response = $this->actingAs($user)->json('GET', '/api/profile/settings');
         $this->response
             ->assertOk()
             ->assertJsonFragment(['test-key' => 'test-value'])
-            ->assertJsonFragment(['key2' => 'value2'])
-            ->assertJsonFragment(['default' => 'default'])
-            ->assertJsonFragment(['key3' => 'value3']);
+            ->assertJsonFragment(['key2' => 'value2']);
     }
 
     public function testSettingsUpdate(): void
