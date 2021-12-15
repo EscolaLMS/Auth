@@ -493,15 +493,24 @@
                         "passport": []
                     }
                 ]
-            }
-        },
-        "/api/admin/profile/settings": {
+            },
             "put": {
                 "tags": [
                     "Admin User Settings"
                 ],
                 "summary": "Set user setting (removes settings not sent)",
-                "operationId": "c708b42f7a3384f7dac4948cd32067ae",
+                "operationId": "627fa0b4345ae425ec538acb5a7123da",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "requestBody": {},
                 "responses": {
                     "200": {
@@ -522,7 +531,18 @@
                     "Admin User Settings"
                 ],
                 "summary": "Update user setting(s) without changing other settings",
-                "operationId": "05262dc638d68856b1576634c71637ff",
+                "operationId": "d94fdda15a77a065cfc3be5ec05fdf47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "requestBody": {},
                 "responses": {
                     "200": {
