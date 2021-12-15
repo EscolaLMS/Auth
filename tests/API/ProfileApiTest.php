@@ -116,10 +116,6 @@ class ProfileApiTest extends TestCase
             'key' => 'key2',
             'value' => 'value2',
         ]);
-        config(['user' => [
-            'default' => 'default',
-            'key3' => 'value3',
-        ]]);
 
         $this->response = $this->actingAs($user)->json('GET', '/api/profile/settings');
         $this->response

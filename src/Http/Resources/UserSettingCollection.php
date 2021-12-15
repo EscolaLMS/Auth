@@ -19,7 +19,13 @@ class UserSettingCollection extends ResourceCollection
     {
         $this->withoutWrapping();
 
-        $fields = parent::toArray($request) + (config('user') ?? []);
+        $fields = [];
+        $parentFields = parent::toArray($request);
+        foreach ($parentFields as $setting) {
+            foreach ($setting as $key => $value) {
+                $fields[$key] = $value;
+            }
+        }
         return self::apply($fields, $this);
     }
 }
