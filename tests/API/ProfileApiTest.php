@@ -121,9 +121,7 @@ class ProfileApiTest extends TestCase
         $this->response
             ->assertOk()
             ->assertJsonFragment(['test-key' => 'test-value'])
-            ->assertJsonFragment(['key2' => 'value2'])
-            ->assertJsonFragment(['default' => 'default'])
-            ->assertJsonFragment(['key3' => 'value3']);
+            ->assertJsonFragment(['key2' => 'value2']);
     }
 
     public function testSettingsUpdate(): void
