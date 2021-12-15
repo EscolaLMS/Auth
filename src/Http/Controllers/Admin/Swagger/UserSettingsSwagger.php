@@ -44,12 +44,21 @@ interface UserSettingsSwagger
 
     /**
      * @OA\Patch(
-     *     path="/api/admin/profile/settings",
+     *     path="/api/admin/users/{id}/settings",
      *     summary="Update user setting(s) without changing other settings",
      *     tags={"Admin User Settings"},
      *     security={
      *          {"passport": {}},
      *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *     ),
      *     @OA\RequestBody(
      *         @OA\Property(
      *              property="settings",
@@ -82,12 +91,21 @@ interface UserSettingsSwagger
 
     /**
      * @OA\Put(
-     *     path="/api/admin/profile/settings",
+     *     path="/api/admin/users/{id}/settings",
      *     summary="Set user setting (removes settings not sent)",
      *     tags={"Admin User Settings"},
      *     security={
      *          {"passport": {}},
      *      },
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *     ),
      *     @OA\RequestBody(
      *         @OA\Property(
      *              property="settings",
