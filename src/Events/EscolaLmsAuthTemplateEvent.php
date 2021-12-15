@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-abstract class BaseTemplateEvent
+abstract class EscolaLmsAuthTemplateEvent
 {
     use Dispatchable, SerializesModels;
 

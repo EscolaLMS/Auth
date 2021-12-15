@@ -2,6 +2,6 @@
 
 namespace EscolaLms\Auth\Events;
 
-class EscolaLmsLoginTemplateEvent extends BaseTemplateEvent
+class EscolaLmsLoginTemplateEvent extends EscolaLmsAuthTemplateEvent
 {
 }

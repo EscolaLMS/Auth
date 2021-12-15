@@ -2,6 +2,6 @@
 
 namespace EscolaLms\Auth\Events;
 
-class EscolaLmsUserRemovedFromGroupTemplateEvent extends BaseTemplateEvent
+class EscolaLmsUserRemovedFromGroupTemplateEvent extends EscolaLmsAuthTemplateEvent
 {
 }
