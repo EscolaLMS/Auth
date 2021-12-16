@@ -90,7 +90,7 @@ class AuthApiTest extends TestCase
         $this->assertEquals('test-setting-key', $user->settings->get(0)->key);
     }
 
-    public function testRegisterWithAdditionalFieldsError(): void
+    public function testRegisterWithAdditionalFields(): void
     {
         Notification::fake();
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields', [
@@ -127,8 +127,8 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
-            'additional_field_a' => 'string',
-            'additional_field_b' => 'string'
+            'additional_field_a' => 'string1',
+            'additional_field_b' => 'string2'
         ]);
 
         $this->assertApiSuccess();
@@ -139,6 +139,11 @@ class AuthApiTest extends TestCase
         ]);
 
         Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+
+        $user = User::where('email', 'test@test.test')->first();
+
+        $this->assertEquals('string1', $user->settings->where('key', 'additional_field:additional_field_a')->first()->value);
+        $this->assertEquals('string2', $user->settings->where('key', 'additional_field:additional_field_b')->first()->value);
     }
 
     public function testLogin(): void
