@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Dtos\UserUpdateAuthDataDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
+use EscolaLms\Auth\Events\EscolaLmsPasswordChangedTemplateEvent;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdatePasswordRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateRequest;
@@ -78,8 +79,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         if ($success) {
             return $this->sendSuccess(__('Password updated'));
         }
-
-        $this->sendError(__('Password not updated', 422));
+        return $this->sendError(__('Password not updated', 422));
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse

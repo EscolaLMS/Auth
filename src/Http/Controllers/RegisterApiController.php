@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
 use EscolaLms\Auth\Http\Controllers\Swagger\RegisterSwagger;
 use EscolaLms\Auth\Http\Requests\RegisterRequest;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
@@ -30,7 +31,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
-        event(new Registered($user));
+        event(new Registered($user), new EscolaLmsAccountRegisteredTemplateEvent($user));
 
         return $this->sendSuccess(__('Registered'));
     }

@@ -80,9 +80,8 @@ class UserController extends AbstractUserController implements UserSwagger
             $deleted = $this->userRepository->delete($request->route('id'));
             if ($deleted) {
                 return $this->sendSuccess("User deleted");
-            } else {
-                return $this->sendError("User not deleted", 422);
             }
+            return $this->sendError("User not deleted", 422);
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -96,9 +95,8 @@ class UserController extends AbstractUserController implements UserSwagger
         );
         if (!empty($user->path_avatar)) {
             return $this->sendResponseForResource(UserResource::make($user), __('Avatar uploaded'));
-        } else {
-            return $this->sendError(__('Avatar not uploaded'), 422);
         }
+        return $this->sendError(__('Avatar not uploaded'), 422);
     }
 
     public function deleteAvatar(UserAvatarDeleteRequest $request): JsonResponse
@@ -106,8 +104,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $success = $this->userService->deleteAvatar($this->fetchRequestedUser($request));
         if ($success) {
             return $this->sendSuccess(__('Avatar deleted'));
-        } else {
-            return $this->sendError(__('Avatar not deleted'), 422);
         }
+        return $this->sendError(__('Avatar not deleted'), 422);
     }
 }

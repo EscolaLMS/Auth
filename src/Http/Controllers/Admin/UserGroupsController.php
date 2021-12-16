@@ -67,9 +67,8 @@ class UserGroupsController extends EscolaLmsBaseController implements UserGroups
             $deleted = $this->userGroupService->delete($request->getGroupFromRoute());
             if ($deleted) {
                 return $this->sendSuccess("Group deleted");
-            } else {
-                return $this->sendError("Group not deleted", 422);
             }
+            return $this->sendError("Group not deleted", 422);
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }

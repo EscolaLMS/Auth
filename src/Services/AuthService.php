@@ -3,6 +3,8 @@
 namespace EscolaLms\Auth\Services;
 
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\Events\EscolaLmsPasswordChangedTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsResetPasswordTemplateEvent;
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -44,6 +46,7 @@ class AuthService implements AuthServiceContract
             'password' => Hash::make($password),
             'password_reset_token' => null,
         ], $user->getKey());
+        event(new EscolaLmsResetPasswordTemplateEvent($user), new EscolaLmsPasswordChangedTemplateEvent($user));
     }
 
     public function getTokenBySocial(string $provider): string

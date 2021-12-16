@@ -8,6 +8,7 @@ use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
 use EscolaLms\Auth\Events\UserLogged;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -75,7 +76,8 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                } elseif (!$dto->getEmailVerified()) {
+                }
+                if (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
                     $user->save();
                 }
@@ -99,7 +101,8 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                } elseif (!$dto->getEmailVerified()) {
+                }
+                if (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
                     $user->save();
                 }
@@ -134,7 +137,7 @@ class UserService implements UserServiceContract
             throw new Exception("User account has been deactivated");
         }
 
-        event(new UserLogged($user));
+        event(new UserLogged($user), new EscolaLmsLoginTemplateEvent($user));
 
         return $user;
     }
