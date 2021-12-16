@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Http\Requests;
 
+use Illuminate\Support\Str;
+
 class UserSettingsUpdateRequest extends ExtendableRequest
 {
     /**
@@ -24,5 +26,10 @@ class UserSettingsUpdateRequest extends ExtendableRequest
         return [
             '*' => 'string'
         ];
+    }
+
+    public function getSettingsWithoutAdditionalFields(): array
+    {
+        return array_filter($this->all(), fn ($key) => !Str::startsWith($key, 'additional_field:'), ARRAY_FILTER_USE_KEY);
     }
 }

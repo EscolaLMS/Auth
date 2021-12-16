@@ -130,8 +130,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse
     {
         $user = $request->user();
-        $this->userRepository->updateSettings($user, $request->all());
-
+        $this->userRepository->updateSettings($user, $request->getSettingsWithoutAdditionalFields());
         return $this->sendResponseForResource(UserSettingCollection::make($user->settings), __('User interests'));
     }
 }
