@@ -2,6 +2,9 @@
 
 namespace EscolaLms\Auth;
 
+use EscolaLms\Auth\Providers\AuthServiceProvider;
+use EscolaLms\Auth\Providers\EventServiceProvider;
+use EscolaLms\Auth\Providers\SettingsServiceProvider;
 use EscolaLms\Auth\Repositories\Contracts\UserGroupRepositoryContract;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Repositories\UserGroupRepository;
@@ -12,7 +15,6 @@ use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Auth\Services\UserGroupService;
 use EscolaLms\Auth\Services\UserService;
-use EscolaLms\Core\Providers\Injectable;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -20,9 +22,9 @@ use Illuminate\Support\ServiceProvider;
  */
 class EscolaLmsAuthServiceProvider extends ServiceProvider
 {
-    use Injectable;
+    const CONFIG_KEY = 'escola_auth';
 
-    private const CONTRACTS = [
+    public array $bindings = [
         AuthServiceContract::class => AuthService::class,
         UserGroupRepositoryContract::class => UserGroupRepository::class,
         UserGroupServiceContract::class => UserGroupService::class,
@@ -32,11 +34,11 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config.php', 'escola_auth');
+        $this->mergeConfigFrom(__DIR__ . '/config.php', self::CONFIG_KEY);
 
-        $this->injectContract(self::CONTRACTS);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
+        $this->app->register(SettingsServiceProvider::class);
     }
 
     public function boot()
@@ -52,7 +54,7 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
     protected function bootForConsole(): void
     {
         $this->publishes([
-            __DIR__ . '/config.php' => config_path('escola_auth.php'),
-        ], 'escola_auth.config');
+            __DIR__ . '/config.php' => config_path(self::CONFIG_KEY . '.php'),
+        ], self::CONFIG_KEY . '.config');
     }
 }

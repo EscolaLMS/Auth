@@ -1,6 +1,6 @@
 <?php
 
-namespace EscolaLms\Auth;
+namespace EscolaLms\Auth\Providers;
 
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;

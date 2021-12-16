@@ -4,19 +4,20 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Dtos\UserUpdateAuthDataDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
+use EscolaLms\Auth\Http\Controllers\Swagger\ProfileSwagger;
+use EscolaLms\Auth\Http\Requests\MyProfileRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdatePasswordRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateRequest;
-use EscolaLms\Auth\Http\Requests\UploadAvatarRequest;
-use EscolaLms\Auth\Http\Requests\MyProfileRequest;
 use EscolaLms\Auth\Http\Requests\UpdateInterests;
+use EscolaLms\Auth\Http\Requests\UploadAvatarRequest;
 use EscolaLms\Auth\Http\Requests\UserSettingsUpdateRequest;
-use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
-use EscolaLms\Auth\Services\Contracts\UserServiceContract;
-use EscolaLms\Auth\Http\Controllers\Swagger\ProfileSwagger;
 use EscolaLms\Auth\Http\Resources\UserResource;
 use EscolaLms\Auth\Http\Resources\UserSettingCollection;
+use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
+use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
+use EscolaLms\Core\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -40,10 +41,12 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
 
+        /** @var User $user */
         $user = $this->userRepository->update(
             $userUpdateDto->toArray(),
             $request->user()->getKey(),
         );
+        $this->userService->updateAdditionalFieldsFromRequest($user, $request);
 
         if (!is_null($user)) {
             return $this->sendResponseForResource(UserResource::make($user), __('Updated profile'));

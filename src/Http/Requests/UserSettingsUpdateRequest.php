@@ -11,7 +11,7 @@ class UserSettingsUpdateRequest extends ExtendableRequest
      */
     public function authorize()
     {
-        return $this->user()->can('updateInterests', $this->user());
+        return $this->user()->can('updateSettings', $this->user());
     }
 
     /**
@@ -22,7 +22,22 @@ class UserSettingsUpdateRequest extends ExtendableRequest
     public function rules()
     {
         return [
-            //
+            'settings' => [
+                'required',
+                'array'
+            ],
+            'settings.*' => [
+                'array'
+            ],
+            'settings.*.key' => [
+                'required',
+                'string',
+            ],
+            'settings.*.value' => [
+                'required',
+                'nullable',
+                'string',
+            ],
         ];
     }
 }
