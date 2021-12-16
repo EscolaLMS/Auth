@@ -91,7 +91,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             !$user->hasVerifiedEmail()
         ) {
             $user->markEmailAsVerified();
-            event(new Verified($user), new EscolaLmsAccountConfirmedTemplateEvent($user));
+            event(new EscolaLmsAccountConfirmedTemplateEvent($user));
         }
 
         return redirect(config('app.frontend_url') . '/email-verified');

@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Events;
 
-class EscolaLmsAccountRegisteredTemplateEvent extends EscolaLmsAuthTemplateEvent
+use Illuminate\Auth\Events\Registered;
+
+class EscolaLmsAccountRegisteredTemplateEvent extends Registered
 {
 }

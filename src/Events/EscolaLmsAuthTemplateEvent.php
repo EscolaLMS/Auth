@@ -12,6 +12,11 @@ abstract class EscolaLmsAuthTemplateEvent
 
     private Authenticatable $user;
 
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
     public function __construct(Authenticatable $user)
     {
         $this->user = $user;

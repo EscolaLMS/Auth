@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Events;
 
-class EscolaLmsAccountConfirmedTemplateEvent extends EscolaLmsAuthTemplateEvent
+use Illuminate\Auth\Events\Verified;
+
+class EscolaLmsAccountConfirmedTemplateEvent extends Verified
 {
 }

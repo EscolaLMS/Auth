@@ -2,6 +2,8 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
+use EscolaLms\Auth\Events\EscolaLmsUserAddedToGroupTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsUserRemovedFromGroupTemplateEvent;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
@@ -9,6 +11,7 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use EscolaLms\Auth\Models\Group;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
 
 class UserGroupApiTest extends TestCase
@@ -212,6 +215,7 @@ class UserGroupApiTest extends TestCase
 
     public function testAddMember(): void
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent();
         /** @var User $admin */
@@ -226,12 +230,11 @@ class UserGroupApiTest extends TestCase
                 'id' => $user->getKey(),
                 'first_name' => $user->first_name
             ]);
-
         $this->response = $this->actingAs($admin)->json('POST', '/api/admin/user-groups/' . $group->getKey() . '/members', [
             'user_id' => $user->getKey()
         ]);
         $this->response->assertOk();
-
+        Event::assertDispatched(EscolaLmsUserAddedToGroupTemplateEvent::class);
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $group->getKey());
         $this->response
             ->assertOk()
@@ -243,6 +246,7 @@ class UserGroupApiTest extends TestCase
 
     public function testRemoveMember(): void
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent();
         /** @var User $admin */
@@ -261,7 +265,7 @@ class UserGroupApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/user-groups/' . $group->getKey() . '/members/' . $user->getKey());
         $this->response->assertOk();
-
+        Event::assertDispatched(EscolaLmsUserRemovedFromGroupTemplateEvent::class);
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $group->getKey());
         $this->response
             ->assertOk()
