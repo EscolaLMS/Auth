@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Enums\GenderType;
 use EscolaLms\Auth\Http\Requests\ExtendableRequest;
+use EscolaLms\Auth\Rules\AdditionaFieldRules;
 
 class ProfileUpdateRequest extends ExtendableRequest
 {
@@ -19,11 +20,13 @@ class ProfileUpdateRequest extends ExtendableRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'first_name' => ['string', 'max:255'],
             'last_name' => ['string', 'max:255'],
             'age' => ['numeric'],
             'gender' => ['in:' . implode(',', GenderType::getValues())],
         ];
+        $additional_fields = array_map(fn (array $rule) => ['sometimes'] + $rule, AdditionaFieldRules::rules());
+        return array_merge($rules, $additional_fields);
     }
 }

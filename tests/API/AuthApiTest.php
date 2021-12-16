@@ -3,11 +3,13 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use Carbon\Carbon;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\PasswordForgotten;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Notifications\ResetPassword;
+use EscolaLms\Auth\Providers\SettingsServiceProvider;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Passport\Passport;
+use Illuminate\Testing\TestResponse;
 
 class AuthApiTest extends TestCase
 {
@@ -85,6 +88,62 @@ class AuthApiTest extends TestCase
         $this->assertEquals($group->getKey(), $user->groups->get(0)->id);
         $this->assertEquals('test-setting-value', $user->settings->get(0)->value);
         $this->assertEquals('test-setting-key', $user->settings->get(0)->key);
+    }
+
+    public function testRegisterWithAdditionalFields(): void
+    {
+        Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields', [
+            'additional_field_a',
+            'additional_field_b',
+        ]);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields_required', [
+            'additional_field_a',
+        ]);
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+            'additional_field_b' => 123
+        ]);
+
+        $this->response->assertStatus(422);
+        $this->response->assertJsonValidationErrors([
+            'additional_field_b',
+            'additional_field_a',
+        ]);
+        $this->assertDatabaseMissing('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+            'additional_field_a' => 'string1',
+            'additional_field_b' => 'string2'
+        ]);
+
+        $this->assertApiSuccess();
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+
+        $user = User::where('email', 'test@test.test')->first();
+
+        $this->assertEquals('string1', $user->settings->where('key', 'additional_field:additional_field_a')->first()->value);
+        $this->assertEquals('string2', $user->settings->where('key', 'additional_field:additional_field_b')->first()->value);
     }
 
     public function testLogin(): void

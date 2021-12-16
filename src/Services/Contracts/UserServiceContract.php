@@ -10,6 +10,7 @@ use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 
@@ -34,4 +35,6 @@ interface UserServiceContract
     public function search(CriteriaDto $criteriaDto, PaginationDto $paginationDto): Collection;
 
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator;
+
+    public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void;
 }

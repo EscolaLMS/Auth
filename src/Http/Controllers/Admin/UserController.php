@@ -45,6 +45,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
             return $this->sendResponseForResource(UserResource::make($user), __('Created user'));
@@ -58,7 +59,9 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
-            return $this->sendResponseForResource(UserResource::make($this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'))), __('Updated user'));
+            $user = $this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'));
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -68,7 +71,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
-            return $this->sendResponseForResource(UserResource::make($this->userService->putUsingDto($userUpdateDto, $request->route('id'))), __('Updated user'));
+            $user = $this->userService->putUsingDto($userUpdateDto, $request->route('id'));
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
         } catch (\Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }

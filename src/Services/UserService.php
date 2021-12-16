@@ -8,6 +8,7 @@ use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\UserLogged;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -18,8 +19,10 @@ use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -178,5 +181,19 @@ class UserService implements UserServiceContract
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
     {
         return $this->userRepository->queryWithAppliedCriteria($criteriaDto->toArray())->paginate($perPage, ['*'], 'page', $page)->appends($appends);
+    }
+
+    public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
+    {
+        $fields = array_unique(array_merge(
+            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields', []),
+            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', [])
+        ));
+
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                $this->userRepository->updateSettings($user, ["additional_field:$field" => $request->input($field)]);
+            }
+        }
     }
 }

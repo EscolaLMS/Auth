@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Rules\AdditionaFieldRules;
 use Illuminate\Validation\Rule;
 
 class RegisterRequest extends ExtendableRequest
@@ -25,7 +26,7 @@ class RegisterRequest extends ExtendableRequest
      */
     public function rules()
     {
-        return [
+        $rules =  [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -51,5 +52,7 @@ class RegisterRequest extends ExtendableRequest
             ],
             'roles' => ['prohibited'],
         ];
+
+        return array_merge($rules, AdditionaFieldRules::rules());
     }
 }
