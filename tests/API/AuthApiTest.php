@@ -281,11 +281,13 @@ class AuthApiTest extends TestCase
             'email' => $user->email,
             'return_url' => 'http://localhost/password-forgot',
         ]);
-        $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
-        $user->refresh();
-        $newPassword = 'zaq1@WSX';
 
+        $this->assertApiSuccess();
+        $user->refresh();
+        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
+        $listener = app(CreatePasswordResetToken::class);
+        $listener->handle(new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot'));
+        $newPassword = 'zaq1@WSX';
         $this->response = $this->json('POST', '/api/auth/password/reset', [
             'email' => $user->email,
             'token' => $user->password_reset_token,
@@ -293,15 +295,14 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
         $this->assertDatabaseHas('users', [
             'id' => $user->getKey(),
             'password_reset_token' => null,
         ]);
 
         $user->refresh();
-
         $this->assertTrue(Hash::check($newPassword, $user->password));
+        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
     }
 
     public function testRefreshToken(): void
