@@ -30,6 +30,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $userSaveDto = UserSaveDto::instantiateFromRequest($request)->setRoles([UserRole::STUDENT]);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
+        $this->userService->updateAdditionalFieldsFromRequest($user, $request);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
 
         event(new EscolaLmsAccountRegisteredTemplateEvent($user));
