@@ -81,8 +81,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         if ($success) {
             return $this->sendSuccess(__('Password updated'));
         }
-
-        $this->sendError(__('Password not updated', 422));
+        return $this->sendError(__('Password not updated', 422));
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse

@@ -2,10 +2,9 @@
 
 namespace EscolaLms\Auth\Listeners;
 
-use EscolaLms\Auth\Events\PasswordForgotten;
+use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
 use EscolaLms\Auth\Notifications\ResetPassword;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
-use EscolaLms\Core\Models\User;
 use Illuminate\Support\Str;
 
 class CreatePasswordResetToken
@@ -17,7 +16,7 @@ class CreatePasswordResetToken
         $this->userRepository = $userRepository;
     }
 
-    public function handle(PasswordForgotten $event): void
+    public function handle(EscolaLmsForgotPasswordTemplateEvent $event): void
     {
         $user = $event->getUser();
 

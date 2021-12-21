@@ -4,6 +4,8 @@ namespace EscolaLms\Auth\Services;
 
 
 use EscolaLms\Auth\Dtos\UserGroupDto;
+use EscolaLms\Auth\Events\EscolaLmsUserAddedToGroupTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsUserRemovedFromGroupTemplateEvent;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserGroupRepositoryContract;
@@ -41,6 +43,7 @@ class UserGroupService implements UserGroupServiceContract
     public function addMember(Group $group, User $user): Collection
     {
         $group->users()->attach($user->getKey());
+        event(new EscolaLmsUserAddedToGroupTemplateEvent($user));
         return $group->refresh()->users;
     }
 
@@ -80,6 +83,7 @@ class UserGroupService implements UserGroupServiceContract
     public function removeMember(Group $group, User $user): Collection
     {
         $group->users()->detach($user->getKey());
+        event(new EscolaLmsUserRemovedFromGroupTemplateEvent($user));
         return $group->refresh()->users;
     }
 

@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
+use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Enums\UserRole;
@@ -241,12 +242,12 @@ class UserApiTest extends TestCase
 
     public function testVerifyUser()
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent([
             'email_verified_at' => null
         ]);
         $this->assertFalse($user->hasVerifiedEmail());
-
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
@@ -260,16 +261,17 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue($user->hasVerifiedEmail());
+        Event::assertDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
     }
 
     public function testPatchVerifyUser()
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent([
             'email_verified_at' => null
         ]);
         $this->assertFalse($user->hasVerifiedEmail());
-
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
@@ -279,10 +281,12 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue($user->hasVerifiedEmail());
+        Event::assertDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
     }
 
     public function testUnverifyUser()
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent([
             'email_verified_at' => Carbon::now()
@@ -302,10 +306,12 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->hasVerifiedEmail());
+        Event::assertNotDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
     }
 
     public function testPatchUnverifyUser()
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent([
             'email_verified_at' => Carbon::now()
@@ -321,6 +327,7 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->hasVerifiedEmail());
+        Event::assertNotDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
     }
 
     public function testFailValidationTryingToPutUserWithoutAllRequiredData()

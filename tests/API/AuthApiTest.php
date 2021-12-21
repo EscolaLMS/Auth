@@ -4,15 +4,19 @@ namespace EscolaLms\Auth\Tests\API;
 
 use Carbon\Carbon;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
-use EscolaLms\Auth\Events\PasswordForgotten;
+use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsLogoutTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsResetPasswordTemplateEvent;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Notifications\ResetPassword;
-use EscolaLms\Auth\Providers\SettingsServiceProvider;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -21,7 +25,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Passport\Passport;
-use Illuminate\Testing\TestResponse;
 
 class AuthApiTest extends TestCase
 {
@@ -29,6 +32,7 @@ class AuthApiTest extends TestCase
 
     public function testRegister(): void
     {
+        Event::fake();
         Notification::fake();
 
         $this->response = $this->json('POST', '/api/auth/register', [
@@ -40,17 +44,22 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsAccountRegisteredTemplateEvent::class);
+
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
             'first_name' => 'tester',
             'last_name' => 'tester',
         ]);
-
-        Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+        $newUser = User::where('email', 'test@test.test')->first();
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new EscolaLmsAccountRegisteredTemplateEvent($newUser));
+        Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
     public function testRegisterWithSettingsAndGroup(): void
     {
+        Event::fake();
         Notification::fake();
 
         /** @var Group $group */
@@ -74,13 +83,17 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsAccountRegisteredTemplateEvent::class);
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
             'first_name' => 'tester',
             'last_name' => 'tester',
         ]);
 
-        Notification::assertSentTo(User::where('email', 'test@test.test')->first(), VerifyEmail::class);
+        $newUser = User::where('email', 'test@test.test')->first();
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new EscolaLmsAccountRegisteredTemplateEvent($newUser));
+        Notification::assertSentTo($newUser, VerifyEmail::class);
 
         /** @var User $user */
         $user = User::where('email', 'test@test.test')->first();
@@ -148,6 +161,7 @@ class AuthApiTest extends TestCase
 
     public function testLogin(): void
     {
+        Event::fake();
         $this->makeStudent([
             'email' => 'test@test.test',
             'password' => Hash::make('testtest'),
@@ -160,6 +174,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsLoginTemplateEvent::class);
         $this->response->assertJsonStructure([
             'data' => [
                 'token'
@@ -235,6 +250,7 @@ class AuthApiTest extends TestCase
 
     public function testLogout(): void
     {
+        Event::fake();
         /** @var User $user */
         $user = $this->makeStudent();
         Passport::actingAs($user);
@@ -244,6 +260,7 @@ class AuthApiTest extends TestCase
             'Authorization' => "Bearer $token",
         ]);
         $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsLogoutTemplateEvent::class);
     }
 
     public function testForgotPassword(): void
@@ -259,9 +276,9 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(PasswordForgotten::class);
+        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
 
-        $event = new PasswordForgotten($user, 'http://localhost/password-forgot');
+        $event = new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot');
         $listener = app(CreatePasswordResetToken::class);
         $listener->handle($event);
 
@@ -282,11 +299,12 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->response->assertStatus(422);
-        Event::assertNotDispatched(PasswordForgotten::class);
+        Event::assertNotDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
     }
 
     public function testResetPassword(): void
     {
+        Event::fake();
         $user = $this->makeStudent([
             'password_reset_token' => 'test',
         ]);
@@ -298,6 +316,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
         $this->assertDatabaseHas('users', [
             'id' => $user->getKey(),
             'password_reset_token' => null,
@@ -310,6 +329,7 @@ class AuthApiTest extends TestCase
 
     public function testForgotAndResetPassword(): void
     {
+        Event::fake();
         Notification::fake();
 
         $user = $this->makeStudent();
@@ -318,11 +338,13 @@ class AuthApiTest extends TestCase
             'email' => $user->email,
             'return_url' => 'http://localhost/password-forgot',
         ]);
+
         $this->assertApiSuccess();
-
         $user->refresh();
+        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
+        $listener = app(CreatePasswordResetToken::class);
+        $listener->handle(new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot'));
         $newPassword = 'zaq1@WSX';
-
         $this->response = $this->json('POST', '/api/auth/password/reset', [
             'email' => $user->email,
             'token' => $user->password_reset_token,
@@ -336,8 +358,8 @@ class AuthApiTest extends TestCase
         ]);
 
         $user->refresh();
-
         $this->assertTrue(Hash::check($newPassword, $user->password));
+        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
     }
 
     public function testRefreshToken(): void
