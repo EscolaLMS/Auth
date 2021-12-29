@@ -6,4 +6,5 @@ return [
     ],
     'additional_fields' => [],
     'additional_fields_required' => [],
+    'registration_enabled' => true,
 ];

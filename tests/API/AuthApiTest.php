@@ -9,6 +9,7 @@ use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsLogoutTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsResetPasswordTemplateEvent;
+use EscolaLms\Auth\Http\Middleware\RegistrationEnabled;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
@@ -408,5 +409,22 @@ class AuthApiTest extends TestCase
         $this->response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($this->response->getData()->data));
         $this->assertLessThanOrEqual($groupsCount - 3, count($this->response->getData()->data));
+    }
+
+    public function testRegistrationDisabled(): void
+    {
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
+
+        $this->withMiddleware();
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+        ]);
+
+        $this->response->assertStatus(404);
     }
 }
