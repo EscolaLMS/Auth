@@ -19,6 +19,7 @@ class SettingsServiceProvider extends ServiceProvider
             }
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields', ['required', 'array']);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', ['required', 'array', new AdditionalFieldsRequiredInConfig()]);
+            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration_enabled', ['required', 'boolean']);
         }
     }
 }
