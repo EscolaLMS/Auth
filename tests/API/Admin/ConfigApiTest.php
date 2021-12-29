@@ -64,7 +64,7 @@ class ConfigApiTest extends TestCase
                         ],
                         'value' => true,
                         'readonly' => false,
-                        'public' => false,
+                        'public' => true,
                     ],
                 ]
             ]
@@ -103,6 +103,10 @@ class ConfigApiTest extends TestCase
 
                             'additional_field_b',
                         ]
+                    ],
+                    [
+                        'key' => 'escola_auth.registration_enabled',
+                        'value' => true,
                     ]
                 ]
             ]
@@ -145,25 +149,9 @@ class ConfigApiTest extends TestCase
         $this->response->assertJsonFragment([
             'escola_auth' => [
                 'additional_fields' => ['additional_field_a', 'additional_field_b'],
-                'additional_fields_required' => ['additional_field_b']
+                'additional_fields_required' => ['additional_field_b'],
+                'registration_enabled' => false,
             ]
-        ]);
-
-        $this->response = $this->actingAs($this->user, 'api')->json(
-            'GET',
-            '/api/admin/config'
-        );
-        $this->response->assertOk();
-        $this->response->assertJsonFragment([
-            'registration_enabled' => [
-                'rules' => [
-                    'required',
-                    'boolean',
-                ],
-                'value' => false,
-                'readonly' => false,
-                'public' => false,
-            ],
         ]);
     }
 }
