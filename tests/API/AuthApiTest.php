@@ -411,20 +411,26 @@ class AuthApiTest extends TestCase
         $this->assertLessThanOrEqual($groupsCount - 3, count($this->response->getData()->data));
     }
 
-    public function testRegistrationDisabled(): void
+    public function testRegistrationFeatureDisabledOrEnabled(): void
     {
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
-
+        Event::fake();
+        Notification::fake();
         $this->withMiddleware();
 
-        $this->response = $this->json('POST', '/api/auth/register', [
+        $userData = [
             'email' => 'test@test.test',
             'first_name' => 'tester',
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
-        ]);
+        ];
 
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
+        $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->response->assertStatus(404);
+
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
+        $this->response = $this->json('POST', '/api/auth/register', $userData);
+        $this->assertApiSuccess();
     }
 }
