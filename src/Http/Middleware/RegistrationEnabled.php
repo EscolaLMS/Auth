@@ -11,7 +11,7 @@ class RegistrationEnabled
     public function handle($request, Closure $next)
     {
         if (!Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration_enabled', true)) {
-            abort(404);
+            abort(403);
         }
 
         return $next($request);

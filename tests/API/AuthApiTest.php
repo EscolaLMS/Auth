@@ -427,7 +427,7 @@ class AuthApiTest extends TestCase
 
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
-        $this->response->assertStatus(404);
+        $this->response->assertStatus(403);
 
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
