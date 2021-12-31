@@ -18,6 +18,7 @@ class AuthPermissionsEnum extends BasicEnum
     const USER_READ_OWNED  = 'user_read-owned';
     const USER_LIST        = 'user_list';
     const USER_LIST_OWNED  = 'user_list-owned';
+    const USER_VERIFY_ACCOUNT = 'user_verify-account';
     //
     const USER_GROUP_CREATE        = 'user_group_create';
     const USER_GROUP_DELETE        = 'user_group_delete';

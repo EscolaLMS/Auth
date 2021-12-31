@@ -66,6 +66,15 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
+                    'account_must_be_enabled_by_admin' => [
+                        'rules' => [
+                            'required',
+                            'boolean',
+                        ],
+                        'value' => false,
+                        'readonly' => false,
+                        'public' => false,
+                    ],
                 ]
             ]
         ]);
@@ -107,6 +116,10 @@ class ConfigApiTest extends TestCase
                     [
                         'key' => 'escola_auth.registration_enabled',
                         'value' => true,
+                    ],
+                    [
+                        'key' => 'escola_auth.account_must_be_enabled_by_admin',
+                        'value' => true,
                     ]
                 ]
             ]
@@ -136,6 +149,10 @@ class ConfigApiTest extends TestCase
                         'key' => 'escola_auth.registration_enabled',
                         'value' => false,
                     ],
+                    [
+                        'key' => 'escola_auth.account_must_be_enabled_by_admin',
+                        'value' => true,
+                    ],
                 ]
             ]
         );
@@ -152,6 +169,10 @@ class ConfigApiTest extends TestCase
                 'additional_fields_required' => ['additional_field_b'],
                 'registration_enabled' => false,
             ]
+        ]);
+
+        $this->response->assertJsonMissing([
+            'account_must_be_enabled_by_admin' => true,
         ]);
     }
 }

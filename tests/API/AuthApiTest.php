@@ -3,13 +3,14 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use Carbon\Carbon;
+use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
+use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsLogoutTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsResetPasswordTemplateEvent;
-use EscolaLms\Auth\Http\Middleware\RegistrationEnabled;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
@@ -432,5 +433,40 @@ class AuthApiTest extends TestCase
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->assertApiSuccess();
+    }
+
+    public function testRegisterWhenAccountMustBeEnabledByAdmin(): void
+    {
+        Event::fake();
+        Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', true);
+
+        $this->user = config('auth.providers.users.model')::factory()->create();
+        $this->user->guard_name = 'api';
+        $this->user->assignRole('admin');
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+        ]);
+
+        $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        $newUser = User::where('email', 'test@test.test')->first();
+        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
+            function (EscolaLmsAccountMustBeEnableByAdminTemplateEvent $event) use ($newUser) {
+            return $event->getRegisteredUser()->getKey() === $newUser->getKey()
+                && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
+        });
     }
 }
