@@ -4,15 +4,19 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Enums\AuthPermissionsEnum;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
+use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
 use EscolaLms\Auth\Http\Controllers\Swagger\RegisterSwagger;
 use EscolaLms\Auth\Http\Requests\RegisterRequest;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Config;
 
 class RegisterApiController extends EscolaLmsBaseController implements RegisterSwagger
 {
@@ -33,7 +37,13 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
 
-        event(new EscolaLmsAccountRegisteredTemplateEvent($user));
+        if (Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', false)) {
+            User::permission(AuthPermissionsEnum::USER_VERIFY_ACCOUNT)->get()->each(function ($admin) use ($user) {
+                event(new EscolaLmsAccountMustBeEnableByAdminTemplateEvent($admin, $user));
+            });
+        } else {
+            event(new EscolaLmsAccountRegisteredTemplateEvent($user));
+        }
 
         return $this->sendSuccess(__('Registered'));
     }
