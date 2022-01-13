@@ -21,6 +21,14 @@ class SettingsServiceProvider extends ServiceProvider
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', ['required', 'array', new AdditionalFieldsRequiredInConfig()]);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration_enabled', ['required', 'boolean']);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', ['required', 'boolean'], false);
+
+            // SOCIALITE
+            AdministrableConfig::registerConfig('services.facebook.client_id', ['required', 'string'], false);
+            AdministrableConfig::registerConfig('services.facebook.client_secret',  ['required', 'string'], false);
+            AdministrableConfig::registerConfig('services.facebook.redirect', ['required', 'url'], false);
+            AdministrableConfig::registerConfig('services.google.client_id', ['required', 'string'], false);
+            AdministrableConfig::registerConfig('services.google.client_secret', ['required', 'string'], false);
+            AdministrableConfig::registerConfig('services.google.redirect', ['required', 'url'], false);
         }
     }
 }

@@ -75,6 +75,64 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => false,
                     ],
+                ],
+                'services' => [
+                    'facebook' => [
+                        'client_id' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ], 'client_secret' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ],
+                        'redirect' => [
+                            'rules' => [
+                                'required',
+                                'url',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ]
+                    ],
+                    'google' => [
+                        'client_id' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ], 'client_secret' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ],
+                        'redirect' => [
+                            'rules' => [
+                                'required',
+                                'url',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ]
+                    ],
                 ]
             ]
         ]);
