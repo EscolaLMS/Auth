@@ -41,6 +41,7 @@ UserUpdateDto::extendConstructor([
     'roles' => fn ($request) => $request->input('roles'),
     'password' => fn ($request) => $request->input('password'),
     'email_verified' => fn ($request) => $request->input('email_verified', null),
+    'isActive' => fn ($request) => $request->input('is_active'),
 ]);
 
 UserUpdateDto::extendToArray([
@@ -55,4 +56,5 @@ UserUpdateDto::extendToArray([
     'email' => fn ($thisObj) => $thisObj->email,
     //'roles' => fn ($thisObj) => $thisObj->roles,
     'password' => fn ($thisObj) => $thisObj->password ? Hash::make($thisObj->password) : null,
+    'is_active' => fn ($thisObj) => $thisObj->isActive,
 ]);
