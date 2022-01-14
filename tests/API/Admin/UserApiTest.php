@@ -599,12 +599,6 @@ class UserApiTest extends TestCase
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
-        $user = $this->makeStudent([
-            'is_active' => false,
-        ]);
-
-        $admin = $this->makeAdmin();
-
         $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
