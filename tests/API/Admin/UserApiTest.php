@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Tests\API\Admin;
 
 use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
+use EscolaLms\Auth\Events\EscolaLmsAccountDeletedTemplateEvent;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Enums\UserRole;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use EscolaLms\Auth\Models\Group;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -559,5 +561,28 @@ class UserApiTest extends TestCase
         $this->response->assertJsonMissing([
             'email' => $admin->email
         ]);
+    }
+
+    public function testDeleteUserDispatchEvent()
+    {
+        Event::fake();
+        Notification::fake();
+
+        Storage::fake('avatars');
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/users/' . $user->getKey());
+        $this->response
+            ->assertStatus(200);
+
+        Event::assertDispatched(EscolaLmsAccountDeletedTemplateEvent::class,
+            function (EscolaLmsAccountDeletedTemplateEvent $event) use ($user) {
+                $this->assertEquals($user->email, $event->getUser()->email);
+                return true;
+            });
     }
 }
