@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
+use EscolaLms\Auth\Events\EscolaLmsAccountBlockedTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountDeletedTemplateEvent;
 use EscolaLms\Auth\Models\User;
@@ -565,7 +566,7 @@ class UserApiTest extends TestCase
 
     public function testDeleteUserDispatchEvent()
     {
-        Event::fake();
+        Event::fake(EscolaLmsAccountDeletedTemplateEvent::class);
         Notification::fake();
 
         Storage::fake('avatars');
@@ -581,6 +582,39 @@ class UserApiTest extends TestCase
 
         Event::assertDispatched(EscolaLmsAccountDeletedTemplateEvent::class,
             function (EscolaLmsAccountDeletedTemplateEvent $event) use ($user) {
+                $this->assertEquals($user->email, $event->getUser()->email);
+                return true;
+            });
+    }
+
+    public function testBlockedUserDispatchEvent()
+    {
+        Event::fake(EscolaLmsAccountBlockedTemplateEvent::class);
+        Notification::fake();
+
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'is_active' => true,
+        ]);
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'is_active' => false,
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->getKey(),
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'is_active' => false,
+        ]);
+
+        Event::assertDispatched(EscolaLmsAccountBlockedTemplateEvent::class,
+            function (EscolaLmsAccountBlockedTemplateEvent $event) use ($user) {
                 $this->assertEquals($user->email, $event->getUser()->email);
                 return true;
             });
