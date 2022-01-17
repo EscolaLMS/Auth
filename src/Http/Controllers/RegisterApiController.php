@@ -31,16 +31,20 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
 
     public function register(RegisterRequest $request): JsonResponse
     {
+        $mustBeEnabledByAdmin = Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', false);
         $userSaveDto = UserSaveDto::instantiateFromRequest($request)->setRoles([UserRole::STUDENT]);
+        $userSaveDto->setIsActive(!$mustBeEnabledByAdmin);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
 
-        if (Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', false)) {
+        if ($mustBeEnabledByAdmin) {
             User::permission(AuthPermissionsEnum::USER_VERIFY_ACCOUNT)->get()->each(function ($admin) use ($user) {
                 event(new EscolaLmsAccountMustBeEnableByAdminTemplateEvent($admin, $user));
             });
+
+            return $this->sendSuccess(__('Registered, account must be enabled by admin'));
         } else {
             event(new EscolaLmsAccountRegisteredTemplateEvent($user));
         }
