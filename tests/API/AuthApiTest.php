@@ -463,6 +463,8 @@ class AuthApiTest extends TestCase
         ]);
 
         $newUser = User::where('email', 'test@test.test')->first();
+        $this->assertFalse($newUser->is_active);
+
         Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
             function (EscolaLmsAccountMustBeEnableByAdminTemplateEvent $event) use ($newUser) {
             return $event->getRegisteredUser()->getKey() === $newUser->getKey()
