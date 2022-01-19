@@ -13,6 +13,7 @@ use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -33,11 +34,11 @@ class AuthService implements AuthServiceContract
      */
     public function forgotPassword(string $email, string $returnUrl): void
     {
-        $user = $this->userRepository->findByEmailOrFail($email);
-        if ($user) {
+        try {
+            $user = $this->userRepository->findByEmailOrFail($email);
             event(new EscolaLmsForgotPasswordTemplateEvent($user, $returnUrl));
-        } else {
-            usleep(random_int(200, 600));
+        } catch (ModelNotFoundException $exception) {
+            usleep(random_int(200000, 600000));
         }
     }
 
