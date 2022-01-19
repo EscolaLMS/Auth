@@ -22,7 +22,7 @@ class ForgotPasswordRequest extends ExtendableRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => ['required', 'email'],
             'return_url' => ['required', 'string'],
         ];
     }

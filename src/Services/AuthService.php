@@ -11,6 +11,7 @@ use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,11 +28,17 @@ class AuthService implements AuthServiceContract
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * @throws Exception
+     */
     public function forgotPassword(string $email, string $returnUrl): void
     {
         $user = $this->userRepository->findByEmailOrFail($email);
-
-        event(new EscolaLmsForgotPasswordTemplateEvent($user, $returnUrl));
+        if ($user) {
+            event(new EscolaLmsForgotPasswordTemplateEvent($user, $returnUrl));
+        } else {
+            usleep(random_int(200, 600));
+        }
     }
 
     public function resetPassword(string $email, string $token, string $password): void
