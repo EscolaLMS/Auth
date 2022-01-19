@@ -9,11 +9,12 @@ use EscolaLms\Auth\Http\Controllers\LoginApiController;
 use EscolaLms\Auth\Http\Controllers\LogoutApiController;
 use EscolaLms\Auth\Http\Controllers\ProfileAPIController;
 use EscolaLms\Auth\Http\Controllers\RegisterApiController;
+use EscolaLms\Auth\Http\Middleware\RegistrationEnabled;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'api'], function () {
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('register', [RegisterApiController::class, 'register'])->name('register.api');
+        Route::post('register', [RegisterApiController::class, 'register'])->name('register.api')->middleware(RegistrationEnabled::class);
         Route::post('login', [LoginApiController::class, 'login'])->name('login.api');
 
         Route::get('registerable-groups', [AuthApiController::class, 'registerableGroups']);

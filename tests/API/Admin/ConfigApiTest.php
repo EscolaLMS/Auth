@@ -28,7 +28,7 @@ class ConfigApiTest extends TestCase
         $this->user->assignRole('admin');
     }
 
-    public function testAdditionalFieldsConfigApi()
+    public function testAdministrableConfigApi()
     {
         $this->response = $this->actingAs($this->user, 'api')->json(
             'GET',
@@ -56,7 +56,83 @@ class ConfigApiTest extends TestCase
                         'value' => [],
                         'readonly' => false,
                         'public' => true,
-                    ]
+                    ],
+                    'registration_enabled' => [
+                        'rules' => [
+                            'required',
+                            'boolean',
+                        ],
+                        'value' => true,
+                        'readonly' => false,
+                        'public' => true,
+                    ],
+                    'account_must_be_enabled_by_admin' => [
+                        'rules' => [
+                            'required',
+                            'boolean',
+                        ],
+                        'value' => false,
+                        'readonly' => false,
+                        'public' => false,
+                    ],
+                ],
+                'services' => [
+                    'facebook' => [
+                        'client_id' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ], 'client_secret' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ],
+                        'redirect' => [
+                            'rules' => [
+                                'required',
+                                'url',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ]
+                    ],
+                    'google' => [
+                        'client_id' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ], 'client_secret' => [
+                            'rules' => [
+                                'required',
+                                'string',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ],
+                        'redirect' => [
+                            'rules' => [
+                                'required',
+                                'url',
+                            ],
+                            'value' => null,
+                            'readonly' => false,
+                            'public' => false,
+                        ]
+                    ],
                 ]
             ]
         ]);
@@ -94,6 +170,14 @@ class ConfigApiTest extends TestCase
 
                             'additional_field_b',
                         ]
+                    ],
+                    [
+                        'key' => 'escola_auth.registration_enabled',
+                        'value' => true,
+                    ],
+                    [
+                        'key' => 'escola_auth.account_must_be_enabled_by_admin',
+                        'value' => true,
                     ]
                 ]
             ]
@@ -118,7 +202,15 @@ class ConfigApiTest extends TestCase
 
                             'additional_field_b',
                         ]
-                    ]
+                    ],
+                    [
+                        'key' => 'escola_auth.registration_enabled',
+                        'value' => false,
+                    ],
+                    [
+                        'key' => 'escola_auth.account_must_be_enabled_by_admin',
+                        'value' => true,
+                    ],
                 ]
             ]
         );
@@ -132,8 +224,13 @@ class ConfigApiTest extends TestCase
         $this->response->assertJsonFragment([
             'escola_auth' => [
                 'additional_fields' => ['additional_field_a', 'additional_field_b'],
-                'additional_fields_required' => ['additional_field_b']
+                'additional_fields_required' => ['additional_field_b'],
+                'registration_enabled' => false,
             ]
+        ]);
+
+        $this->response->assertJsonMissing([
+            'account_must_be_enabled_by_admin' => true,
         ]);
     }
 }
