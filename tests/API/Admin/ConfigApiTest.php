@@ -34,11 +34,14 @@ class ConfigApiTest extends TestCase
             'GET',
             '/api/admin/config'
         );
+
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'data' => [
                 'escola_auth' => [
                     'additional_fields' => [
+                        'full_key' => 'escola_auth.additional_fields',
+                        'key' => 'additional_fields',
                         'rules' => [
                             'required',
                             'array'
@@ -48,6 +51,8 @@ class ConfigApiTest extends TestCase
                         'public' => true,
                     ],
                     'additional_fields_required' => [
+                        'full_key' => 'escola_auth.additional_fields_required',
+                        'key' => 'additional_fields_required',
                         'rules' => [
                             'required',
                             'array',
@@ -58,6 +63,8 @@ class ConfigApiTest extends TestCase
                         'public' => true,
                     ],
                     'registration_enabled' => [
+                        'full_key' => 'escola_auth.registration_enabled',
+                        'key' => 'registration_enabled',
                         'rules' => [
                             'required',
                             'boolean',
@@ -67,6 +74,8 @@ class ConfigApiTest extends TestCase
                         'public' => true,
                     ],
                     'account_must_be_enabled_by_admin' => [
+                        'full_key' => 'escola_auth.account_must_be_enabled_by_admin',
+                        'key' => 'account_must_be_enabled_by_admin',
                         'rules' => [
                             'required',
                             'boolean',
@@ -79,6 +88,8 @@ class ConfigApiTest extends TestCase
                 'services' => [
                     'facebook' => [
                         'client_id' => [
+                            'full_key' => 'services.facebook.client_id',
+                            'key' => 'facebook.client_id',
                             'rules' => [
                                 'required',
                                 'string',
@@ -87,6 +98,8 @@ class ConfigApiTest extends TestCase
                             'readonly' => false,
                             'public' => false,
                         ], 'client_secret' => [
+                            'full_key' => 'services.facebook.client_secret',
+                            'key' => 'facebook.client_secret',
                             'rules' => [
                                 'required',
                                 'string',
@@ -96,6 +109,8 @@ class ConfigApiTest extends TestCase
                             'public' => false,
                         ],
                         'redirect' => [
+                            'full_key' => 'services.facebook.redirect',
+                            'key' => 'facebook.redirect',
                             'rules' => [
                                 'required',
                                 'url',
@@ -107,6 +122,8 @@ class ConfigApiTest extends TestCase
                     ],
                     'google' => [
                         'client_id' => [
+                            'full_key' => 'services.google.client_id',
+                            'key' => 'google.client_id',
                             'rules' => [
                                 'required',
                                 'string',
@@ -115,6 +132,8 @@ class ConfigApiTest extends TestCase
                             'readonly' => false,
                             'public' => false,
                         ], 'client_secret' => [
+                            'full_key' => 'services.google.client_secret',
+                            'key' => 'google.client_secret',
                             'rules' => [
                                 'required',
                                 'string',
@@ -124,6 +143,8 @@ class ConfigApiTest extends TestCase
                             'public' => false,
                         ],
                         'redirect' => [
+                            'full_key' => 'services.google.redirect',
+                            'key' => 'google.redirect',
                             'rules' => [
                                 'required',
                                 'url',
