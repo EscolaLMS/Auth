@@ -470,13 +470,13 @@ class UserApiTest extends TestCase
 
         /** @var User $user */
         $user = $this->makeStudent([
-            'first_name' => 'Jan'
+            'first_name' => 'Uniquentin'
         ]);
         /** @var User $user */
         $user2 = $this->makeStudent();
         /** @var User $admin */
         $admin = $this->makeAdmin([
-            'first_name' => 'Jan'
+            'first_name' => 'Uniquentin'
         ]);
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users');
@@ -535,7 +535,7 @@ class UserApiTest extends TestCase
             'email' => $admin->email
         ]);
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan');
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Uniquentin');
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'email' => $user->email
@@ -547,7 +547,7 @@ class UserApiTest extends TestCase
             'email' => $admin->email
         ]);
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan&role=admin');
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Uniquentin&role=admin');
         $this->response->assertOk();
         $this->response->assertJsonMissing([
             'email' => $user->email
@@ -559,7 +559,7 @@ class UserApiTest extends TestCase
             'email' => $admin->email
         ]);
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Jan&role=student');
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Uniquentin&role=student');
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'email' => $user->email
