@@ -11,7 +11,9 @@ use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -27,11 +29,17 @@ class AuthService implements AuthServiceContract
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * @throws Exception
+     */
     public function forgotPassword(string $email, string $returnUrl): void
     {
-        $user = $this->userRepository->findByEmailOrFail($email);
-
-        event(new EscolaLmsForgotPasswordTemplateEvent($user, $returnUrl));
+        try {
+            $user = $this->userRepository->findByEmailOrFail($email);
+            event(new EscolaLmsForgotPasswordTemplateEvent($user, $returnUrl));
+        } catch (ModelNotFoundException $exception) {
+            usleep(random_int(200000, 600000));
+        }
     }
 
     public function resetPassword(string $email, string $token, string $password): void

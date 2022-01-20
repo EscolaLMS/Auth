@@ -300,7 +300,7 @@ class AuthApiTest extends TestCase
             'return_url' => 'http://localhost/password-forgot',
         ]);
 
-        $this->response->assertStatus(422);
+        $this->response->assertStatus(200);
         Event::assertNotDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
     }
 
