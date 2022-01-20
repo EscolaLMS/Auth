@@ -5,19 +5,20 @@ namespace EscolaLms\Auth\Tests\API\Admin;
 use EscolaLms\Auth\Events\EscolaLmsAccountBlockedTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountDeletedTemplateEvent;
+use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
-use EscolaLms\Auth\Models\Group;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,13 @@ use Illuminate\Support\Facades\Storage;
 class UserApiTest extends TestCase
 {
     use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set('escola_settings.use_database', true);
+        Config::set('escola_auth.additional_fields_required', []);
+    }
 
     public function testGetUser(): void
     {
