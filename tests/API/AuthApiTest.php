@@ -3,7 +3,9 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use Carbon\Carbon;
+use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
+use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
@@ -298,7 +300,7 @@ class AuthApiTest extends TestCase
             'return_url' => 'http://localhost/password-forgot',
         ]);
 
-        $this->response->assertStatus(422);
+        $this->response->assertStatus(200);
         Event::assertNotDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
     }
 
@@ -408,5 +410,65 @@ class AuthApiTest extends TestCase
         $this->response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($this->response->getData()->data));
         $this->assertLessThanOrEqual($groupsCount - 3, count($this->response->getData()->data));
+    }
+
+    public function testRegistrationFeatureDisabledOrEnabled(): void
+    {
+        Event::fake();
+        Notification::fake();
+        $this->withMiddleware();
+
+        $userData = [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+        ];
+
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
+        $this->response = $this->json('POST', '/api/auth/register', $userData);
+        $this->response->assertStatus(403);
+
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
+        $this->response = $this->json('POST', '/api/auth/register', $userData);
+        $this->assertApiSuccess();
+    }
+
+    public function testRegisterWhenAccountMustBeEnabledByAdmin(): void
+    {
+        Event::fake();
+        Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', true);
+
+        $this->user = config('auth.providers.users.model')::factory()->create();
+        $this->user->guard_name = 'api';
+        $this->user->assignRole('admin');
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+        ]);
+
+        $this->assertApiSuccess();
+        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        $newUser = User::where('email', 'test@test.test')->first();
+        $this->assertFalse($newUser->is_active);
+
+        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
+            function (EscolaLmsAccountMustBeEnableByAdminTemplateEvent $event) use ($newUser) {
+            return $event->getRegisteredUser()->getKey() === $newUser->getKey()
+                && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
+        });
     }
 }

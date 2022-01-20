@@ -53,6 +53,12 @@ class UserResource extends JsonResource
             return !is_null($el);
         });
 
+        $this->settings->each(function ($setting) use (&$fields) {
+            if (str_starts_with($setting->key, 'additional_field:')) {
+                $fields[str_replace('additional_field:', '', $setting->key)] = $setting->value;
+            }
+        });
+
         return self::apply($fields, $this);
     }
 }
