@@ -49,9 +49,14 @@ class UserResource extends JsonResource
             'permissions' => $this->permissions ? array_map(function ($role) {
                 return $role['name'];
             }, $this->permissions->toArray()) : [],
-            'settings' => UserSettingCollection::make($this->settings),
         ], function ($el) {
             return !is_null($el);
+        });
+
+        $this->settings->each(function ($setting) use (&$fields) {
+            if (str_starts_with($setting->key, 'additional_field:')) {
+                $fields[str_replace('additional_field:', '', $setting->key)] = $setting->value;
+            }
         });
 
         return self::apply($fields, $this);
