@@ -24,8 +24,8 @@ class AuthPermissionsEnum extends BasicEnum
     const USER_GROUP_DELETE        = 'user-group_delete';
     const USER_GROUP_LIST          = 'user-group_list';
     const USER_GROUP_LIST_SELF     = 'user-group_list_self'; // list groups Student belongs to / Tutor courses belong to
-    const USER_GROUP_MEMBER_ADD    = 'user-group-member-add';
-    const USER_GROUP_MEMBER_REMOVE = 'user-group-member-remove';
+    const USER_GROUP_MEMBER_ADD    = 'user-group_member-add';
+    const USER_GROUP_MEMBER_REMOVE = 'user-group_member-remove';
     const USER_GROUP_READ          = 'user-group_read';
     const USER_GROUP_READ_SELF     = 'user-group_read_self'; // get details about group Student belongs to / Tutor courses belong to
     const USER_GROUP_UPDATE        = 'user-group_update';
