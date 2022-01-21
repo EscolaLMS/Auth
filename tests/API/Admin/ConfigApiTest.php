@@ -84,7 +84,7 @@ class ConfigApiTest extends TestCase
                         ],
                         'value' => SettingStatusEnum::DISABLED,
                         'readonly' => false,
-                        'public' => false,
+                        'public' => true,
                     ],
                 ],
                 'services' => [
@@ -249,11 +249,8 @@ class ConfigApiTest extends TestCase
                 'additional_fields' => ['additional_field_a', 'additional_field_b'],
                 'additional_fields_required' => ['additional_field_b'],
                 'registration' => SettingStatusEnum::DISABLED,
+                'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
             ]
-        ]);
-
-        $this->response->assertJsonMissing([
-            'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
         ]);
     }
 }
