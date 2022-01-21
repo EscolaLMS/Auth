@@ -2,9 +2,9 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
-use EscolaLms\Auth\Events\EscolaLmsAccountBlockedTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsAccountDeletedTemplateEvent;
+use EscolaLms\Auth\Events\AccountBlocked;
+use EscolaLms\Auth\Events\AccountConfirmed;
+use EscolaLms\Auth\Events\AccountDeleted;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
@@ -272,7 +272,7 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue($user->hasVerifiedEmail());
-        Event::assertDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
+        Event::assertDispatched(AccountConfirmed::class);
     }
 
     public function testPatchVerifyUser()
@@ -292,7 +292,7 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue($user->hasVerifiedEmail());
-        Event::assertDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
+        Event::assertDispatched(AccountConfirmed::class);
     }
 
     public function testUnverifyUser()
@@ -317,7 +317,7 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->hasVerifiedEmail());
-        Event::assertNotDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
+        Event::assertNotDispatched(AccountConfirmed::class);
     }
 
     public function testPatchUnverifyUser()
@@ -338,7 +338,7 @@ class UserApiTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->hasVerifiedEmail());
-        Event::assertNotDispatched(EscolaLmsAccountConfirmedTemplateEvent::class);
+        Event::assertNotDispatched(AccountConfirmed::class);
     }
 
     public function testFailValidationTryingToPutUserWithoutAllRequiredData()
@@ -574,7 +574,7 @@ class UserApiTest extends TestCase
 
     public function testDeleteUserDispatchEvent()
     {
-        Event::fake(EscolaLmsAccountDeletedTemplateEvent::class);
+        Event::fake(AccountDeleted::class);
         Notification::fake();
 
         Storage::fake('avatars');
@@ -588,8 +588,8 @@ class UserApiTest extends TestCase
         $this->response
             ->assertStatus(200);
 
-        Event::assertDispatched(EscolaLmsAccountDeletedTemplateEvent::class,
-            function (EscolaLmsAccountDeletedTemplateEvent $event) use ($user) {
+        Event::assertDispatched(AccountDeleted::class,
+            function (AccountDeleted $event) use ($user) {
                 $this->assertEquals($user->email, $event->getUser()->email);
                 return true;
             });
@@ -597,7 +597,7 @@ class UserApiTest extends TestCase
 
     public function testBlockedUserDispatchEvent()
     {
-        Event::fake(EscolaLmsAccountBlockedTemplateEvent::class);
+        Event::fake(AccountBlocked::class);
         Notification::fake();
 
         /** @var User $user */
@@ -613,7 +613,7 @@ class UserApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        Event::assertNotDispatched(EscolaLmsAccountBlockedTemplateEvent::class);
+        Event::assertNotDispatched(AccountBlocked::class);
         $this->assertDatabaseHas('users', [
             'id' => $user->getKey(),
             'is_active' => true,
@@ -632,8 +632,8 @@ class UserApiTest extends TestCase
             'is_active' => false,
         ]);
 
-        Event::assertDispatched(EscolaLmsAccountBlockedTemplateEvent::class,
-            function (EscolaLmsAccountBlockedTemplateEvent $event) use ($user) {
+        Event::assertDispatched(AccountBlocked::class,
+            function (AccountBlocked $event) use ($user) {
                 $this->assertEquals($user->email, $event->getUser()->email);
                 return true;
             });

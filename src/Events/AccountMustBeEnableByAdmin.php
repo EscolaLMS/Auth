@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class EscolaLmsAccountMustBeEnableByAdminTemplateEvent
+class AccountMustBeEnableByAdmin
 {
     use Dispatchable, SerializesModels;
 

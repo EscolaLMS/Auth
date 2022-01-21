@@ -5,12 +5,12 @@ namespace EscolaLms\Auth\Tests\API;
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
-use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsLogoutTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsResetPasswordTemplateEvent;
+use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
+use EscolaLms\Auth\Events\AccountRegistered;
+use EscolaLms\Auth\Events\ForgotPassword;
+use EscolaLms\Auth\Events\Login;
+use EscolaLms\Auth\Events\Logout;
+use EscolaLms\Auth\Events\ResetPassword as ResetPasswordEvent;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
@@ -54,7 +54,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsAccountRegisteredTemplateEvent::class);
+        Event::assertDispatched(AccountRegistered::class);
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
@@ -63,7 +63,7 @@ class AuthApiTest extends TestCase
         ]);
         $newUser = User::where('email', 'test@test.test')->first();
         $listener = app(SendEmailVerificationNotification::class);
-        $listener->handle(new EscolaLmsAccountRegisteredTemplateEvent($newUser));
+        $listener->handle(new AccountRegistered($newUser));
         Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
@@ -93,7 +93,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsAccountRegisteredTemplateEvent::class);
+        Event::assertDispatched(AccountRegistered::class);
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
             'first_name' => 'tester',
@@ -102,7 +102,7 @@ class AuthApiTest extends TestCase
 
         $newUser = User::where('email', 'test@test.test')->first();
         $listener = app(SendEmailVerificationNotification::class);
-        $listener->handle(new EscolaLmsAccountRegisteredTemplateEvent($newUser));
+        $listener->handle(new AccountRegistered($newUser));
         Notification::assertSentTo($newUser, VerifyEmail::class);
 
         /** @var User $user */
@@ -184,7 +184,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsLoginTemplateEvent::class);
+        Event::assertDispatched(Login::class);
         $this->response->assertJsonStructure([
             'data' => [
                 'token'
@@ -270,7 +270,7 @@ class AuthApiTest extends TestCase
             'Authorization' => "Bearer $token",
         ]);
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsLogoutTemplateEvent::class);
+        Event::assertDispatched(Logout::class);
     }
 
     public function testForgotPassword(): void
@@ -286,9 +286,9 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
+        Event::assertDispatched(ForgotPassword::class);
 
-        $event = new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot');
+        $event = new ForgotPassword($user, 'http://localhost/password-forgot');
         $listener = app(CreatePasswordResetToken::class);
         $listener->handle($event);
 
@@ -309,7 +309,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->response->assertStatus(200);
-        Event::assertNotDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
+        Event::assertNotDispatched(ForgotPassword::class);
     }
 
     public function testResetPassword(): void
@@ -326,7 +326,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
+        Event::assertDispatched(ResetPasswordEvent::class);
         $this->assertDatabaseHas('users', [
             'id' => $user->getKey(),
             'password_reset_token' => null,
@@ -351,9 +351,9 @@ class AuthApiTest extends TestCase
 
         $this->assertApiSuccess();
         $user->refresh();
-        Event::assertDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
+        Event::assertDispatched(ForgotPassword::class);
         $listener = app(CreatePasswordResetToken::class);
-        $listener->handle(new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot'));
+        $listener->handle(new ForgotPassword($user, 'http://localhost/password-forgot'));
         $newPassword = 'zaq1@WSX';
         $this->response = $this->json('POST', '/api/auth/password/reset', [
             'email' => $user->email,
@@ -369,7 +369,7 @@ class AuthApiTest extends TestCase
 
         $user->refresh();
         $this->assertTrue(Hash::check($newPassword, $user->password));
-        Event::assertDispatched(EscolaLmsResetPasswordTemplateEvent::class);
+        Event::assertDispatched(ResetPasswordEvent::class);
     }
 
     public function testRefreshToken(): void
@@ -462,7 +462,7 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class);
+        Event::assertDispatched(AccountMustBeEnableByAdmin::class);
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
@@ -474,8 +474,8 @@ class AuthApiTest extends TestCase
         $this->assertFalse($newUser->is_active);
 
         Event::assertDispatched(
-            EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
-            function (EscolaLmsAccountMustBeEnableByAdminTemplateEvent $event) use ($newUser) {
+            AccountMustBeEnableByAdmin::class,
+            function (AccountMustBeEnableByAdmin $event) use ($newUser) {
                 return $event->getRegisteredUser()->getKey() === $newUser->getKey()
                     && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
             }

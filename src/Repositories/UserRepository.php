@@ -4,7 +4,7 @@ namespace EscolaLms\Auth\Repositories;
 
 use EscolaLms\Auth\Dtos\UserUpdateInterestsDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
-use EscolaLms\Auth\Events\EscolaLmsPasswordChangedTemplateEvent;
+use EscolaLms\Auth\Events\PasswordChanged;
 use EscolaLms\Auth\Models\Traits\UserHasSettings;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Models\UserSetting;
@@ -176,7 +176,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
     {
         assert($user instanceof Model);
         if ($this->update(['password' => Hash::make($newPassword)], $user->getKey())) {
-            event(new EscolaLmsPasswordChangedTemplateEvent($user));
+            event(new PasswordChanged($user));
             return true;
         }
         return false;

@@ -2,18 +2,18 @@
 
 namespace EscolaLms\Auth\Providers;
 
-use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsForgotPasswordTemplateEvent;
+use EscolaLms\Auth\Events\AccountRegistered;
+use EscolaLms\Auth\Events\ForgotPassword;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 
 class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\EventServiceProvider
 {
     protected $listen = [
-        EscolaLmsAccountRegisteredTemplateEvent::class => [
+        AccountRegistered::class => [
             SendEmailVerificationNotification::class,
         ],
-        EscolaLmsForgotPasswordTemplateEvent::class => [
+        ForgotPassword::class => [
             CreatePasswordResetToken::class,
         ],
     ];

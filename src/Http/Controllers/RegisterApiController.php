@@ -7,8 +7,8 @@ use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
-use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
+use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
+use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Http\Controllers\Swagger\RegisterSwagger;
 use EscolaLms\Auth\Http\Requests\RegisterRequest;
 use EscolaLms\Auth\Models\User;
@@ -44,12 +44,12 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
 
         if ($mustBeEnabledByAdmin === SettingStatusEnum::ENABLED) {
             User::permission(AuthPermissionsEnum::USER_VERIFY_ACCOUNT)->get()->each(function ($admin) use ($user) {
-                event(new EscolaLmsAccountMustBeEnableByAdminTemplateEvent($admin, $user));
+                event(new AccountMustBeEnableByAdmin($admin, $user));
             });
 
             return $this->sendSuccess(__('Registered, account must be enabled by admin'));
         } else {
-            event(new EscolaLmsAccountRegisteredTemplateEvent($user));
+            event(new AccountRegistered($user));
         }
 
         return $this->sendSuccess(__('Registered'));
