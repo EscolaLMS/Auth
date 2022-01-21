@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
+use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
@@ -433,11 +434,11 @@ class AuthApiTest extends TestCase
             'password_confirmation' => 'testtest',
         ];
 
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration', SettingStatusEnum::DISABLED);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->response->assertStatus(403);
 
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration', SettingStatusEnum::ENABLED);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->assertApiSuccess();
     }
@@ -446,7 +447,7 @@ class AuthApiTest extends TestCase
     {
         Event::fake();
         Notification::fake();
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', true);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', SettingStatusEnum::ENABLED);
 
         $this->user = config('auth.providers.users.model')::factory()->create();
         $this->user->guard_name = 'api';

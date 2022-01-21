@@ -5,6 +5,7 @@ namespace EscolaLms\Auth\Http\Controllers;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
+use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
@@ -31,15 +32,17 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $mustBeEnabledByAdmin = Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', false);
+        $mustBeEnabledByAdmin = Config::get(
+            EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED
+        );
         $userSaveDto = UserSaveDto::instantiateFromRequest($request)->setRoles([UserRole::STUDENT]);
-        $userSaveDto->setIsActive(!$mustBeEnabledByAdmin);
+        $userSaveDto->setIsActive($mustBeEnabledByAdmin === SettingStatusEnum::DISABLED);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
 
-        if ($mustBeEnabledByAdmin) {
+        if ($mustBeEnabledByAdmin === SettingStatusEnum::ENABLED) {
             User::permission(AuthPermissionsEnum::USER_VERIFY_ACCOUNT)->get()->each(function ($admin) use ($user) {
                 event(new EscolaLmsAccountMustBeEnableByAdminTemplateEvent($admin, $user));
             });

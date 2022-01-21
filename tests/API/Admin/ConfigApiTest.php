@@ -2,6 +2,7 @@
 
 namespace Tests\API\Admin;
 
+use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -62,14 +63,14 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
-                    'registration_enabled' => [
-                        'full_key' => 'escola_auth.registration_enabled',
-                        'key' => 'registration_enabled',
+                    'registration' => [
+                        'full_key' => 'escola_auth.registration',
+                        'key' => 'registration',
                         'rules' => [
                             'required',
-                            'boolean',
-                        ],
-                        'value' => true,
+                            'string',
+                            'in:' . implode(',', SettingStatusEnum::getValues())],
+                        'value' => SettingStatusEnum::ENABLED,
                         'readonly' => false,
                         'public' => true,
                     ],
@@ -78,9 +79,10 @@ class ConfigApiTest extends TestCase
                         'key' => 'account_must_be_enabled_by_admin',
                         'rules' => [
                             'required',
-                            'boolean',
+                            'string',
+                            'in:' . implode(',', SettingStatusEnum::getValues()),
                         ],
-                        'value' => false,
+                        'value' => SettingStatusEnum::DISABLED,
                         'readonly' => false,
                         'public' => false,
                     ],
@@ -193,12 +195,12 @@ class ConfigApiTest extends TestCase
                         ]
                     ],
                     [
-                        'key' => 'escola_auth.registration_enabled',
-                        'value' => true,
+                        'key' => 'escola_auth.registration',
+                        'value' => SettingStatusEnum::ENABLED,
                     ],
                     [
                         'key' => 'escola_auth.account_must_be_enabled_by_admin',
-                        'value' => true,
+                        'value' => SettingStatusEnum::ENABLED,
                     ]
                 ]
             ]
@@ -225,12 +227,12 @@ class ConfigApiTest extends TestCase
                         ]
                     ],
                     [
-                        'key' => 'escola_auth.registration_enabled',
-                        'value' => false,
+                        'key' => 'escola_auth.registration',
+                        'value' => SettingStatusEnum::DISABLED,
                     ],
                     [
                         'key' => 'escola_auth.account_must_be_enabled_by_admin',
-                        'value' => true,
+                        'value' => SettingStatusEnum::ENABLED,
                     ],
                 ]
             ]
@@ -246,12 +248,12 @@ class ConfigApiTest extends TestCase
             'escola_auth' => [
                 'additional_fields' => ['additional_field_a', 'additional_field_b'],
                 'additional_fields_required' => ['additional_field_b'],
-                'registration_enabled' => false,
+                'registration' => SettingStatusEnum::DISABLED,
             ]
         ]);
 
         $this->response->assertJsonMissing([
-            'account_must_be_enabled_by_admin' => true,
+            'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
         ]);
     }
 }
