@@ -10,29 +10,29 @@ class AuthPermissionsEnum extends BasicEnum
     //
     const USER_CREATE      = 'user_create';
     const USER_DELETE      = 'user_delete';
-    const USER_DELETE_SELF = 'user_delete-self';
+    const USER_DELETE_SELF = 'user_delete_self';
     const USER_UPDATE      = 'user_update';
-    const USER_UPDATE_SELF = 'user_update-self';
+    const USER_UPDATE_SELF = 'user_update_self';
     const USER_READ        = 'user_read';
-    const USER_READ_SELF   = 'user_read-self';
-    const USER_READ_OWNED  = 'user_read-owned';
+    const USER_READ_SELF   = 'user_read_self';
+    const USER_READ_OWNED  = 'user_read_owned';
     const USER_LIST        = 'user_list';
-    const USER_LIST_OWNED  = 'user_list-owned';
-    const USER_VERIFY_ACCOUNT = 'user_verify-account';
+    const USER_LIST_OWNED  = 'user_list_owned';
+    const USER_VERIFY_ACCOUNT = 'user_verify_account';
     //
-    const USER_GROUP_CREATE        = 'user_group_create';
-    const USER_GROUP_DELETE        = 'user_group_delete';
-    const USER_GROUP_LIST          = 'user_group_list';
-    const USER_GROUP_LIST_SELF     = 'user_group_list-self'; // list groups Student belongs to / Tutor courses belong to
-    const USER_GROUP_MEMBER_ADD    = 'user_group-member_add';
-    const USER_GROUP_MEMBER_REMOVE = 'user_group-member_remove';
-    const USER_GROUP_READ          = 'user_group_read';
-    const USER_GROUP_READ_SELF     = 'user_group_read-self'; // get details about group Student belongs to / Tutor courses belong to
-    const USER_GROUP_UPDATE        = 'user_group_update';
+    const USER_GROUP_CREATE        = 'user-group_create';
+    const USER_GROUP_DELETE        = 'user-group_delete';
+    const USER_GROUP_LIST          = 'user-group_list';
+    const USER_GROUP_LIST_SELF     = 'user-group_list_self'; // list groups Student belongs to / Tutor courses belong to
+    const USER_GROUP_MEMBER_ADD    = 'user-group-member-add';
+    const USER_GROUP_MEMBER_REMOVE = 'user-group-member-remove';
+    const USER_GROUP_READ          = 'user-group_read';
+    const USER_GROUP_READ_SELF     = 'user-group_read_self'; // get details about group Student belongs to / Tutor courses belong to
+    const USER_GROUP_UPDATE        = 'user-group_update';
     //
-    const USER_INTEREST_UPDATE      = 'user_interest_update';
-    const USER_INTEREST_UPDATE_SELF = 'user_interest_update-self';
+    const USER_INTEREST_UPDATE      = 'user-interest_update';
+    const USER_INTEREST_UPDATE_SELF = 'user-interest_update_self';
     //
-    const USER_SETTING_UPDATE      = 'user_setting_update';
-    const USER_SETTING_UPDATE_SELF = 'user_setting_update-self';
+    const USER_SETTING_UPDATE      = 'user-setting_update';
+    const USER_SETTING_UPDATE_SELF = 'user-setting_update_self';
 }
