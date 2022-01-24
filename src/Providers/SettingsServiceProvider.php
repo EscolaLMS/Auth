@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Providers;
 
+use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Rules\AdditionalFieldsRequiredInConfig;
 use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
@@ -19,8 +20,8 @@ class SettingsServiceProvider extends ServiceProvider
             }
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields', ['required', 'array']);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', ['required', 'array', new AdditionalFieldsRequiredInConfig()]);
-            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration_enabled', ['required', 'boolean']);
-            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', ['required', 'boolean'], false);
+            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration', ['required', 'string', 'in:' . implode(',', SettingStatusEnum::getValues())]);
+            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', ['required', 'string', 'in:' . implode(',', SettingStatusEnum::getValues())]);
 
             // SOCIALITE
             AdministrableConfig::registerConfig('services.facebook.client_id', ['required', 'string'], false);

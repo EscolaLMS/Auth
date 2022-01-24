@@ -2,8 +2,8 @@
 
 namespace EscolaLms\Auth\Tests\API;
 
-use Carbon\Carbon;
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
+use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\EscolaLmsAccountMustBeEnableByAdminTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsAccountRegisteredTemplateEvent;
@@ -22,6 +22,7 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,13 @@ use Laravel\Passport\Passport;
 class AuthApiTest extends TestCase
 {
     use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set('escola_settings.use_database', true);
+        Config::set('escola_auth.additional_fields_required', []);
+    }
 
     public function testRegister(): void
     {
@@ -445,11 +453,11 @@ class AuthApiTest extends TestCase
             'password_confirmation' => 'testtest',
         ];
 
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', false);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration', SettingStatusEnum::DISABLED);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->response->assertStatus(403);
 
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration_enabled', true);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration', SettingStatusEnum::ENABLED);
         $this->response = $this->json('POST', '/api/auth/register', $userData);
         $this->assertApiSuccess();
     }
@@ -458,7 +466,7 @@ class AuthApiTest extends TestCase
     {
         Event::fake();
         Notification::fake();
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', true);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.account_must_be_enabled_by_admin', SettingStatusEnum::ENABLED);
 
         $this->user = config('auth.providers.users.model')::factory()->create();
         $this->user->guard_name = 'api';
@@ -484,10 +492,12 @@ class AuthApiTest extends TestCase
         $newUser = User::where('email', 'test@test.test')->first();
         $this->assertFalse($newUser->is_active);
 
-        Event::assertDispatched(EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
+        Event::assertDispatched(
+            EscolaLmsAccountMustBeEnableByAdminTemplateEvent::class,
             function (EscolaLmsAccountMustBeEnableByAdminTemplateEvent $event) use ($newUser) {
-            return $event->getRegisteredUser()->getKey() === $newUser->getKey()
-                && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
-        });
+                return $event->getRegisteredUser()->getKey() === $newUser->getKey()
+                    && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
+            }
+        );
     }
 }

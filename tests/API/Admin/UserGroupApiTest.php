@@ -4,15 +4,14 @@ namespace EscolaLms\Auth\Tests\API\Admin;
 
 use EscolaLms\Auth\Events\EscolaLmsUserAddedToGroupTemplateEvent;
 use EscolaLms\Auth\Events\EscolaLmsUserRemovedFromGroupTemplateEvent;
+use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use EscolaLms\Auth\Models\Group;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Testing\TestResponse;
 
 class UserGroupApiTest extends TestCase
 {
