@@ -2,8 +2,8 @@
 
 namespace EscolaLms\Auth\Tests\API\Admin;
 
-use EscolaLms\Auth\Events\EscolaLmsUserAddedToGroupTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsUserRemovedFromGroupTemplateEvent;
+use EscolaLms\Auth\Events\UserAddedToGroup;
+use EscolaLms\Auth\Events\UserRemovedFromGroup;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
@@ -233,7 +233,7 @@ class UserGroupApiTest extends TestCase
             'user_id' => $user->getKey()
         ]);
         $this->response->assertOk();
-        Event::assertDispatched(EscolaLmsUserAddedToGroupTemplateEvent::class);
+        Event::assertDispatched(UserAddedToGroup::class);
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $group->getKey());
         $this->response
             ->assertOk()
@@ -264,7 +264,7 @@ class UserGroupApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/user-groups/' . $group->getKey() . '/members/' . $user->getKey());
         $this->response->assertOk();
-        Event::assertDispatched(EscolaLmsUserRemovedFromGroupTemplateEvent::class);
+        Event::assertDispatched(UserRemovedFromGroup::class);
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $group->getKey());
         $this->response
             ->assertOk()

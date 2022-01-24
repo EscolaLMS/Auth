@@ -4,7 +4,7 @@ namespace EscolaLms\Auth\Events;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class EscolaLmsForgotPasswordTemplateEvent extends EscolaLmsAuthTemplateEvent
+class ForgotPassword extends Auth
 {
     private string $returnUrl;
 

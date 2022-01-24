@@ -2,7 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers;
 
-use EscolaLms\Auth\Events\EscolaLmsLogoutTemplateEvent;
+use EscolaLms\Auth\Events\Logout;
 use EscolaLms\Auth\Http\Controllers\Swagger\LogoutSwagger;
 use EscolaLms\Auth\Http\Requests\LogoutRequest;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
@@ -14,7 +14,7 @@ class LogoutApiController extends EscolaLmsBaseController implements LogoutSwagg
     {
         $user = $request->user();
         $user->token()->revoke();
-        event(new EscolaLmsLogoutTemplateEvent($user));
+        event(new Logout($user));
         return $this->sendSuccess(__('You have been successfully logged out!'));
     }
 }

@@ -3,8 +3,8 @@
 namespace EscolaLms\Auth\Models;
 
 use Database\Factories\EscolaLms\Auth\Models\UserFactory;
-use EscolaLms\Auth\Events\EscolaLmsAccountBlockedTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsAccountDeletedTemplateEvent;
+use EscolaLms\Auth\Events\AccountBlocked;
+use EscolaLms\Auth\Events\AccountDeleted;
 use EscolaLms\Auth\Models\Traits\HasGroups;
 use EscolaLms\Auth\Models\Traits\HasOnboardingStatus;
 use EscolaLms\Auth\Models\Traits\UserHasSettings;
@@ -55,12 +55,12 @@ class User extends \EscolaLms\Core\Models\User
         parent::boot();
 
         static::deleting(function($user){
-            event(new EscolaLmsAccountDeletedTemplateEvent($user));
+            event(new AccountDeleted($user));
         });
 
         static::updated(function($user){
             if ($user->wasChanged('is_active') && !$user->is_active) {
-                event(new EscolaLmsAccountBlockedTemplateEvent($user));
+                event(new AccountBlocked($user));
             }
         });
     }

@@ -8,8 +8,8 @@ use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
-use EscolaLms\Auth\Events\EscolaLmsAccountConfirmedTemplateEvent;
-use EscolaLms\Auth\Events\EscolaLmsLoginTemplateEvent;
+use EscolaLms\Auth\Events\AccountConfirmed;
+use EscolaLms\Auth\Events\Login;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -48,7 +48,7 @@ class UserService implements UserServiceContract
         $user = $this->userRepository->create($userSaveDto->getUserAttributes());
         if ($user instanceof MustVerifyEmail && $userSaveDto->getVerified()) {
             $user->markEmailAsVerified();
-            event(new EscolaLmsAccountConfirmedTemplateEvent($user));
+            event(new AccountConfirmed($user));
         }
         assert($user instanceof User);
         $this->syncRoles($user, $userSaveDto->getRoles());
@@ -80,7 +80,7 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                    event(new EscolaLmsAccountConfirmedTemplateEvent($user));
+                    event(new AccountConfirmed($user));
                 }
                 if (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
@@ -106,7 +106,7 @@ class UserService implements UserServiceContract
             if (!is_null($dto->getEmailVerified())) {
                 if ($dto->getEmailVerified() && !$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
-                    event(new EscolaLmsAccountConfirmedTemplateEvent($user));
+                    event(new AccountConfirmed($user));
                 }
                 if (!$dto->getEmailVerified()) {
                     $user->email_verified_at = null;
@@ -132,7 +132,7 @@ class UserService implements UserServiceContract
 
         if (!$user->hasVerifiedEmail() && $this->checkIfSuperadmin($user->getEmailForVerification())) {
             $user->markEmailAsVerified();
-            event(new EscolaLmsAccountConfirmedTemplateEvent($user));
+            event(new AccountConfirmed($user));
             $user->refresh();
         }
 
@@ -144,7 +144,7 @@ class UserService implements UserServiceContract
             throw new Exception("User account has been deactivated");
         }
 
-        event(new EscolaLmsLoginTemplateEvent($user));
+        event(new Login($user));
 
         return $user;
     }
