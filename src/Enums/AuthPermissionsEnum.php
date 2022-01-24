@@ -15,9 +15,9 @@ class AuthPermissionsEnum extends BasicEnum
     const USER_UPDATE_SELF = 'user_update_self';
     const USER_READ        = 'user_read';
     const USER_READ_SELF   = 'user_read_self';
-    const USER_READ_OWNED  = 'user_read_authored';
+    const USER_READ_OWNED  = 'user_read_course-authored';
     const USER_LIST        = 'user_list';
-    const USER_LIST_OWNED  = 'user_list_authored';
+    const USER_LIST_OWNED  = 'user_list_course-authored';
     const USER_VERIFY_ACCOUNT = 'user_verify_account';
     //
     const USER_GROUP_CREATE        = 'user-group_create';
