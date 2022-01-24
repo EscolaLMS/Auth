@@ -312,6 +312,25 @@ class AuthApiTest extends TestCase
         Event::assertNotDispatched(EscolaLmsForgotPasswordTemplateEvent::class);
     }
 
+    public function testForgotPasswordTurnOffEvent(): void
+    {
+        Event::fake();
+        Notification::fake();
+        CreatePasswordResetToken::setRunEventForgotPassword(
+            fn () => false
+        );
+        $user = $this->makeStudent();
+
+        $event = new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot');
+        $listener = app(CreatePasswordResetToken::class);
+        $listener->handle($event);
+
+        Notification::assertNotSentTo($user, ResetPassword::class);
+        CreatePasswordResetToken::setRunEventForgotPassword(
+            fn () => true
+        );
+    }
+
     public function testResetPassword(): void
     {
         Event::fake();

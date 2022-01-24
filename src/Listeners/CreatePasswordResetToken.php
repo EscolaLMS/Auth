@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class CreatePasswordResetToken
 {
     private UserRepositoryContract $userRepository;
+    private static $runEventForgotPassword;
 
     public function __construct(UserRepositoryContract $userRepository)
     {
@@ -18,14 +19,26 @@ class CreatePasswordResetToken
 
     public function handle(EscolaLmsForgotPasswordTemplateEvent $event): void
     {
-        $user = $event->getUser();
+        if (!is_callable(self::getRunEventForgotPassword()) || self::getRunEventForgotPassword()()) {
+            $user = $event->getUser();
 
-        $this->userRepository->update([
-            'password_reset_token' => Str::random(32),
-        ], $user->getKey());
+            $this->userRepository->update([
+                'password_reset_token' => Str::random(32),
+            ], $user->getKey());
 
-        $user->refresh();
+            $user->refresh();
 
-        $user->notify(new ResetPassword($user->password_reset_token, $event->getReturnUrl()));
+            $user->notify(new ResetPassword($user->password_reset_token, $event->getReturnUrl()));
+        }
+    }
+
+    public static function setRunEventForgotPassword(callable $value): void
+    {
+        self::$runEventForgotPassword = $value;
+    }
+
+    public static function getRunEventForgotPassword(): ?callable
+    {
+        return self::$runEventForgotPassword;
     }
 }
