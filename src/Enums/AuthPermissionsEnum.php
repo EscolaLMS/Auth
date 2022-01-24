@@ -8,16 +8,16 @@ class AuthPermissionsEnum extends BasicEnum
 {
     const USER_MANAGE = 'user_manage';
     //
-    const USER_CREATE      = 'user_create';
-    const USER_DELETE      = 'user_delete';
-    const USER_DELETE_SELF = 'user_delete_self';
-    const USER_UPDATE      = 'user_update';
-    const USER_UPDATE_SELF = 'user_update_self';
-    const USER_READ        = 'user_read';
-    const USER_READ_SELF   = 'user_read_self';
-    const USER_READ_OWNED  = 'user_read_course-authored';
-    const USER_LIST        = 'user_list';
-    const USER_LIST_OWNED  = 'user_list_course-authored';
+    const USER_CREATE         = 'user_create';
+    const USER_DELETE         = 'user_delete';
+    const USER_DELETE_SELF    = 'user_delete_self';
+    const USER_UPDATE         = 'user_update';
+    const USER_UPDATE_SELF    = 'user_update_self';
+    const USER_READ           = 'user_read';
+    const USER_READ_SELF      = 'user_read_self';
+    const USER_READ_OWNED     = 'user_read_course-authored';
+    const USER_LIST           = 'user_list';
+    const USER_LIST_OWNED     = 'user_list_course-authored';
     const USER_VERIFY_ACCOUNT = 'user_verify_account';
     //
     const USER_GROUP_CREATE        = 'user-group_create';
