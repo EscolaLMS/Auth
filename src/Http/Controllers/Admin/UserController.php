@@ -48,7 +48,7 @@ class UserController extends AbstractUserController implements UserSwagger
             $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
-            return $this->sendResponseForResource(UserResource::make($user), __('Created user'));
+            return $this->sendResponseForResource(UserResource::make($user->refresh()), __('Created user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
