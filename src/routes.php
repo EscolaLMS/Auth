@@ -21,7 +21,7 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::group(['prefix' => 'password'], function () {
             Route::post('forgot', [AuthApiController::class, 'forgotPassword']);
-            Route::post('reset', [AuthApiController::class, 'resetPassword']);
+            Route::post('reset', [AuthApiController::class, 'resetPassword'])->name('password.reset');
         });
 
         Route::group(['prefix' => 'social'], function () {
