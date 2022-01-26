@@ -321,7 +321,7 @@ class AuthApiTest extends TestCase
         );
         $user = $this->makeStudent();
 
-        $event = new EscolaLmsForgotPasswordTemplateEvent($user, 'http://localhost/password-forgot');
+        $event = new ForgotPassword($user, 'http://localhost/password-forgot');
         $listener = app(CreatePasswordResetToken::class);
         $listener->handle($event);
 
