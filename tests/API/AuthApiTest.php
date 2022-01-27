@@ -44,6 +44,7 @@ class AuthApiTest extends TestCase
     {
         Event::fake();
         Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
 
         $this->response = $this->json('POST', '/api/auth/register', [
             'email' => 'test@test.test',
@@ -71,6 +72,7 @@ class AuthApiTest extends TestCase
     {
         Event::fake();
         Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
 
         /** @var Group $group */
         $group = Group::factory()->create(['registerable' => true]);
@@ -123,6 +125,7 @@ class AuthApiTest extends TestCase
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields_required', [
             'additional_field_a',
         ]);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
 
         $this->response = $this->json('POST', '/api/auth/register', [
             'email' => 'test@test.test',
