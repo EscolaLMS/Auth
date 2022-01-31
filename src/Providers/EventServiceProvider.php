@@ -5,7 +5,7 @@ namespace EscolaLms\Auth\Providers;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Events\ForgotPassword;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
 
 class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\EventServiceProvider
 {
