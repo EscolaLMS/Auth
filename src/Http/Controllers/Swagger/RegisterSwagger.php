@@ -52,6 +52,15 @@ interface RegisterSwagger
      *              type="string",
      *          ),
      *      ),
+     *      @OA\Parameter(
+     *          name="return_url",
+     *          required=true,
+     *          in="query",
+     *          example="https://escolalms.com/email/verify",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",

@@ -10,6 +10,7 @@ use EscolaLms\Auth\Http\Requests\SocialAuthRequest;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 interface AuthSwagger
 {
@@ -143,6 +144,38 @@ interface AuthSwagger
      * )
      */
     public function socialCallback(SocialAuthRequest $request): RedirectResponse;
+
+    /**
+     * @OA\Get(
+     *     path="/api/auth/email/verify/{id}/{hash}",
+     *     summary="Email verification",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="hash",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *     )
+     * )
+     */
+    public function verifyEmail(Request $request, string $id, string $hash): JsonResponse;
 
     /**
      * @OA\Post(
