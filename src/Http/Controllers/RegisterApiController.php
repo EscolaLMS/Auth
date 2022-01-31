@@ -49,7 +49,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
 
             return $this->sendSuccess(__('Registered, account must be enabled by admin'));
         } else {
-            event(new AccountRegistered($user));
+            event(new AccountRegistered($user, $request->input('return_url')));
         }
 
         return $this->sendSuccess(__('Registered'));

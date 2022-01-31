@@ -12,13 +12,13 @@ use EscolaLms\Auth\Events\Login;
 use EscolaLms\Auth\Events\Logout;
 use EscolaLms\Auth\Events\ResetPassword as ResetPasswordEvent;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
+use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Notifications\ResetPassword;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -52,6 +52,7 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
+            'return_url' => 'https://escolalms.com/email/verify',
         ]);
 
         $this->assertApiSuccess();
@@ -64,7 +65,7 @@ class AuthApiTest extends TestCase
         ]);
         $newUser = User::where('email', 'test@test.test')->first();
         $listener = app(SendEmailVerificationNotification::class);
-        $listener->handle(new AccountRegistered($newUser));
+        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
         Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
@@ -83,6 +84,7 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
+            'return_url' => 'https://escolalms.com/email/verify',
             'groups' => [
                 $group->getKey(),
             ],
@@ -104,7 +106,7 @@ class AuthApiTest extends TestCase
 
         $newUser = User::where('email', 'test@test.test')->first();
         $listener = app(SendEmailVerificationNotification::class);
-        $listener->handle(new AccountRegistered($newUser));
+        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
         Notification::assertSentTo($newUser, VerifyEmail::class);
 
         /** @var User $user */
@@ -133,7 +135,8 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
-            'additional_field_b' => 123
+            'additional_field_b' => 123,
+            'return_url' => 'https://escolalms.com/email/verify',
         ]);
 
         $this->response->assertStatus(422);
@@ -154,7 +157,8 @@ class AuthApiTest extends TestCase
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
             'additional_field_a' => 'string1',
-            'additional_field_b' => 'string2'
+            'additional_field_b' => 'string2',
+            'return_url' => 'https://escolalms.com/email/verify',
         ]);
 
         $this->assertApiSuccess();
@@ -454,6 +458,7 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
+            'return_url' => 'https://escolalms.com/email/verify',
         ];
 
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.registration', SettingStatusEnum::DISABLED);
@@ -481,6 +486,7 @@ class AuthApiTest extends TestCase
             'last_name' => 'tester',
             'password' => 'testtest',
             'password_confirmation' => 'testtest',
+            'return_url' => 'https://escolalms.com/email/verify',
         ]);
 
         $this->assertApiSuccess();
@@ -502,5 +508,44 @@ class AuthApiTest extends TestCase
                     && $event->getUser()->hasPermissionTo(AuthPermissionsEnum::USER_VERIFY_ACCOUNT);
             }
         );
+    }
+
+    public function testVerifyEmail(): void
+    {
+        $student = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
+
+        $this->response = $this->getJson('/api/auth/email/verify/' . $student->getKey() . '/' . sha1($student->getEmailForVerification()));
+        $this->response->assertOk();
+
+        $student->refresh();
+        $this->assertTrue($student->hasVerifiedEmail());
+    }
+
+    public function testEmailVerificationNotificationWhenDisabledAndEnabled(): void
+    {
+        Event::fake([AccountRegistered::class]);
+        Notification::fake();
+
+        $student = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
+
+        SendEmailVerificationNotification::setRunEventEmailVerification(
+            fn () => false
+        );
+        $event = new AccountRegistered($student, 'https://escolalms.com/email/verify');
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle($event);
+        Notification::assertNotSentTo($student, VerifyEmail::class);
+
+        SendEmailVerificationNotification::setRunEventEmailVerification(
+            fn () => true
+        );
+        $event = new AccountRegistered($student, 'https://escolalms.com/email/verify');
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle($event);
+        Notification::assertSentTo($student, VerifyEmail::class);
     }
 }
