@@ -1113,6 +1113,41 @@
                 }
             }
         },
+        "/api/auth/email/verify/{id}/{hash}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Email verification",
+                "operationId": "8b92b54ba65c18efa951cfa0cbe954a5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/email/resend": {
             "post": {
                 "tags": [
@@ -1663,6 +1698,15 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "return_url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "https://escolalms.com/email/verify"
                     }
                 ],
                 "responses": {
