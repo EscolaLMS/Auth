@@ -51,6 +51,7 @@ class RegisterRequest extends ExtendableRequest
                 'string',
             ],
             'roles' => ['prohibited'],
+            'return_url' => ['required', 'url'],
         ];
 
         return array_merge($rules, AdditionaFieldRules::rules());
