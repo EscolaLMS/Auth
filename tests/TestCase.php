@@ -8,6 +8,7 @@ use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\Models\Client;
 use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
+use EscolaLms\Templates\EscolaLmsTemplatesServiceProvider;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
@@ -23,13 +24,19 @@ class TestCase extends CoreTestCase
 
     protected function getPackageProviders($app)
     {
-        return [
+        $providers = [
             ...parent::getPackageProviders($app),
             EscolaLmsAuthServiceProvider::class,
             PermissionServiceProvider::class,
             PassportServiceProvider::class,
-            EscolaLmsCategoriesServiceProvider::class
+            EscolaLmsCategoriesServiceProvider::class,
         ];
+
+        if (class_exists(EscolaLmsTemplatesServiceProvider::class)) {
+            array_push($providers, EscolaLmsTemplatesServiceProvider::class);
+        }
+
+        return $providers;
     }
 
     protected function getEnvironmentSetUp($app)
