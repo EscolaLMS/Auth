@@ -24,14 +24,19 @@ class TestCase extends CoreTestCase
 
     protected function getPackageProviders($app)
     {
-        return [
+        $providers = [
             ...parent::getPackageProviders($app),
             EscolaLmsAuthServiceProvider::class,
             PermissionServiceProvider::class,
             PassportServiceProvider::class,
             EscolaLmsCategoriesServiceProvider::class,
-            EscolaLmsTemplatesServiceProvider::class,
         ];
+
+        if (class_exists(EscolaLmsTemplatesServiceProvider::class)) {
+            array_push($providers, EscolaLmsTemplatesServiceProvider::class);
+        }
+
+        return $providers;
     }
 
     protected function getEnvironmentSetUp($app)
