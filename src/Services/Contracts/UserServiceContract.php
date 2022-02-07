@@ -26,7 +26,7 @@ interface UserServiceContract
 
     public function putUsingDto(UserUpdateDto $dto, int $id): User;
 
-    public function uploadAvatar(User $user, UploadedFile $avatar): ?User;
+    public function uploadAvatar(User $user, $avatar): ?User;
 
     public function deleteAvatar(User $user): bool;
 

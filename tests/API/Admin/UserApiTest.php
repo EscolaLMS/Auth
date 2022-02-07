@@ -638,4 +638,55 @@ class UserApiTest extends TestCase
                 return true;
             });
     }
+
+    public function testUploadAvatarFileAsPath(): void
+    {
+        Storage::fake('local');
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->assertEmpty($user->path_avatar);
+
+        $avatarPath = "avatars/{$user->getKey()}/avatar.jpg";
+
+        Storage::makeDirectory("avatars/{$user->getKey()}");
+        copy(__DIR__ . '/../../mocks/avatar.jpg', Storage::path($avatarPath));
+
+        $this->response = $this->actingAs($admin)->postJson('/api/admin/users/' . $user->getKey() . '/avatar', [
+            'avatar' => $avatarPath
+        ])->assertOk();
+
+        $user->refresh();
+        $this->assertNotEmpty($user->path_avatar);
+        Storage::exists($user->path_avatar);
+        $this->assertEquals($avatarPath, $user->path_avatar);
+    }
+
+    public function testUploadAvatarFileAsWrongPath(): void
+    {
+        Storage::fake('local');
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->assertEmpty($user->path_avatar);
+
+        $avatarPath = "avatars/{$admin->getKey()}/avatar.jpg";
+
+        Storage::makeDirectory("avatars/{$admin->getKey()}");
+        copy(__DIR__ . '/../../mocks/avatar.jpg', Storage::path($avatarPath));
+
+        $this->response = $this->actingAs($admin)->postJson('/api/admin/users/' . $user->getKey() . '/avatar', [
+            'avatar' => $avatarPath
+        ])->assertStatus(422);
+
+        $user->refresh();
+        $this->assertEmpty($user->path_avatar);
+        Storage::exists($avatarPath);
+    }
 }

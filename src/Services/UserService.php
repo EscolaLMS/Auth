@@ -16,6 +16,7 @@ use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
+use EscolaLms\Files\Helpers\FileHelper;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -166,10 +167,10 @@ class UserService implements UserServiceContract
         return false;
     }
 
-    public function uploadAvatar(User $user, UploadedFile $avatar): ?User
+    public function uploadAvatar(User $user, $avatar): ?User
     {
         assert($user instanceof AuthUser);
-        $user->path_avatar = $avatar->store('avatars/' . $user->id);
+        $user->path_avatar = FileHelper::getFilePath($avatar, 'avatars/' . $user->id);
         $user->save();
         return $user;
     }

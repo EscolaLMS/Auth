@@ -96,7 +96,7 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $user = $this->userService->uploadAvatar(
             $this->fetchRequestedUser($request),
-            $request->file('avatar'),
+            $request->file('avatar') ?? $request->get('avatar'),
         );
         if (!empty($user->path_avatar)) {
             return $this->sendResponseForResource(UserResource::make($user), __('Avatar uploaded'));
