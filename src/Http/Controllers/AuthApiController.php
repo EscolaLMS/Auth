@@ -70,14 +70,20 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function socialRedirect(SocialAuthRequest $request): RedirectResponse
     {
-        return Socialite::driver($request->route('provider'))->stateless()->redirect();
+        return Socialite::driver($request->route('provider'))
+            ->stateless()
+            ->with(['return_url' => $request->input('return_url')])
+            ->redirect();
     }
 
     public function socialCallback(SocialAuthRequest $request): RedirectResponse
     {
         $token = $this->authService->getTokenBySocial($request->route('provider'));
 
-        return redirect(config('app.frontend_url') . '/authentication?token=' . $token);
+        $returnUrl = $request->input('return_url') ?? config('app.frontend_url');
+        $returnUrl .= '/authentication?token=' . $token;
+
+        return redirect($returnUrl);
     }
 
     public function verifyEmail(Request $request, string $id, string $hash): JsonResponse
