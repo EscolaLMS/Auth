@@ -106,7 +106,10 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             return null;
         }
         $json = json_decode($decoded, true);
-        return $json['return_url'] ?? null;
+        if (is_null($json) || !array_key_exists('return_url', $json)) {
+            return null;
+        }
+        return $json['return_url'];
     }
 
     public function verifyEmail(Request $request, string $id, string $hash): JsonResponse
