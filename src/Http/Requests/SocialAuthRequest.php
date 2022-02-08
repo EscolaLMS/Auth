@@ -28,6 +28,7 @@ class SocialAuthRequest extends ExtendableRequest
     {
         return [
             'provider' => ['required', 'string', 'in:facebook,google'],
+            'return_url' => ['sometimes', 'url', 'nullable'],
         ];
     }
 }
