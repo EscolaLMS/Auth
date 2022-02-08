@@ -3,7 +3,6 @@
 namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Events\AccountConfirmed;
-use EscolaLms\Auth\Events\PasswordChanged;
 use EscolaLms\Auth\Http\Controllers\Swagger\AuthSwagger;
 use EscolaLms\Auth\Http\Requests\ForgotPasswordRequest;
 use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
@@ -16,7 +15,6 @@ use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -70,9 +68,18 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function socialRedirect(SocialAuthRequest $request): RedirectResponse
     {
-        return Socialite::driver($request->route('provider'))
+        /** @var \Laravel\Socialite\SocialiteManager&\Laravel\Socialite\Two\AbstractProvider $socialite */
+        $socialite = Socialite::driver($request->route('provider'));
+        return $socialite
             ->stateless()
-            ->with(['return_url' => $request->input('return_url')])
+            ->with([
+                'return_url' => $request->input('return_url'),
+                'state' => base64_encode(
+                    json_encode([
+                        'return_url' => $request->input('return_url')
+                    ])
+                )
+            ])
             ->redirect();
     }
 
@@ -80,10 +87,26 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     {
         $token = $this->authService->getTokenBySocial($request->route('provider'));
 
-        $returnUrl = $request->input('return_url') ?? config('app.frontend_url');
+        $returnUrl = $request->input('return_url')
+            ?? $this->getSocialReturnUrlFromState($request->input('state'))
+            ?? config('app.frontend_url');
+
         $returnUrl .= '/authentication?token=' . $token;
 
         return redirect($returnUrl);
+    }
+
+    private function getSocialReturnUrlFromState(?string $state): ?string
+    {
+        if (is_null($state)) {
+            return null;
+        }
+        $decoded = base64_decode($state, true);
+        if (!$decoded || base64_encode($decoded) !== $state) {
+            return null;
+        }
+        $json = json_decode($decoded, true);
+        return $json['return_url'] ?? null;
     }
 
     public function verifyEmail(Request $request, string $id, string $hash): JsonResponse
