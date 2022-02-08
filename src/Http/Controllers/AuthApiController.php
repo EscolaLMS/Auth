@@ -89,9 +89,9 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
         $returnUrl = $request->input('return_url')
             ?? $this->getSocialReturnUrlFromState($request->input('state'))
-            ?? config('app.frontend_url');
+            ?? (config('app.frontend_url') . '/authentication');
 
-        $returnUrl .= '/authentication?token=' . $token;
+        $returnUrl .= '?token=' . $token;
 
         return redirect($returnUrl);
     }
