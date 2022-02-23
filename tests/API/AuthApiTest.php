@@ -416,6 +416,7 @@ class AuthApiTest extends TestCase
 
     public function testResendEmailVerification(): void
     {
+        Event::fake(AccountRegistered::class);
         Notification::fake();
 
         $user = $this->makeStudent();
@@ -424,9 +425,14 @@ class AuthApiTest extends TestCase
 
         $this->response = $this->json('POST', '/api/auth/email/resend', [
             'email' => $user->email,
+            'return_url' => 'https://escolalms.com/email/verify',
         ]);
-        $this->assertApiSuccess();
 
+        $this->assertApiSuccess();
+        Event::assertDispatched(AccountRegistered::class);
+
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new AccountRegistered($user, 'https://escolalms.com/email/verify'));
         Notification::assertSentTo($user, VerifyEmail::class);
     }
 
