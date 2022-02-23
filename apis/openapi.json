@@ -1205,6 +1205,10 @@
                                     "email": {
                                         "type": "string",
                                         "example": "user@escola-lms.com"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "example": "https://escolalms.com/email/verify"
                                     }
                                 },
                                 "type": "object"
