@@ -48,8 +48,11 @@ interface UserInterestsSwagger
      * @OA\Put(
      *     path="/api/admin/users/{id}/interests",
      *     summary="Set user interests",
-     *     description="",
+     *     description="Set user interests",
      *     tags={"Admin User Interests"},
+     *     security={
+     *          {"passport": {}},
+     *     },
      *     @OA\Parameter(
      *          name="id",
      *          required=true,
@@ -60,6 +63,7 @@ interface UserInterestsSwagger
      *          ),
      *     ),
      *     @OA\RequestBody(
+     *          @OA\JsonContent(
      *              @OA\Property(
      *                  property="interests",
      *                  type="array",
@@ -69,6 +73,7 @@ interface UserInterestsSwagger
      *                      format="int64"
      *                  )
      *              )
+     *          )
      *     ),
      *     @OA\Response(
      *          response=200,
@@ -90,7 +95,7 @@ interface UserInterestsSwagger
      * @OA\Post(
      *     path="/api/admin/users/{id}/interests",
      *     summary="Add single user interest",
-     *     description="",
+     *     description="Add single user interest",
      *     tags={"Admin User Interests"},
      *      security={
      *          {"passport": {}},
@@ -105,12 +110,19 @@ interface UserInterestsSwagger
      *          ),
      *     ),
      *     @OA\RequestBody(
-     *              @OA\Property(
-     *                  property="interest_id",
-     *                  type="integer",
-     *                  format="int64",
-     *                  description="Id of category to be added"
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *              required={"interest_id"},
+     *                  @OA\Property(
+     *                      property="interest_id",
+     *                      type="integer",
+     *                      format="int64",
+     *                      description="Id of category to be added"
+     *                  )
      *              )
+     *          )
      *     ),
      *     @OA\Response(
      *          response=200,
