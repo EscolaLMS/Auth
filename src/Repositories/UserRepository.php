@@ -137,7 +137,7 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         $this->ensureUserHasInterestsTrait($user);
 
         /** @var AuthUser $user */
-        $user->interests()->attach($interest_id);
+        $user->interests()->syncWithoutDetaching([$interest_id]);
         return $user->interests;
     }
 
