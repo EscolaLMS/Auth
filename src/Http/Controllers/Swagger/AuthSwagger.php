@@ -189,6 +189,11 @@ interface AuthSwagger
      *                 type="string",
      *                 example="user@escola-lms.com",
      *             ),
+     *             @OA\Property(
+     *                 property="return_url",
+     *                 type="string",
+     *                 example="https://escolalms.com/email/verify",
+     *             ),
      *         )
      *     ),
      *     @OA\Response(

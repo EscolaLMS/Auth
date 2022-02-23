@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Events\AccountConfirmed;
+use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Http\Controllers\Swagger\AuthSwagger;
 use EscolaLms\Auth\Http\Requests\ForgotPasswordRequest;
 use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
@@ -134,7 +135,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         $user = $this->userRepository->findByEmail($request->input('email'));
 
         if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
+            event(new AccountRegistered($user, $request->input('return_url')));
         }
 
         return $this->sendSuccess(__('Verification message resent if email exists in database'));
