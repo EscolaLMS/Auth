@@ -529,6 +529,20 @@ class AuthApiTest extends TestCase
         $this->assertTrue($student->hasVerifiedEmail());
     }
 
+    public function testVerifyEmailAndReturnView(): void
+    {
+        $student = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
+
+        $this->response = $this->get('/api/auth/email/verify/' . $student->getKey() . '/' . sha1($student->getEmailForVerification()))
+            ->assertOk()
+            ->assertViewIs('auth::email-verified');
+
+        $student->refresh();
+        $this->assertTrue($student->hasVerifiedEmail());
+    }
+
     public function testEmailVerificationNotificationWhenDisabledAndEnabled(): void
     {
         Event::fake([AccountRegistered::class]);

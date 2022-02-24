@@ -175,7 +175,7 @@ interface AuthSwagger
      *     )
      * )
      */
-    public function verifyEmail(Request $request, string $id, string $hash): JsonResponse;
+    public function verifyEmail(Request $request, string $id, string $hash);
 
     /**
      * @OA\Post(

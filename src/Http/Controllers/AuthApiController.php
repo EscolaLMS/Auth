@@ -113,7 +113,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         return $json['return_url'];
     }
 
-    public function verifyEmail(Request $request, string $id, string $hash): JsonResponse
+    public function verifyEmail(Request $request, string $id, string $hash)
     {
         $user = $this->userRepository->find($id);
 
@@ -127,7 +127,11 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
             event(new AccountConfirmed($user));
         }
 
-        return $this->sendSuccess('Your email address was successfully verified');
+        if ($request->wantsJson()) {
+            return $this->sendSuccess(__('Your email address was successfully verified'));
+        }
+
+        return view('auth::email-verified');
     }
 
     public function resendEmailVerification(ResendVerificationEmailRequest $request): JsonResponse

@@ -36,6 +36,11 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/config.php', self::CONFIG_KEY);
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'auth');
+        $this->publishes([
+            __DIR__.'/../resources/views' => resource_path('views/vendor/auth'),
+        ]);
+
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
         $this->app->register(SettingsServiceProvider::class);
