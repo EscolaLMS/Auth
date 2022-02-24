@@ -42,6 +42,34 @@ class UserSettingsApiTest extends TestCase
             ]);
     }
 
+    public function testGetBooleanSettings(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $setting1 = UserSetting::factory()->createOne([
+            'user_id' => $user->getKey(),
+            'key' => 'option_test_key',
+            'value' => 'true'
+        ]);
+        $setting2 = UserSetting::factory()->createOne([
+            'user_id' => $user->getKey(),
+            'key' => 'option_test_key2',
+            'value' => null
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->id . '/settings');
+
+        $this->response
+            ->assertOk()
+            ->assertJsonFragment([
+                $setting1->key => true,
+                $setting2->key => false
+            ]);
+    }
+
     public function testPatchSettings(): void
     {
         /** @var User $user */

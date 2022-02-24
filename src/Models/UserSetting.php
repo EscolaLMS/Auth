@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Models;
 
+use EscolaLms\Auth\Casts\UserSettingValueCast;
 use EscolaLms\Auth\Models\Traits\HasCompositePrimaryKeyTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,10 @@ class UserSetting extends Model
         'user_id',
         'key',
         'value',
+    ];
+
+    protected $casts = [
+        'value' => UserSettingValueCast::class
     ];
 
     public function getTraitOwner(): self
