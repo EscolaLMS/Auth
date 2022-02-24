@@ -49,7 +49,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
 
         if (!is_null($user)) {
-            return $this->sendResponseForResource(UserResource::make($user), __('Updated profile'));
+            return $this->sendResponseForResource(UserResource::make($user->refresh()), __('Updated profile'));
         }
 
         return $this->sendError(__('Profile not updated'), 422);
