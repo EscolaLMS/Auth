@@ -13,7 +13,7 @@ class ResendVerificationEmailRequest extends ExtendableRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'return_url' => ['required', 'url'],
+            'return_url' => ['nullable', 'url'],
         ];
     }
 }
