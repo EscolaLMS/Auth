@@ -13,16 +13,27 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
     private string $firstName;
     private string $lastName;
     private ?string $email;
+    private ?string $phone;
     private ?string $password;
     private bool $isActive;
     private array $roles;
     private bool $verified;
 
-    public function __construct(string $firstName, string $lastName, bool $isActive, array $roles, ?string $email = null, ?string $password = null, bool $verified = false)
+    public function __construct(
+        string $firstName,
+        string $lastName,
+        bool $isActive,
+        array $roles,
+        ?string $email = null,
+        ?string $phone = null,
+        ?string $password = null,
+        bool $verified = false
+    )
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
+        $this->phone = $phone;
         $this->password = $password;
         $this->isActive = $isActive;
         $this->roles = $roles;
@@ -39,6 +50,9 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
         if ($this->email) {
             $arr['email'] = $this->getEmail();
         }
+        if ($this->phone) {
+            $arr['phone'] = $this->getPhone();
+        }
         if ($this->password) {
             $arr['password'] = $this->getPassword();
         }
@@ -53,6 +67,7 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
             $request->input('is_active', true),
             $request->input('roles', [UserRole::STUDENT]),
             $request->input('email'),
+            $request->input('phone'),
             $request->input('password'),
             $request->has('verified') ? $request->input('verified') : false
         );
@@ -71,6 +86,11 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
     }
 
     public function getPassword(): ?string

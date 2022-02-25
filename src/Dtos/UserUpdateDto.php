@@ -25,6 +25,7 @@ UserUpdateDto::extendConstructor([
     'city' => fn ($request) => $request->input('city'),
     'street' => fn ($request) => $request->input('street'),
     'postcode' => fn ($request) => $request->input('postcode'),
+    'phone' => fn($request) => $request->input('phone'),
 ]);
 
 UserUpdateDto::extendToArray([
@@ -35,5 +36,6 @@ UserUpdateDto::extendToArray([
     'country' => fn ($thisObj) => $thisObj->country,
     'city' => fn ($thisObj) => $thisObj->city,
     'street' => fn ($thisObj) => $thisObj->street,
-    'postcode' => fn ($thisObj) => $thisObj->postcode
+    'postcode' => fn ($thisObj) => $thisObj->postcode,
+    'phone' => fn($thisObj) => $thisObj->phone,
 ]);
