@@ -37,6 +37,7 @@ class UserResource extends JsonResource
             'city' => $this->city,
             'street' => $this->street,
             'postcode' => $this->postcode,
+            'phone' => $this->phone,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'onboarding_completed' => $this->onboarding_completed,

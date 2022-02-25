@@ -9,7 +9,7 @@ use EscolaLms\Auth\Traits\ResourceExtandable;
 class UserSettingResource extends JsonResource
 {
     use ResourceExtandable;
-    
+
     public function __construct(UserSetting $resource)
     {
         parent::__construct($resource);
@@ -24,7 +24,5 @@ class UserSettingResource extends JsonResource
         ];
 
         return self::apply($fields, $this);
-
-
     }
 }

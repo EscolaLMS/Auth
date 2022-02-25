@@ -98,7 +98,8 @@ class UserApiTest extends TestCase
         $password = 'secret';
         $userData = User::factory()->raw([
             'roles' => [UserRole::STUDENT],
-            'password' => $password
+            'password' => $password,
+            'phone' => '+48600600600'
         ]);
         unset($userData['email_verified_at']);
         unset($userData['remember_token']);
@@ -233,10 +234,12 @@ class UserApiTest extends TestCase
         $admin = $this->makeAdmin();
 
         $new_first_name = $user->first_name . ' new';
+        $new_phone = '+48600600600';
 
         $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
             'first_name' => $new_first_name,
             'last_name' => $user->last_name,
+            'phone' => $new_phone
         ]);
 
         $this->response
@@ -245,6 +248,7 @@ class UserApiTest extends TestCase
                 'first_name' => $new_first_name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
+                'phone' => $new_phone
             ])
             ->assertJsonMissing([
                 'first_name' => $user->first_name,
@@ -465,9 +469,6 @@ class UserApiTest extends TestCase
 
     public function testSearchUsers(): void
     {
-        $date = now();
-        //dd(new Carbon($date));
-
         /** @var User $user */
         $user = $this->makeStudent([
             'first_name' => 'Uniquentin'

@@ -19,13 +19,16 @@ class ProfileApiTest extends TestCase
 
     public function testMyProfile(): void
     {
-        $user = $this->makeStudent();
+        $user = $this->makeStudent([
+            'phone' => '+48600600600'
+        ]);
         $this->response = $this->actingAs($user)->json('GET', '/api/profile/me');
 
         $this->response
             ->assertOk()
             ->assertJsonFragment(['first_name' => $user->first_name])
             ->assertJsonFragment(['last_name' => $user->last_name])
+            ->assertJsonFragment(['phone' => $user->phone])
             ->assertJsonFragment(['onboarding_completed' => $user->onboarding_completed]);
     }
 
@@ -40,6 +43,7 @@ class ProfileApiTest extends TestCase
             'country' => 'Poland',
             'city' => 'Gdańsk',
             'street' => 'Strzelecka',
+            'phone' => '+48600600600'
         ]);
         $this->assertApiSuccess();
         $user->refresh();
@@ -50,6 +54,7 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('Poland', $user->country);
         $this->assertEquals('Gdańsk', $user->city);
         $this->assertEquals('Strzelecka', $user->street);
+        $this->assertEquals('+48600600600', $user->phone);
     }
 
     public function testUpdateProfileAuthData(): void
