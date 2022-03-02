@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Tests\API;
 
 use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\Enums\SettingStatusEnum;
+use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
 use EscolaLms\Auth\Events\AccountRegistered;
@@ -396,6 +397,63 @@ class AuthApiTest extends TestCase
         $user->refresh();
         $this->assertTrue(Hash::check($newPassword, $user->password));
         Event::assertDispatched(ResetPasswordEvent::class);
+    }
+
+    public function testTokenExpirationWhenRememberMeIsTrue(): void
+    {
+        $student = $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest'),
+            'email_verified_at' => Carbon::now(),
+        ]);
+
+        $this->response = $this->postJson('/api/auth/login', [
+            'email' => 'test@test.test',
+            'password' => 'testtest',
+            'remember_me' => true,
+        ])->assertOk();
+
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token'
+            ]
+        ]);
+
+        $token = $student->tokens->first();
+        $createdAt = new Carbon($token->created_at);
+        $expiresAt = new Carbon($token->expires_at);
+
+        $this->assertEquals($expiresAt->format('Y-m-d'), $createdAt->addMonth()->format('Y-m-d'));
+    }
+
+    public function testTokenExpirationWhenRememberMeIsFalse(): void
+    {
+        $student = $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest'),
+            'email_verified_at' => Carbon::now(),
+        ]);
+
+        $this->response = $this->postJson('/api/auth/login', [
+            'email' => 'test@test.test',
+            'password' => 'testtest',
+            'remember_me' => false,
+        ])->assertOk();
+
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token'
+            ]
+        ]);
+
+        $token = $student->tokens->first();
+        $createdAt = new Carbon($token->created_at);
+        $expiresAt = new Carbon($token->expires_at);
+
+        $this->assertEquals(
+            $expiresAt->format('Y-m-d H:i:s'),
+            $createdAt->addMinutes(TokenExpirationEnum::SHORT_TIME_IN_MINUTES)->format('Y-m-d H:i:s')
+        );
     }
 
     public function testRefreshToken(): void

@@ -28,6 +28,13 @@ interface LoginSwagger
      *              type="string",
      *          ),
      *      ),
+     *      @OA\Parameter(
+     *          name="remember_me",
+     *          in="query",
+     *          @OA\Schema(
+     *              type="boolean",
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
