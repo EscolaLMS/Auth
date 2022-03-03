@@ -64,6 +64,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     public function refresh(RefreshTokenRequest $request): JsonResponse
     {
         $token = $this->authService->createTokenForUser($request->user());
+
         return $this->sendResponse(['token' => $token], __('Token refreshed'));
     }
 

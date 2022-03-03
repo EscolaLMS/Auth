@@ -6,26 +6,17 @@ use EscolaLms\Auth\Models\User;
 
 class LoginRequest extends ExtendableRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return empty($this->user());
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => User::PASSWORD_RULES
+            'password' => User::PASSWORD_RULES,
+            'remember_me' => ['boolean'],
         ];
     }
 }

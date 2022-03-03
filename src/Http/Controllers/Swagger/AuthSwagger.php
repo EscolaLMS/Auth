@@ -84,6 +84,9 @@ interface AuthSwagger
      *     path="/api/auth/refresh",
      *     summary="Refresh access token",
      *     tags={"Auth"},
+     *     security={
+     *          {"passport": {}},
+     *      },
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
