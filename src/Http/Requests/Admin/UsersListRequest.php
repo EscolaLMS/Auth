@@ -20,7 +20,7 @@ class UsersListRequest extends FormRequest
     {
         return [
             'search' => ['nullable'],
-            'role' => ['nullable', new EnumValue(UserRole::class, false)],
+            'role' => ['nullable', 'exists:roles,name'],
             'status' => ['nullable', new EnumValue(StatusEnum::class, false)],
             'onboarding' => ['nullable', new EnumValue(OnboardingStatus::class, false)],
             'from' => ['date', 'nullable'],
