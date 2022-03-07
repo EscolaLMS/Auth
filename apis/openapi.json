@@ -641,12 +641,7 @@
                         "description": "user role",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "admin",
-                                "tutor",
-                                "student"
-                            ]
+                            "type": "string"
                         }
                     },
                     {
@@ -1279,7 +1274,10 @@
                         "name": "remember_me",
                         "in": "query",
                         "schema": {
-                            "type": "boolean"
+                            "enum": [
+                                0,
+                                1
+                            ]
                         }
                     }
                 ],
