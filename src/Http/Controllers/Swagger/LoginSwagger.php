@@ -32,7 +32,7 @@ interface LoginSwagger
      *          name="remember_me",
      *          in="query",
      *          @OA\Schema(
-     *              type="boolean",
+     *              enum={0,1},
      *          ),
      *      ),
      *      @OA\Response(

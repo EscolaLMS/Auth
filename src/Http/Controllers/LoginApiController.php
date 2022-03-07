@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Http\Controllers\Swagger\LoginSwagger;
 use EscolaLms\Auth\Http\Requests\LoginRequest;
+use EscolaLms\Auth\Http\Resources\LoginResource;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
@@ -31,7 +32,7 @@ class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
 
             $token = $this->authService->createTokenForUser($user, $request->boolean('remember_me'));
 
-            return $this->sendResponse(['token' => $token], __('Login successful'));
+            return $this->sendResponseForResource(LoginResource::make($token), __('Login successful'));
         } catch (Exception $exception) {
             return new JsonResponse(['message' => $exception->getMessage()], 422);
             return $this->sendError($exception->getMessage(), 422);

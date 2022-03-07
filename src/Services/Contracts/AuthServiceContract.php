@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Services\Contracts;
 
 use EscolaLms\Auth\Models\User;
+use Laravel\Passport\PersonalAccessTokenResult;
 
 interface AuthServiceContract
 {
@@ -12,5 +13,5 @@ interface AuthServiceContract
 
     public function getTokenBySocial(string $provider): string;
 
-    public function createTokenForUser(User $user, bool $rememberMe = false): string;
+    public function createTokenForUser(User $user, bool $rememberMe = false): PersonalAccessTokenResult;
 }
