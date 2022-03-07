@@ -10,6 +10,7 @@ use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
 use EscolaLms\Auth\Http\Requests\ResendVerificationEmailRequest;
 use EscolaLms\Auth\Http\Requests\ResetPasswordRequest;
 use EscolaLms\Auth\Http\Requests\SocialAuthRequest;
+use EscolaLms\Auth\Http\Resources\LoginResource;
 use EscolaLms\Auth\Http\Resources\UserGroupResource;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
@@ -65,7 +66,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
     {
         $token = $this->authService->createTokenForUser($request->user());
 
-        return $this->sendResponse(['token' => $token], __('Token refreshed'));
+        return $this->sendResponse(LoginResource::make($token), __('Token refreshed'));
     }
 
     public function socialRedirect(SocialAuthRequest $request): RedirectResponse

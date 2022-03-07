@@ -195,7 +195,8 @@ class AuthApiTest extends TestCase
         Event::assertDispatched(Login::class);
         $this->response->assertJsonStructure([
             'data' => [
-                'token'
+                'token',
+                'expires_at',
             ]
         ]);
 
@@ -237,7 +238,8 @@ class AuthApiTest extends TestCase
         $this->assertApiSuccess();
         $this->response->assertJsonStructure([
             'data' => [
-                'token'
+                'token',
+                'expires_at',
             ]
         ]);
         $responseContent = $this->response->json();
@@ -415,7 +417,8 @@ class AuthApiTest extends TestCase
 
         $this->response->assertJsonStructure([
             'data' => [
-                'token'
+                'token',
+                'expires_at',
             ]
         ]);
 
@@ -442,7 +445,8 @@ class AuthApiTest extends TestCase
 
         $this->response->assertJsonStructure([
             'data' => [
-                'token'
+                'token',
+                'expires_at',
             ]
         ]);
 
@@ -464,7 +468,8 @@ class AuthApiTest extends TestCase
 
         $this->response->assertJsonStructure([
             'data' => [
-                'token'
+                'token',
+                'expires_at',
             ]
         ]);
 

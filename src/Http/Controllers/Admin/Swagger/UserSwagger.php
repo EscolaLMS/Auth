@@ -65,7 +65,6 @@ interface UserSwagger
      *          in="query",
      *          @OA\Schema(
      *              type="string",
-     *              enum={"admin","tutor","student"}
      *          ),
      *          description="user role"
      *      ),

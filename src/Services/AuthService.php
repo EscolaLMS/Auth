@@ -5,7 +5,6 @@ namespace EscolaLms\Auth\Services;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\Events\ForgotPassword;
-use EscolaLms\Auth\Events\PasswordChanged;
 use EscolaLms\Auth\Events\ResetPassword;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -18,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
+use Laravel\Passport\PersonalAccessTokenResult;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthService implements AuthServiceContract
@@ -83,10 +83,10 @@ class AuthService implements AuthServiceContract
             $user = $this->userService->create($userSaveDto);
         }
 
-        return $this->createTokenForUser($user, true);
+        return $this->createTokenForUser($user, true)->accessToken;
     }
 
-    public function createTokenForUser(User $user, bool $rememberMe = false): string
+    public function createTokenForUser(User $user, bool $rememberMe = false): PersonalAccessTokenResult
     {
         Passport::personalAccessTokensExpireIn(
             $rememberMe
@@ -94,6 +94,6 @@ class AuthService implements AuthServiceContract
                 : now()->addMinutes(TokenExpirationEnum::SHORT_TIME_IN_MINUTES)
         );
 
-        return $user->createToken(config('passport.personal_access_client.secret'))->accessToken;
+        return $user->createToken(config('passport.personal_access_client.secret'));
     }
 }
