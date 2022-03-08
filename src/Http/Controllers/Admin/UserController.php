@@ -45,7 +45,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
-            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            $this->userService->updateUserExtraModelFields($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
             return $this->sendResponseForResource(UserResource::make($user->refresh()), __('Created user'));
@@ -60,7 +60,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'));
-            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            $this->userService->updateUserExtraModelFields($user, $request);
             return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
@@ -72,7 +72,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->putUsingDto($userUpdateDto, $request->route('id'));
-            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            $this->userService->updateUserExtraModelFields($user, $request);
             return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
         } catch (\Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
