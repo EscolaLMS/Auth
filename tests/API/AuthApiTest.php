@@ -20,6 +20,7 @@ use EscolaLms\Auth\Notifications\ResetPassword;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -38,7 +39,6 @@ class AuthApiTest extends TestCase
     {
         parent::setUp();
         Config::set('escola_settings.use_database', true);
-        Config::set('escola_auth.additional_fields_required', []);
     }
 
     public function testRegister(): void
@@ -121,13 +121,23 @@ class AuthApiTest extends TestCase
     public function testRegisterWithAdditionalFields(): void
     {
         Notification::fake();
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields', [
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
             'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
             'additional_field_b',
-        ]);
-        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY  . '.additional_fields_required', [
-            'additional_field_a',
-        ]);
+            'varchar',
+            '',
+            ['string', 'max:255']
+        );
+
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
 
         $this->response = $this->json('POST', '/api/auth/register', [
@@ -173,8 +183,8 @@ class AuthApiTest extends TestCase
 
         $user = User::where('email', 'test@test.test')->first();
 
-        $this->assertEquals('string1', $user->settings->where('key', 'additional_field:additional_field_a')->first()->value);
-        $this->assertEquals('string2', $user->settings->where('key', 'additional_field:additional_field_b')->first()->value);
+        $this->assertEquals('string1', $user->additional_field_a);
+        $this->assertEquals('string2', $user->additional_field_b);
     }
 
     public function testLogin(): void
@@ -482,9 +492,9 @@ class AuthApiTest extends TestCase
         Event::fake(AccountRegistered::class);
         Notification::fake();
 
-        $user = $this->makeStudent();
-        $user->email_verified_at = null;
-        $user->save();
+        $user = $this->makeStudent([
+            'email_verified_at' => null
+        ]);
 
         $this->response = $this->json('POST', '/api/auth/email/resend', [
             'email' => $user->email,

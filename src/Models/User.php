@@ -9,6 +9,7 @@ use EscolaLms\Auth\Models\Traits\HasGroups;
 use EscolaLms\Auth\Models\Traits\HasOnboardingStatus;
 use EscolaLms\Auth\Models\Traits\UserHasSettings;
 use EscolaLms\Categories\Models\Traits\HasInterests;
+use EscolaLms\ModelFields\Traits\ModelFields;
 
 /**
  * @OA\Schema(
@@ -31,8 +32,7 @@ use EscolaLms\Categories\Models\Traits\HasInterests;
  */
 class User extends \EscolaLms\Core\Models\User
 {
-    use HasInterests, HasOnboardingStatus, UserHasSettings;
-    use HasGroups;
+    use HasInterests, HasOnboardingStatus, UserHasSettings, HasGroups, ModelFields;
 
     public const PASSWORD_RULES = [
         'required',

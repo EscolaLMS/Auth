@@ -4,6 +4,8 @@ namespace EscolaLms\Auth\Http\Resources;
 
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Categories\Http\Resources\CategoryResource;
+use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Http\Resources\Json\JsonResource;
 use EscolaLms\Auth\Traits\ResourceExtandable;
 
@@ -54,17 +56,13 @@ class UserResource extends JsonResource
             return !is_null($el);
         });
 
-        $this->settings->each(function ($setting) use (&$fields) {
-            if (str_starts_with($setting->key, 'additional_field:')) {
-                $fields[str_replace('additional_field:', '', $setting->key)] = $setting->value;
-            }
-        });
-
         return self::apply($fields, $this);
     }
 }
 
-
 UserResource::extend(fn ($thisObj) => [
     'path_avatar' => $thisObj->path_avatar
 ]);
+
+UserResource::extend(fn ($thisObj) => ModelFields::getExtraAttributesValues($thisObj->resource, MetaFieldVisibilityEnum::PUBLIC));
+

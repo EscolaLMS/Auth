@@ -8,6 +8,7 @@ use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\Models\Client;
 use EscolaLms\Categories\EscolaLmsCategoriesServiceProvider;
+use EscolaLms\ModelFields\ModelFieldsServiceProvider;
 use EscolaLms\Templates\EscolaLmsTemplatesServiceProvider;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
@@ -30,6 +31,7 @@ class TestCase extends CoreTestCase
             PermissionServiceProvider::class,
             PassportServiceProvider::class,
             EscolaLmsCategoriesServiceProvider::class,
+            ModelFieldsServiceProvider::class,
         ];
 
         if (class_exists(EscolaLmsTemplatesServiceProvider::class)) {

@@ -17,6 +17,7 @@ use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use EscolaLms\Files\Helpers\FileHelper;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -203,5 +204,12 @@ class UserService implements UserServiceContract
                 $this->userRepository->updateSettings($user, ["additional_field:$field" => $request->input($field)]);
             }
         }
+    }
+
+    public function updateUserExtraModelFields(User $user, FormRequest $request): void
+    {
+        $keys = ModelFields::getFieldsMetadata(AuthUser::class)->pluck('name');
+        $fields = $request->collect()->only($keys)->toArray();
+        $this->userRepository->update($fields, $user->getKey());
     }
 }
