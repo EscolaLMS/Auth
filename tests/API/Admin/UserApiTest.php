@@ -736,6 +736,91 @@ class UserApiTest extends TestCase
         ]);
     }
 
+    public function testSearchUsersWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'varchar_additional_field',
+            'varchar',
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'boolean_additional_field',
+            'boolean',
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'number_additional_field',
+            'number',
+        );
+
+        $user = $this->makeStudent([
+            'first_name' => 'Uniquentin',
+            'varchar_additional_field' => 'string1',
+            'boolean_additional_field' => true,
+            'number_additional_field' => 1234,
+        ]);
+
+        $user2 = $this->makeStudent();
+
+        $admin = $this->makeAdmin([
+            'first_name' => 'Uniquentin',
+            'varchar_additional_field' => 'string2',
+            'boolean_additional_field' => false,
+            'number_additional_field' => 12345,
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?varchar_additional_field=string');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?boolean_additional_field=1');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?boolean_additional_field=0');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?number_additional_field=1234');
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+    }
+
     public function testDeleteUserDispatchEvent()
     {
         Event::fake(AccountDeleted::class);
