@@ -10,7 +10,8 @@
     "laravel/socialite": "^5.1",
     "maatwebsite/excel": "^3.1",
     "doctrine/dbal": "^2|^3",
-    "escolalms/files": "^0"
+    "escolalms/files": "^0",
+    "escolalms/model-fields": "^0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",

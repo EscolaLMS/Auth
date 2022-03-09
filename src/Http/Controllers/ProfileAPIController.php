@@ -12,7 +12,7 @@ use EscolaLms\Auth\Http\Requests\ProfileUpdateRequest;
 use EscolaLms\Auth\Http\Requests\UpdateInterests;
 use EscolaLms\Auth\Http\Requests\UploadAvatarRequest;
 use EscolaLms\Auth\Http\Requests\UserSettingsUpdateRequest;
-use EscolaLms\Auth\Http\Resources\UserResource;
+use EscolaLms\Auth\Http\Resources\UserFullResource;
 use EscolaLms\Auth\Http\Resources\UserSettingCollection;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
@@ -34,7 +34,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
 
     public function me(MyProfileRequest $request): JsonResponse
     {
-        return $this->sendResponseForResource(UserResource::make($request->user()), 'My profile');
+        return $this->sendResponseForResource(UserFullResource::make($request->user()), 'My profile');
     }
 
     public function update(ProfileUpdateRequest $request): JsonResponse
@@ -49,7 +49,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
 
         if (!is_null($user)) {
-            return $this->sendResponseForResource(UserResource::make($user->refresh()), __('Updated profile'));
+            return $this->sendResponseForResource(UserFullResource::make($user->refresh()), __('Updated profile'));
         }
 
         return $this->sendError(__('Profile not updated'), 422);
@@ -65,7 +65,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         );
 
         if (!is_null($user)) {
-            return $this->sendResponseForResource(UserResource::make($user), __('Updated email'));
+            return $this->sendResponseForResource(UserFullResource::make($user), __('Updated email'));
         }
 
         return $this->sendError(__('Email not updated'), 422);
@@ -92,7 +92,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         );
 
         if (!is_null($user)) {
-            return $this->sendResponseForResource(UserResource::make($user), __('Avatar uploaded'));
+            return $this->sendResponseForResource(UserFullResource::make($user), __('Avatar uploaded'));
         }
 
         return $this->sendError(__('Avatar not uploaded'), 422);
@@ -116,7 +116,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('interests'),
         );
 
-        return $this->sendResponseForResource(UserResource::make($request->user()), __('Updated user interests'));
+        return $this->sendResponseForResource(UserFullResource::make($request->user()), __('Updated user interests'));
     }
 
     public function settings(Request $request): JsonResponse

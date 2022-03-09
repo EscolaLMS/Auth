@@ -11,6 +11,8 @@ use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -31,7 +33,6 @@ class UserApiTest extends TestCase
     {
         parent::setUp();
         Config::set('escola_settings.use_database', true);
-        Config::set('escola_auth.additional_fields_required', []);
     }
 
     public function testGetUser(): void
@@ -168,6 +169,66 @@ class UserApiTest extends TestCase
         $this->assertEquals('test-setting-key', $user->settings->get(0)->key);
     }
 
+    public function testCreateUserWithAdditionalFields(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_visibility_for_admin',
+            'varchar',
+            '',
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
+        );
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'email' => 'test@test.test',
+            'roles' => [UserRole::STUDENT],
+            'password' => $password,
+            'phone' => '+48600600600'
+        ]);
+
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+
+        $this->response = $this->actingAs($admin)
+            ->json('POST', '/api/admin/users/', array_merge($userData, [
+                'additional_field_visibility_for_admin' => 123
+            ]))
+            ->assertStatus(422);
+
+        $this->response->assertJsonValidationErrors([
+            'additional_field_a',
+            'additional_field_visibility_for_admin',
+        ]);
+
+        $this->response = $this->actingAs($admin)
+            ->json('POST', '/api/admin/users/', array_merge($userData, [
+                'additional_field_a' => 'string1',
+                'additional_field_visibility_for_admin' => 'string2',
+            ]))
+            ->assertCreated()
+            ->assertJsonFragment([
+                'additional_field_a' => 'string1',
+                'additional_field_visibility_for_admin' => 'string2',
+            ]);
+
+        $user = User::where('email', 'test@test.test')->first();
+        $this->assertEquals('string1', $user->additional_field_a);
+        $this->assertEquals('string2', $user->additional_field_visibility_for_admin);
+    }
+
     public function testCreateVerifiedUser()
     {
         Event::fake();
@@ -226,6 +287,56 @@ class UserApiTest extends TestCase
         $this->assertEquals($user->first_name, $new_first_name);
     }
 
+    public function testPatchUserWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_visibility_for_admin',
+            'varchar',
+            '',
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
+        );
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $new_first_name = $user->first_name . ' new';
+
+        $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $new_first_name,
+            'additional_field_a' => 'string1',
+            'additional_field_visibility_for_admin' => 'string2',
+        ]);
+
+        $this->response
+            ->assertOk()
+            ->assertJsonFragment([
+                'first_name' => $new_first_name,
+                'last_name' => $user->last_name,
+                'additional_field_a' => 'string1',
+                'additional_field_visibility_for_admin' => 'string2',
+            ])
+            ->assertJsonMissing([
+                'first_name' => $user->first_name
+            ]);
+
+        $user->refresh();
+        $this->assertEquals($user->first_name, $new_first_name);
+        $this->assertEquals('string1', $user->additional_field_a);
+        $this->assertEquals('string2', $user->additional_field_visibility_for_admin);
+    }
+
     public function testPutUser()
     {
         /** @var User $user */
@@ -249,6 +360,58 @@ class UserApiTest extends TestCase
                 'last_name' => $user->last_name,
                 'email' => $user->email,
                 'phone' => $new_phone
+            ])
+            ->assertJsonMissing([
+                'first_name' => $user->first_name,
+            ]);
+    }
+
+    public function testPutUserWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_visibility_for_admin',
+            'varchar',
+            '',
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
+        );
+
+        /** @var User $user */
+        $user = $this->makeStudent([
+            'additional_field_a' => 'string1',
+            'additional_field_visibility_for_admin' => 'string2',
+        ]);
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $new_first_name = $user->first_name . ' new';
+        $new_phone = '+48600600600';
+        $new_additional_field_a = 'new_string1';
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $new_first_name,
+            'last_name' => $user->last_name,
+            'phone' => $new_phone,
+            'additional_field_a' => $new_additional_field_a,
+        ]);
+
+        $this->response
+            ->assertOk()
+            ->assertJsonFragment([
+                'first_name' => $new_first_name,
+                'last_name' => $user->last_name,
+                'phone' => $new_phone,
+                'additional_field_a' => $new_additional_field_a,
+                'additional_field_visibility_for_admin' => 'string2',
             ])
             ->assertJsonMissing([
                 'first_name' => $user->first_name,
@@ -561,6 +724,91 @@ class UserApiTest extends TestCase
         ]);
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?search=Uniquentin&role=student');
+        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+    }
+
+    public function testSearchUsersWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'varchar_additional_field',
+            'varchar',
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'boolean_additional_field',
+            'boolean',
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'number_additional_field',
+            'number',
+        );
+
+        $user = $this->makeStudent([
+            'first_name' => 'Uniquentin',
+            'varchar_additional_field' => 'string1',
+            'boolean_additional_field' => true,
+            'number_additional_field' => 1234,
+        ]);
+
+        $user2 = $this->makeStudent();
+
+        $admin = $this->makeAdmin([
+            'first_name' => 'Uniquentin',
+            'varchar_additional_field' => 'string2',
+            'boolean_additional_field' => false,
+            'number_additional_field' => 12345,
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?varchar_additional_field=string');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?boolean_additional_field=1');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $admin->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $user->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?boolean_additional_field=0');
+        $this->response->assertOk();
+        $this->response->assertJsonMissing([
+            'email' => $user2->email
+        ]);
+        $this->response->assertJsonMissing([
+            'email' => $user->email
+        ]);
+        $this->response->assertJsonFragment([
+            'email' => $admin->email
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/?number_additional_field=1234');
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'email' => $user->email

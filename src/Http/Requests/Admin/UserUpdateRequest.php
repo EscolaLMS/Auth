@@ -3,7 +3,7 @@
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
 use EscolaLms\Auth\Models\User;
-use EscolaLms\Auth\Rules\AdditionaFieldRules;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends AbstractUserIdInRouteRequest
@@ -40,7 +40,8 @@ class UserUpdateRequest extends AbstractUserIdInRouteRequest
                 'array'
             ]
         ];
-        $additional_fields = array_map(fn (array $rule) => ['sometimes'] + $rule, AdditionaFieldRules::rules());
+        $additional_fields = array_map(fn (array $rule) => ['sometimes'] + $rule, ModelFields::getFieldsMetadataRules(User::class));
+
         return array_merge(parent::rules(), $rules, $additional_fields);
     }
 

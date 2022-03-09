@@ -40,29 +40,6 @@ class ConfigApiTest extends TestCase
         $this->response->assertJsonFragment([
             'data' => [
                 'escola_auth' => [
-                    'additional_fields' => [
-                        'full_key' => 'escola_auth.additional_fields',
-                        'key' => 'additional_fields',
-                        'rules' => [
-                            'required',
-                            'array'
-                        ],
-                        'value' => [],
-                        'readonly' => false,
-                        'public' => true,
-                    ],
-                    'additional_fields_required' => [
-                        'full_key' => 'escola_auth.additional_fields_required',
-                        'key' => 'additional_fields_required',
-                        'rules' => [
-                            'required',
-                            'array',
-                            []
-                        ],
-                        'value' => [],
-                        'readonly' => false,
-                        'public' => true,
-                    ],
                     'registration' => [
                         'full_key' => 'escola_auth.registration',
                         'key' => 'registration',
@@ -160,72 +137,11 @@ class ConfigApiTest extends TestCase
             ]
         ]);
 
-        $this->response = $this->json(
-            'GET',
-            '/api/config'
-        );
-        $this->response->assertJsonMissing([
-            'escola_auth' => [
-                'additional_fields' => [
-                    'additional_field_a',
-                    'additional_field_b'
-                ],
-                'additional_fields_required' => [
-                    'additional_field_b'
-                ],
-            ]
-        ]);
-
         $this->response = $this->actingAs($this->user, 'api')->json(
             'POST',
             '/api/admin/config',
             [
                 'config' => [
-                    [
-                        'key' => 'escola_auth.additional_fields',
-                        'value' => [
-                            'additional_field_a',
-                        ]
-                    ],
-                    [
-                        'key' => 'escola_auth.additional_fields_required',
-                        'value' => [
-
-                            'additional_field_b',
-                        ]
-                    ],
-                    [
-                        'key' => 'escola_auth.registration',
-                        'value' => SettingStatusEnum::ENABLED,
-                    ],
-                    [
-                        'key' => 'escola_auth.account_must_be_enabled_by_admin',
-                        'value' => SettingStatusEnum::ENABLED,
-                    ]
-                ]
-            ]
-        );
-        $this->response->assertStatus(422);
-
-        $this->response = $this->actingAs($this->user, 'api')->json(
-            'POST',
-            '/api/admin/config',
-            [
-                'config' => [
-                    [
-                        'key' => 'escola_auth.additional_fields',
-                        'value' => [
-                            'additional_field_a',
-                            'additional_field_b',
-                        ]
-                    ],
-                    [
-                        'key' => 'escola_auth.additional_fields_required',
-                        'value' => [
-
-                            'additional_field_b',
-                        ]
-                    ],
                     [
                         'key' => 'escola_auth.registration',
                         'value' => SettingStatusEnum::DISABLED,
@@ -246,8 +162,6 @@ class ConfigApiTest extends TestCase
         $this->response->assertOk();
         $this->response->assertJsonFragment([
             'escola_auth' => [
-                'additional_fields' => ['additional_field_a', 'additional_field_b'],
-                'additional_fields_required' => ['additional_field_b'],
                 'registration' => SettingStatusEnum::DISABLED,
                 'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
             ]

@@ -10,21 +10,19 @@ use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\Login;
-use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use EscolaLms\Files\Helpers\FileHelper;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -193,15 +191,8 @@ class UserService implements UserServiceContract
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
     {
-        $fields = array_unique(array_merge(
-            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields', []),
-            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', [])
-        ));
-
-        foreach ($fields as $field) {
-            if ($request->has($field)) {
-                $this->userRepository->updateSettings($user, ["additional_field:$field" => $request->input($field)]);
-            }
-        }
+        $keys = ModelFields::getFieldsMetadata(AuthUser::class)->pluck('name');
+        $fields = $request->collect()->only($keys)->toArray();
+        $this->userRepository->update($fields, $user->getKey());
     }
 }

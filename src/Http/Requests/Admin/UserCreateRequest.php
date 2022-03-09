@@ -5,7 +5,7 @@ namespace EscolaLms\Auth\Http\Requests\Admin;
 use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
-use EscolaLms\Auth\Rules\AdditionaFieldRules;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Validation\Rule;
 
 class UserCreateRequest extends ExtendableRequest
@@ -44,6 +44,6 @@ class UserCreateRequest extends ExtendableRequest
             ],
         ];
 
-        return array_merge($rules, AdditionaFieldRules::rules());
+        return array_merge($rules, ModelFields::getFieldsMetadataRules(User::class));
     }
 }

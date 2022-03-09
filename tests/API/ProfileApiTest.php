@@ -3,10 +3,13 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use EscolaLms\Auth\Enums\GenderType;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Categories\Models\Category;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
+use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
@@ -19,17 +22,41 @@ class ProfileApiTest extends TestCase
 
     public function testMyProfile(): void
     {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_visibility_for_admin',
+            'varchar',
+            '',
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
+        );
+
         $user = $this->makeStudent([
-            'phone' => '+48600600600'
+            'phone' => '+48600600600',
+            'additional_field_a' => 'string1',
+            'additional_field_visibility_for_admin' => 'string2',
         ]);
+
         $this->response = $this->actingAs($user)->json('GET', '/api/profile/me');
 
         $this->response
             ->assertOk()
-            ->assertJsonFragment(['first_name' => $user->first_name])
-            ->assertJsonFragment(['last_name' => $user->last_name])
-            ->assertJsonFragment(['phone' => $user->phone])
-            ->assertJsonFragment(['onboarding_completed' => $user->onboarding_completed]);
+            ->assertJsonFragment([
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'phone' => $user->phone,
+                'onboarding_completed' => $user->onboarding_completed,
+                'additional_field_a' => 'string1',
+                'additional_field_visibility_for_admin' => 'string2',
+            ]);
     }
 
     public function testUpdateProfile(): void
@@ -55,6 +82,47 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('Gdańsk', $user->city);
         $this->assertEquals('Strzelecka', $user->street);
         $this->assertEquals('+48600600600', $user->phone);
+    }
+
+    public function testUpdateProfileWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_a',
+            'varchar',
+            '',
+            ['required', 'string', 'max:255']
+        );
+
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_visibility_for_admin',
+            'varchar',
+            '',
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
+        );
+
+        $user = $this->makeStudent([
+            'additional_field_a' => 'string1',
+            'additional_field_visibility_for_admin' => 'string2',
+        ]);
+
+        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+            'first_name' => 'Janusz',
+            'additional_field_a' => 'new string',
+            'additional_field_visibility_for_admin' => 'new string2',
+            ])
+            ->assertJsonFragment([
+                'additional_field_a' => 'new string',
+                'additional_field_visibility_for_admin' => 'new string2',
+            ]);
+
+        $this->assertApiSuccess();
+        $user->refresh();
+        $this->assertEquals('Janusz', $user->first_name);
+        $this->assertEquals('new string', $user->additional_field_a);
+        $this->assertEquals('new string2', $user->additional_field_visibility_for_admin);
     }
 
     public function testUpdateProfileAuthData(): void
