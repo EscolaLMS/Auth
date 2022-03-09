@@ -49,7 +49,7 @@ class UserFilterCriteriaDto extends CriteriaDto implements DtoContract, Instanti
             $criteria->push(new PeriodCriterion(new Carbon($request->get('from') ?? 0), new Carbon($request->get('to') ?? null)));
         }
 
-        $additionalFields = ModelFields::getFieldsMetadata(AuthUser::class)->mapWithKeys(fn ($item, $key) =>  [$item['name'] => $item['type']]);
+        $additionalFields = ModelFields::getFieldsMetadata(AuthUser::class)->mapWithKeys(fn ($item, $key) => [$item['name'] => $item['type']]);
         $additionalSearch = $request->collect()->only($additionalFields->keys());
 
         $additionalSearch->each(function ($value, $key) use ($criteria, $additionalFields) {
