@@ -16,7 +16,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UserDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
-use EscolaLms\Auth\Http\Resources\UserResource;
+use EscolaLms\Auth\Http\Resources\UserFullResource;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -27,13 +27,13 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
         $paginator = $this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
-        return $this->sendResponseForResource(UserResource::collection($paginator), __('Users search results'));
+        return $this->sendResponseForResource(UserFullResource::collection($paginator), __('Users search results'));
     }
 
     public function getUser(UserGetRequest $request): JsonResponse
     {
         try {
-            return $this->sendResponseForResource(UserResource::make($this->fetchRequestedUser($request)), __('User details'));
+            return $this->sendResponseForResource(UserFullResource::make($this->fetchRequestedUser($request)), __('User details'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), $ex instanceof UserNotFoundException ? $ex->getCode() : 400);
         }
@@ -45,10 +45,10 @@ class UserController extends AbstractUserController implements UserSwagger
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
-            $this->userService->updateUserExtraModelFields($user, $request);
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
-            return $this->sendResponseForResource(UserResource::make($user->refresh()), __('Created user'));
+            return $this->sendResponseForResource(UserFullResource::make($user->refresh()), __('Created user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -60,8 +60,8 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'));
-            $this->userService->updateUserExtraModelFields($user, $request);
-            return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            return $this->sendResponseForResource(UserFullResource::make($user), __('Updated user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -72,8 +72,8 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
             $user = $this->userService->putUsingDto($userUpdateDto, $request->route('id'));
-            $this->userService->updateUserExtraModelFields($user, $request);
-            return $this->sendResponseForResource(UserResource::make($user), __('Updated user'));
+            $this->userService->updateAdditionalFieldsFromRequest($user, $request);
+            return $this->sendResponseForResource(UserFullResource::make($user), __('Updated user'));
         } catch (\Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);
         }
@@ -99,7 +99,7 @@ class UserController extends AbstractUserController implements UserSwagger
             $request->file('avatar') ?? $request->get('avatar'),
         );
         if (!empty($user->path_avatar)) {
-            return $this->sendResponseForResource(UserResource::make($user), __('Avatar uploaded'));
+            return $this->sendResponseForResource(UserFullResource::make($user), __('Avatar uploaded'));
         }
         return $this->sendError(__('Avatar not uploaded'), 422);
     }

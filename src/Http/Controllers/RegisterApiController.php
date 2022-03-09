@@ -39,7 +39,7 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $userSaveDto->setIsActive($mustBeEnabledByAdmin === SettingStatusEnum::DISABLED);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
-        $this->userService->updateUserExtraModelFields($user, $request);
+        $this->userService->updateAdditionalFieldsFromRequest($user, $request);
         $this->userGroupService->registerMemberToMultipleGroups($request->input('groups', []), $user);
 
         if ($mustBeEnabledByAdmin === SettingStatusEnum::ENABLED) {

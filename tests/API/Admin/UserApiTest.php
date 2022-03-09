@@ -11,6 +11,7 @@ use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Enums\UserRole;
 use EscolaLms\Core\Tests\ApiTestTrait;
 use EscolaLms\Core\Tests\CreatesUsers;
+use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -183,10 +184,11 @@ class UserApiTest extends TestCase
 
         ModelFields::addOrUpdateMetadataField(
             User::class,
-            'additional_field_b',
+            'additional_field_visibility_for_admin',
             'varchar',
             '',
-            ['string', 'max:255']
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
         );
 
         $password = 'secret';
@@ -201,28 +203,30 @@ class UserApiTest extends TestCase
         unset($userData['remember_token']);
 
         $this->response = $this->actingAs($admin)
-            ->json('POST', '/api/admin/users/', array_merge($userData, ['additional_field_b' => 123]))
+            ->json('POST', '/api/admin/users/', array_merge($userData, [
+                'additional_field_visibility_for_admin' => 123
+            ]))
             ->assertStatus(422);
 
         $this->response->assertJsonValidationErrors([
-            'additional_field_b',
             'additional_field_a',
+            'additional_field_visibility_for_admin',
         ]);
 
         $this->response = $this->actingAs($admin)
             ->json('POST', '/api/admin/users/', array_merge($userData, [
                 'additional_field_a' => 'string1',
-                'additional_field_b' => 'string2',
+                'additional_field_visibility_for_admin' => 'string2',
             ]))
             ->assertCreated()
             ->assertJsonFragment([
                 'additional_field_a' => 'string1',
-                'additional_field_b' => 'string2',
+                'additional_field_visibility_for_admin' => 'string2',
             ]);
 
         $user = User::where('email', 'test@test.test')->first();
         $this->assertEquals('string1', $user->additional_field_a);
-        $this->assertEquals('string2', $user->additional_field_b);
+        $this->assertEquals('string2', $user->additional_field_visibility_for_admin);
     }
 
     public function testCreateVerifiedUser()
@@ -295,10 +299,11 @@ class UserApiTest extends TestCase
 
         ModelFields::addOrUpdateMetadataField(
             User::class,
-            'additional_field_b',
+            'additional_field_visibility_for_admin',
             'varchar',
             '',
-            ['string', 'max:255']
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
         );
 
         /** @var User $user */
@@ -311,7 +316,7 @@ class UserApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('PATCH', '/api/admin/users/' . $user->getKey(), [
             'first_name' => $new_first_name,
             'additional_field_a' => 'string1',
-            'additional_field_b' => 'string2',
+            'additional_field_visibility_for_admin' => 'string2',
         ]);
 
         $this->response
@@ -320,7 +325,7 @@ class UserApiTest extends TestCase
                 'first_name' => $new_first_name,
                 'last_name' => $user->last_name,
                 'additional_field_a' => 'string1',
-                'additional_field_b' => 'string2',
+                'additional_field_visibility_for_admin' => 'string2',
             ])
             ->assertJsonMissing([
                 'first_name' => $user->first_name
@@ -329,7 +334,7 @@ class UserApiTest extends TestCase
         $user->refresh();
         $this->assertEquals($user->first_name, $new_first_name);
         $this->assertEquals('string1', $user->additional_field_a);
-        $this->assertEquals('string2', $user->additional_field_b);
+        $this->assertEquals('string2', $user->additional_field_visibility_for_admin);
     }
 
     public function testPutUser()
@@ -373,16 +378,17 @@ class UserApiTest extends TestCase
 
         ModelFields::addOrUpdateMetadataField(
             User::class,
-            'additional_field_b',
+            'additional_field_visibility_for_admin',
             'varchar',
             '',
-            ['string', 'max:255']
+            ['string', 'max:255'],
+            MetaFieldVisibilityEnum::ADMIN,
         );
 
         /** @var User $user */
         $user = $this->makeStudent([
             'additional_field_a' => 'string1',
-            'additional_field_b' => 'string2',
+            'additional_field_visibility_for_admin' => 'string2',
         ]);
         /** @var User $admin */
         $admin = $this->makeAdmin();
@@ -405,7 +411,7 @@ class UserApiTest extends TestCase
                 'last_name' => $user->last_name,
                 'phone' => $new_phone,
                 'additional_field_a' => $new_additional_field_a,
-                'additional_field_b' => 'string2',
+                'additional_field_visibility_for_admin' => 'string2',
             ])
             ->assertJsonMissing([
                 'first_name' => $user->first_name,

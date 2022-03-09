@@ -194,20 +194,6 @@ class UserService implements UserServiceContract
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
     {
-        $fields = array_unique(array_merge(
-            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields', []),
-            Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.additional_fields_required', [])
-        ));
-
-        foreach ($fields as $field) {
-            if ($request->has($field)) {
-                $this->userRepository->updateSettings($user, ["additional_field:$field" => $request->input($field)]);
-            }
-        }
-    }
-
-    public function updateUserExtraModelFields(User $user, FormRequest $request): void
-    {
         $keys = ModelFields::getFieldsMetadata(AuthUser::class)->pluck('name');
         $fields = $request->collect()->only($keys)->toArray();
         $this->userRepository->update($fields, $user->getKey());
