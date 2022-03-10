@@ -15,6 +15,7 @@ use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Auth\Services\UserGroupService;
 use EscolaLms\Auth\Services\UserService;
+use EscolaLms\ModelFields\ModelFieldsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -44,6 +45,7 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
         $this->app->register(SettingsServiceProvider::class);
+        $this->app->register(ModelFieldsServiceProvider::class);
     }
 
     public function boot()
