@@ -24,7 +24,7 @@ class UserSettingsUpdateRequest extends ExtendableRequest
     public function rules()
     {
         return [
-            '*' => 'string'
+            // '*' => 'string' // this is pointless 
         ];
     }
 
