@@ -4,7 +4,6 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Enums\GenderType;
 use EscolaLms\Auth\Models\User;
-use EscolaLms\Auth\Rules\AdditionaFieldRules;
 use EscolaLms\ModelFields\Facades\ModelFields;
 
 class ProfileUpdateRequest extends ExtendableRequest
