@@ -44,7 +44,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'onboarding_completed' => $this->onboarding_completed,
             'email_verified' => $this->email_verified,
-            'interests' => CategoryResource::collection($this->interests()->get()),
+            'interests' => CategoryResource::collection($this->interests),
             'avatar' => $this->avatar_url,
             'roles' => $this->roles ? array_map(function ($role) {
                 return $role['name'];

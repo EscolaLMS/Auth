@@ -186,7 +186,11 @@ class UserService implements UserServiceContract
 
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
     {
-        return $this->userRepository->queryWithAppliedCriteria($criteriaDto->toArray())->paginate($perPage, ['*'], 'page', $page)->appends($appends);
+        return $this->userRepository
+            ->queryWithAppliedCriteria($criteriaDto->toArray())
+            ->with(['interests', 'roles', 'roles.permissions', 'permissions'])
+            ->paginate($perPage, ['*'], 'page', $page)
+            ->appends($appends);
     }
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
