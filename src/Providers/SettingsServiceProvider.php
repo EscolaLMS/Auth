@@ -4,7 +4,6 @@ namespace EscolaLms\Auth\Providers;
 
 use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
-use EscolaLms\Auth\Rules\AdditionalFieldsRequiredInConfig;
 use EscolaLms\Settings\EscolaLmsSettingsServiceProvider;
 use EscolaLms\Settings\Facades\AdministrableConfig;
 use Illuminate\Support\ServiceProvider;
