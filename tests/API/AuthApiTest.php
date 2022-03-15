@@ -25,6 +25,7 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -39,6 +40,7 @@ class AuthApiTest extends TestCase
     {
         parent::setUp();
         Config::set('escola_settings.use_database', true);
+        Cache::flush();
     }
 
     public function testRegister(): void
