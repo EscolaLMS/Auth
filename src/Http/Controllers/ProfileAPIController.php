@@ -116,7 +116,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
             $request->input('interests'),
         );
 
-        return $this->sendResponseForResource(UserFullResource::make($request->user()), __('Updated user interests'));
+        return $this->sendResponseForResource(UserFullResource::make($request->user()->refresh()), __('Updated user interests'));
     }
 
     public function settings(Request $request): JsonResponse
