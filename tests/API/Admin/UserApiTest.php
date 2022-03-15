@@ -18,6 +18,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -33,6 +34,7 @@ class UserApiTest extends TestCase
     {
         parent::setUp();
         Config::set('escola_settings.use_database', true);
+        Cache::flush();
     }
 
     public function testGetUser(): void
