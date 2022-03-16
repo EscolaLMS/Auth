@@ -173,6 +173,8 @@ class UserApiTest extends TestCase
 
     public function testCreateUserWithAdditionalFields(): void
     {
+        Event::fake();
+
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
