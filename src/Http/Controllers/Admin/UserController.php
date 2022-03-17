@@ -7,6 +7,7 @@ use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserFilterCriteriaDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserSwagger;
 use EscolaLms\Auth\Http\Requests\Admin\UserAvatarDeleteRequest;
@@ -19,6 +20,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserFullResource;
 use Exception;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends AbstractUserController implements UserSwagger
@@ -48,6 +50,9 @@ class UserController extends AbstractUserController implements UserSwagger
             $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
+            if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
+                event(new AccountRegistered($user, null));
+            }
             return $this->sendResponseForResource(UserFullResource::make($user->refresh()), __('Created user'));
         } catch (Exception $ex) {
             return $this->sendError($ex->getMessage(), 400);

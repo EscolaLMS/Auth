@@ -5,6 +5,8 @@ namespace EscolaLms\Auth\Tests\API\Admin;
 use EscolaLms\Auth\Events\AccountBlocked;
 use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\AccountDeleted;
+use EscolaLms\Auth\Events\AccountRegistered;
+use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
@@ -14,6 +16,7 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
@@ -94,6 +97,7 @@ class UserApiTest extends TestCase
     public function testCreateUser()
     {
         Event::fake();
+        Notification::fake();
 
         /** @var User $admin */
         $admin = $this->makeAdmin();
@@ -119,11 +123,19 @@ class UserApiTest extends TestCase
         Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
             return $userData['email'] === $event->user->email && is_null($event->user->email_verified_at);
         });
+        Event::assertDispatched(AccountRegistered::class);
+
+        $newUser = User::where('email', $userData['email'])->first();
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
+
+        Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
     public function testCreateUserWithSettingsAndGroup()
     {
         Event::fake();
+        Notification::fake();
 
         /** @var User $admin */
         $admin = $this->makeAdmin();
@@ -173,6 +185,9 @@ class UserApiTest extends TestCase
 
     public function testCreateUserWithAdditionalFields(): void
     {
+        Event::fake();
+        Notification::fake();
+
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
