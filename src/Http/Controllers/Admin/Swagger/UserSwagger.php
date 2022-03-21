@@ -104,6 +104,24 @@ interface UserSwagger
      *          ),
      *          description="users created before this date"
      *      ),
+     *     @OA\Parameter(
+     *          name="gt_last_login_day",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *          description="users last login greater equal then X days"
+     *      ),
+     *     @OA\Parameter(
+     *          name="lt_last_login_day",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *          description="users last login less or equal then X days"
+     *      ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns list of Users",
