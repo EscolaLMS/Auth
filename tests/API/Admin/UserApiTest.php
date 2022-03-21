@@ -955,4 +955,22 @@ class UserApiTest extends TestCase
         $this->assertEmpty($user->path_avatar);
         Storage::exists($avatarPath);
     }
+
+    public function testSearchByLastLoginUsers(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin([
+            'first_name' => 'Uniquentin'
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?gt_last_login_day=' . 7);
+
+        $this->response->assertOk();
+        $this->response->assertJsonStructure([
+            'success',
+            'data',
+            'meta',
+            'message',
+        ]);
+    }
 }
