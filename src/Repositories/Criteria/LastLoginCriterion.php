@@ -17,6 +17,6 @@ class LastLoginCriterion extends Criterion
     public function apply(Builder $query): Builder
     {
         return $query
-            ->whereRaw('(SELECT MAX(notifications.'.$this->key.') FROM notifications WHERE notifiable_id = users.id AND event = \''.Login::class.'\' GROUP BY notifiable_id) '.$this->operator.' \''.$this->value.'\'');
+            ->whereRaw("(SELECT MAX(notifications.{$this->key}) FROM notifications WHERE notifiable_id = users.id AND event = '{Login::class.}' GROUP BY notifiable_id) {$this->operator} '{$this->value}'");
     }
 }
