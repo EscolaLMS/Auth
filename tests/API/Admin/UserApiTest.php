@@ -84,12 +84,13 @@ class UserApiTest extends TestCase
             ->assertUnauthorized();
     }
 
-    public function testForbiddenIfNotAdmin(): void
+    public function testForbiddenIfReadsNotItsOwnData(): void
     {
         /** @var User $user */
+        $admin = $this->makeAdmin();
         $user = $this->makeStudent();
 
-        $this->response = $this->actingAs($user)->json('GET', '/api/admin/users/' . $user->id);
+        $this->response = $this->actingAs($user)->json('GET', '/api/admin/users/' . $admin->id);
         $this->response
             ->assertForbidden();
     }

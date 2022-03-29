@@ -2,9 +2,10 @@
 
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
+use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 use EscolaLms\Auth\Models\User;
 
-abstract class AbstractUserIdInRouteRequest extends AbstractAdminOnlyRequest
+abstract class AbstractUserIdInRouteRequest extends ExtendableRequest
 {
     protected function prepareForValidation()
     {
