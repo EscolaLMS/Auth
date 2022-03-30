@@ -17,7 +17,9 @@ use EscolaLms\Auth\Http\Requests\Admin\UserDeleteRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserGetRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
+use EscolaLms\Auth\Http\Resources\UserFullCollection;
 use EscolaLms\Auth\Http\Resources\UserFullResource;
+use EscolaLms\Auth\Models\User;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -28,8 +30,18 @@ class UserController extends AbstractUserController implements UserSwagger
     public function listUsers(UsersListRequest $request): JsonResponse
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
-        $paginator = $this->userService->searchAndPaginate($userFilterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
-        return $this->sendResponseForResource(UserFullResource::collection($paginator), __('Users search results'));
+        $paginator = $this->userService->searchAndPaginate(
+            $userFilterDto,
+            $request->get('fields') ?? ['*'],
+            $request->except('page'),
+            $request->get('per_page'),
+            $request->get('page')
+        );
+
+        return $this->sendResponseForResource(
+            (new UserFullCollection($paginator))->columns($request->get('fields') ?? []),
+            __('Users search results')
+        );
     }
 
     public function getUser(UserGetRequest $request): JsonResponse

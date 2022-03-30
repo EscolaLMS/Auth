@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\Fluent\AssertableJson;
 
 
 class UserApiTest extends TestCase
@@ -752,6 +753,60 @@ class UserApiTest extends TestCase
         $this->response->assertJsonMissing([
             'email' => $admin->email
         ]);
+    }
+
+    public function testSearchUsersGetSpecificFields(): void
+    {
+        User::factory()->count(10)->create();
+
+        $admin = $this->makeAdmin();
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users?fields[]=first_name&fields[]=email');
+
+        $this->response->assertJsonStructure([
+            'data' => [[
+                'first_name',
+                'email',
+            ]]
+        ]);
+
+        $data = $this->response->getData()->data;
+        $this->assertFalse(property_exists($data[0], 'last_name'));
+        $this->assertTrue(property_exists($data[0], 'first_name'));
+        $this->assertTrue(property_exists($data[0], 'email'));
+    }
+
+    public function testSearchUsersGetSpecificFieldsWithAdditionalFields(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'varchar_additional_field',
+            'varchar',
+        );
+
+        User::factory()->count(10)->create([
+            'varchar_additional_field' => 'string1'
+        ]);
+        $admin = $this->makeAdmin([
+            'varchar_additional_field' => 'string1'
+        ]);
+
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('GET', '/api/admin/users?fields[]=first_name&fields[]=email&fields[]=varchar_additional_field');
+
+        $this->response->assertJsonStructure([
+            'data' => [[
+                'first_name',
+                'email',
+                'varchar_additional_field',
+            ]]
+        ]);
+
+        $data = $this->response->getData()->data;
+
+        $this->assertFalse(property_exists($data[0], 'last_name'));
+        $this->assertTrue(property_exists($data[0], 'first_name'));
+        $this->assertTrue(property_exists($data[0], 'varchar_additional_field'));
     }
 
     public function testSearchUsersWithAdditionalFields(): void

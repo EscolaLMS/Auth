@@ -16,6 +16,7 @@ use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use EscolaLms\Files\Helpers\FileHelper;
+use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
@@ -184,13 +185,28 @@ class UserService implements UserServiceContract
         return $this->userRepository->searchByCriteria($criteriaDto->toArray(), $paginationDto->getSkip(), $paginationDto->getLimit());
     }
 
-    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
+    public function searchAndPaginate(
+        CriteriaDto $criteriaDto,
+        array $columns = ['*'],
+        array $appends = [],
+        int $perPage = null,
+        int $page = null
+    ): LengthAwarePaginator
     {
+        $columns = $this->makeColumns($columns);
+
         return $this->userRepository
             ->queryWithAppliedCriteria($criteriaDto->toArray())
             ->with(['interests', 'roles', 'roles.permissions', 'permissions'])
-            ->paginate($perPage, ['*'], 'page', $page)
+            ->paginate($perPage, $columns, 'page', $page)
             ->appends($appends);
+    }
+
+    private function makeColumns(array $columns): array
+    {
+        $fields = ModelFields::getFieldsMetadata($this->userRepository->model())->pluck('name')->toArray();
+        $columns[] = 'id';
+        return array_diff($columns, $fields);
     }
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
