@@ -125,6 +125,23 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('new string2', $user->additional_field_visibility_for_admin);
     }
 
+    public function testUpdateProfileAdditionalFieldRequiredValidation(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_short',
+            'varchar',
+            '',
+            ['max:4']
+        );
+
+        $user = $this->makeStudent();
+
+        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+            'additional_field_short' => 'aabbcc',
+        ])->assertJsonValidationErrors(['additional_field_short']);
+    }
+
     public function testUpdateProfileAuthData(): void
     {
         $user = $this->makeStudent();

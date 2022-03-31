@@ -26,8 +26,9 @@ class ProfileUpdateRequest extends ExtendableRequest
             'age' => ['numeric'],
             'gender' => ['in:' . implode(',', GenderType::getValues())],
         ];
-        $additional_fields = array_map(fn (array $rule) => ['sometimes'] + $rule, ModelFields::getFieldsMetadataRules(User::class));
 
-        return array_merge($rules, $additional_fields);
+        $additionalFields = array_map(fn (array $rule) => array_merge(['sometimes'], $rule), ModelFields::getFieldsMetadataRules(User::class));
+
+        return array_merge($rules, $additionalFields);
     }
 }

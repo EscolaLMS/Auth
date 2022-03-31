@@ -436,6 +436,26 @@ class UserApiTest extends TestCase
             ]);
     }
 
+    public function testPutUserAdditionalFieldRequiredValidation(): void
+    {
+        ModelFields::addOrUpdateMetadataField(
+            User::class,
+            'additional_field_short',
+            'varchar',
+            '',
+            ['max:4']
+        );
+
+        $user = $this->makeStudent();
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('PUT', '/api/admin/users/' . $user->getKey(), [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'additional_field_short' => 'aabbcc',
+        ])->assertJsonValidationErrors(['additional_field_short']);
+    }
+
     public function testVerifyUser()
     {
         Event::fake();
