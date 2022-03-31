@@ -40,9 +40,10 @@ class UserUpdateRequest extends AbstractUserIdInRouteRequest
                 'array'
             ]
         ];
-        $additional_fields = array_map(fn (array $rule) => ['sometimes'] + $rule, ModelFields::getFieldsMetadataRules(User::class));
 
-        return array_merge(parent::rules(), $rules, $additional_fields);
+        $additionalFields = array_map(fn (array $rule) => array_merge(['sometimes'], $rule), ModelFields::getFieldsMetadataRules(User::class));
+
+        return array_merge(parent::rules(), $rules, $additionalFields);
     }
 
     private function requiredIfPut()
