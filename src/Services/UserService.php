@@ -187,26 +187,21 @@ class UserService implements UserServiceContract
 
     public function searchAndPaginate(
         CriteriaDto $criteriaDto,
-        array $columns = ['*'],
-        array $appends = [],
-        int $perPage = null,
-        int $page = null
+        ?array $columns = [],
+        ?array $with = [],
+        ?array $appends = [],
+        ?int $perPage = null,
+        ?int $page = null
     ): LengthAwarePaginator
     {
         $columns = $this->makeColumns($columns);
+        $with = $this->makeRelations($with);
 
         return $this->userRepository
             ->queryWithAppliedCriteria($criteriaDto->toArray())
-            ->with(['interests', 'roles', 'roles.permissions', 'permissions'])
+            ->with($with)
             ->paginate($perPage, $columns, 'page', $page)
             ->appends($appends);
-    }
-
-    private function makeColumns(array $columns): array
-    {
-        $fields = ModelFields::getFieldsMetadata($this->userRepository->model())->pluck('name')->toArray();
-        $columns[] = 'id';
-        return array_diff($columns, $fields);
     }
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void
@@ -214,5 +209,21 @@ class UserService implements UserServiceContract
         $keys = ModelFields::getFieldsMetadata(AuthUser::class)->pluck('name');
         $fields = $request->collect()->only($keys)->toArray();
         $this->userRepository->update($fields, $user->getKey());
+    }
+
+    private function makeColumns(?array $columns): array
+    {
+        if (!$columns) {
+            return ['*'];
+        }
+
+        $fields = ModelFields::getFieldsMetadata($this->userRepository->model())->pluck('name')->toArray();
+        $columns[] = 'id';
+        return array_diff($columns, $fields);
+    }
+
+    private function makeRelations(?array $relations): array
+    {
+        return ($relations ?? []) + ['roles', 'roles.permissions', 'permissions'];
     }
 }

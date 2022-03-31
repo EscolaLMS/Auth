@@ -8,9 +8,9 @@ class UserFullCollection extends ResourceCollection
 {
     private array $columns = [];
 
-    public function columns(?array $columns = []): UserFullCollection
+    public function columns(?array $columns): UserFullCollection
     {
-        $this->columns = $columns;
+        $this->columns += array_merge($this->columns, $columns);
         return $this;
     }
 

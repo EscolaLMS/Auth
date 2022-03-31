@@ -15,9 +15,9 @@ class UserFullResource extends UserResource
         parent::__construct($resource);
     }
 
-    public function columns(array $columns): UserFullResource
+    public function columns(?array $columns): UserFullResource
     {
-        $this->columns = $columns;
+        $this->columns += array_merge($this->columns, $columns);
         return $this;
     }
 
@@ -36,9 +36,10 @@ class UserFullResource extends UserResource
     private function getResource(): array
     {
         $result = [];
-        foreach ($this->resource->attributesToArray() as $key => $value) {
+
+        foreach ($this->resource->toArray() as $key => $value) {
             if (in_array($key, $this->columns)) {
-                $result[$key] = $value;
+                $result[$key] = $this->{$key};
             }
         }
 

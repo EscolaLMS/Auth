@@ -32,14 +32,17 @@ class UserController extends AbstractUserController implements UserSwagger
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
         $paginator = $this->userService->searchAndPaginate(
             $userFilterDto,
-            $request->get('fields') ?? ['*'],
+            $request->get('fields'),
+            $request->get('relations'),
             $request->except('page'),
             $request->get('per_page'),
             $request->get('page')
         );
 
         return $this->sendResponseForResource(
-            (new UserFullCollection($paginator))->columns($request->get('fields') ?? []),
+            (new UserFullCollection($paginator))
+                ->columns($request->get('fields') ?? [])
+                ->columns($request->get('relations') ?? []),
             __('Users search results')
         );
     }
