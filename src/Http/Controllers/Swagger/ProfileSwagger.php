@@ -66,7 +66,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="age",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="number",
@@ -74,7 +74,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="gender",
-     *          required=true,
+     *          required=false,
      *          description="1 - male, 2 - female",
      *          in="query",
      *          @OA\Schema(
