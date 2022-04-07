@@ -1,13 +1,559 @@
 {
     "openapi": "3.0.0",
+    "info": {
+        "title": "EscolaLMS",
+        "version": "0.0.1"
+    },
     "paths": {
-        "/api/admin/config": {
+        "/api/admin/user-groups/": {
             "get": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin User Groups"
                 ],
-                "summary": "Get admin config",
-                "description": "Get a listing of registered config keys",
+                "summary": "List groups",
+                "description": "",
+                "operationId": "b4631bcf8030edaa73072b86b87a2f23",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Create group",
+                "description": "",
+                "operationId": "042cca0018523fd6ba315b28f0151d89",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Group"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation, Group created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Group"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/user-groups/tree/": {
+            "get": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "List groups in a tree",
+                "description": "",
+                "operationId": "6655f9b0a9e4a3b5091bd2ac677e757a",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/user-groups/{id}": {
+            "get": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Get group details",
+                "description": "",
+                "operationId": "203b726fc6e72a74de7107a7acb4054e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns Group data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Group"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Update group",
+                "description": "",
+                "operationId": "711d682ab4fb16dbdfe1bf715e3e5813",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Group"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Group"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Delete group",
+                "description": "",
+                "operationId": "0c31272718f7e388e8961e3c6efa6bf4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, Group deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/user-groups/{id}/members": {
+            "post": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Add user to group",
+                "description": "",
+                "operationId": "aa4b7892f04578152561151128efadb4",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of group members",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/user-groups/{id}/members/{user_id}": {
+            "delete": {
+                "tags": [
+                    "Admin User Groups"
+                ],
+                "summary": "Add user to group",
+                "description": "",
+                "operationId": "3134135e9d643d4231a4eb253022c0cc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of group members",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{id}/interests": {
+            "get": {
+                "tags": [
+                    "Admin User Interests"
+                ],
+                "summary": "Get user interests",
+                "description": "",
+                "operationId": "161998e8167834b30976ddc5e8024ac7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of user interests",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin User Interests"
+                ],
+                "summary": "Set user interests",
+                "description": "Set user interests",
+                "operationId": "6cde70ea763ad38995d40bb8796179fa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "interests": {
+                                        "description": "Ids of categories to be set",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "format": "int64"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of user interests",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin User Interests"
+                ],
+                "summary": "Add single user interest",
+                "description": "Add single user interest",
+                "operationId": "de4a9d433ded2aa83764e3ef77fe9c83",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "interest_id"
+                                ],
+                                "properties": {
+                                    "interest_id": {
+                                        "description": "Id of category to be added",
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of user interests",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{id}/interests/{interest_id}": {
+            "delete": {
+                "tags": [
+                    "Admin User Interests"
+                ],
+                "summary": "Add single user interest",
+                "description": "",
+                "operationId": "3ce0bb1b20fc0ec2e1df55164db160e0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "interest_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of user interests",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{id}/settings": {
+            "get": {
+                "tags": [
+                    "Admin User Settings"
+                ],
+                "summary": "Get user settings",
+                "description": "",
+                "operationId": "8cd73f5c43aac35487ccc3ae96a326cd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of user settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin User Settings"
+                ],
+                "summary": "Set user setting (removes settings not sent)",
+                "operationId": "627fa0b4345ae425ec538acb5a7123da",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {},
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -15,14 +561,30 @@
                             "application/json": {}
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
             },
-            "post": {
+            "patch": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin User Settings"
                 ],
-                "summary": "Set config for registered config keys",
-                "operationId": "e4b582c031121b9188d65e35da218c7a",
+                "summary": "Update user setting(s) without changing other settings",
+                "operationId": "d94fdda15a77a065cfc3be5ec05fdf47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "requestBody": {},
                 "responses": {
                     "200": {
@@ -39,54 +601,111 @@
                 ]
             }
         },
-        "/api/admin/settings": {
+        "/api/admin/users": {
             "get": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin Users"
                 ],
-                "description": "Get Settings paginated",
-                "operationId": "6f0b2a1153a6feccc10053127b272b18",
+                "summary": "Get users",
+                "description": "",
+                "operationId": "599183ff92f15962448cd009aec3c581",
                 "parameters": [
                     {
-                        "name": "group",
+                        "name": "page",
                         "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "will search through first_name, last_name and email",
                         "required": false,
                         "schema": {
                             "type": "string"
                         }
                     },
                     {
-                        "name": "page",
+                        "name": "role",
                         "in": "query",
-                        "description": "Pagination Page Number",
+                        "description": "user role",
                         "required": false,
                         "schema": {
-                            "type": "number",
-                            "default": 1
+                            "type": "string"
                         }
                     },
                     {
-                        "name": "per_page",
+                        "name": "status",
                         "in": "query",
-                        "description": "Pagination Per Page",
+                        "description": "will check if user is_active",
                         "required": false,
                         "schema": {
-                            "type": "number",
-                            "default": 15
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "onboarding",
+                        "in": "query",
+                        "description": "will check if user completed onboarding",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "users created after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "datetime"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "users created before this date",
+                        "required": false,
+                        "schema": {
+                            "type": "datetime"
+                        }
+                    },
+                    {
+                        "name": "gt_last_login_day",
+                        "in": "query",
+                        "description": "users last login greater equal then X days",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lt_last_login_day",
+                        "in": "query",
+                        "description": "users last login less or equal then X days",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "successful operation, returns list of Users",
                         "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "422": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {}
+                            }
                         }
                     }
                 },
@@ -98,22 +717,29 @@
             },
             "post": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin Users"
                 ],
-                "summary": "Settings create",
-                "description": "Create single setting",
-                "operationId": "051f96e67ccbcb2ea4f9e74f945a9988",
+                "summary": "Create user",
+                "description": "",
+                "operationId": "e7f83a323c31751aa19a695e189cdfc7",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "successful operation, returns created User data",
                         "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "422": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
                         }
                     }
                 },
@@ -124,34 +750,34 @@
                 ]
             }
         },
-        "/api/admin/settings/{id}": {
+        "/api/admin/users/{id}": {
             "get": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin Users"
                 ],
-                "description": "Get single settings",
-                "operationId": "c745b6bd9a9e0afb1c40d355d254d60a",
+                "summary": "Get user",
+                "description": "",
+                "operationId": "2ece7c6c5c236c8370ee6d5eb59fbfaa",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "format": "int64"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "successful operation, returns User data",
                         "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "422": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
                         }
                     }
                 },
@@ -161,13 +787,174 @@
                     }
                 ]
             },
+            "delete": {
+                "tags": [
+                    "Admin Users"
+                ],
+                "summary": "Delete user",
+                "description": "",
+                "operationId": "0e7d6e862c5aa5fd0c39d825be87d4c9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid id"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/user/{id}": {
             "put": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin Users"
                 ],
-                "summary": "Update setting",
-                "description": "Update single setting",
-                "operationId": "69f83d57a47d5122b198ffc4b1148230",
+                "summary": "Update/Replace user data (will overwrite unset fields with nulls)",
+                "description": "",
+                "operationId": "ed15144feff97fe05f6067f179ce4f7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid id"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Admin Users"
+                ],
+                "summary": "Partial Update User (will only change sent fields)",
+                "description": "",
+                "operationId": "22e56708437df94231942c5e659fb1af",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid id"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{id}/avatar": {
+            "post": {
+                "tags": [
+                    "Admin Users"
+                ],
+                "description": "Upload avatar",
+                "operationId": "2de6cd14e4c60b991ab75296bff312af",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAvatar"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -190,123 +977,125 @@
             },
             "delete": {
                 "tags": [
-                    "Admin Settings"
+                    "Admin Users"
                 ],
-                "summary": "Destroy setting",
-                "description": "Destroy the specified setting",
-                "operationId": "e5c3fa54a4d9d826ea45a5e2295d5714",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "422": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/settings/groups": {
-            "get": {
-                "tags": [
-                    "Admin Settings"
-                ],
-                "description": "Get Settings unique groups",
-                "operationId": "979511ea3a7548b329a684a5e304b0bd",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "422": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/api/config": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Get a listing of public config values.",
-                "description": "Get public config values",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                }
-            }
-        },
-        "/api/settings": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Get a listing of the public and enuerable settings.",
-                "description": "Get settings",
-                "operationId": "304a6c4c57f2a00529fa6a29cd7aa385",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {}
-                        }
-                    }
-                }
-            }
-        },
-        "/api/settings/{group}/{key}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Display the specified public setting",
-                "description": "Get Course",
-                "operationId": "13c48e51211e7e16517dee7248fa9d04",
+                "description": "Delete avatar",
+                "operationId": "fc79782cd69e58bcf60ff83ca025bbc3",
                 "parameters": [
                     {
-                        "name": "group",
+                        "name": "id",
                         "in": "path",
-                        "description": "group of setting",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "key",
-                        "in": "path",
-                        "description": "key of setting",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "format": "int64"
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/password/forgot": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Password forget call",
+                "operationId": "03ee141104498f34c86355712f88e4fb",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@escola-lms.com"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "example": "https://escolalms.com/password-reset"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/password/reset": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Password reset",
+                "operationId": "ce6dd3874bbda7a869d645fb92a94f3c",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@escola-lms.com"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "example": "hFD4UpgzTMNBeCGyfUrbvHtDb2yzSnuE"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "zaq1@WSX"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/refresh": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh access token",
+                "operationId": "3cdb39a8126fbf6357edc7b1c10b72cc",
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -320,50 +1109,760 @@
                         "passport": []
                     }
                 ]
+            }
+        },
+        "/api/auth/social/{provider}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Redirect to social login",
+                "operationId": "f1658d0b99ad89b546445268b526e126",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "facebook",
+                                "google"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/social/{provider}/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Redirect after sucessfull login",
+                "operationId": "55846b54c1cf0924b53f46b4ed855fa6",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "facebook",
+                                "google"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/email/verify/{id}/{hash}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Email verification",
+                "operationId": "8b92b54ba65c18efa951cfa0cbe954a5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/email/resend": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend email verification",
+                "operationId": "d1574b5c1b889d9c0dca8b48a56c3615",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@escola-lms.com"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "example": "https://escolalms.com/email/verify"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/registerable-groups/": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "List registerable groups",
+                "description": "",
+                "operationId": "a627c12cb5a66bbde697875c6efd56e3",
+                "responses": {
+                    "200": {
+                        "description": "successful operation, returns list of groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "User login",
+                "operationId": "a2a8e43b1a0a22a294ade9a4094e9ee4",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "remember_me",
+                        "in": "query",
+                        "schema": {
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "User logout",
+                "operationId": "ed5c7099d18ffa01da361e7e8535f80c",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/me": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Get logged user info",
+                "operationId": "f77f4d866a5b68a935ae0d47b303316e",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Update the profile",
+                "operationId": "bc4b0a7cb29da7847017a15ec26181da",
+                "parameters": [
+                    {
+                        "name": "first_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "last_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "age",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "1 - male, 2 - female",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "street",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "postcode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "description": "phone",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/me-auth": {
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Update the profile authorization data",
+                "operationId": "24bdbb87b2fff756023e9c6767b9829b",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/password": {
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Update password",
+                "operationId": "1a99c343e885b7966acd6a2ba86e0c1a",
+                "parameters": [
+                    {
+                        "name": "current_password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_confirm_password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/interests": {
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update user interests",
+                "operationId": "03c58ed8e8547dad6c083ab3d822692f",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "interests": {
+                                        "description": "Array categories ids",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/upload-avatar": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Upload avatar",
+                "operationId": "19db5eae87560ddaae6e4c1243c4867a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAvatar"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/delete-avatar": {
+            "delete": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Delete avatar",
+                "operationId": "6c785ec66c8ca0e59b1fdaa28b92ef15",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/settings": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Get user settings",
+                "operationId": "12ed1a5df5d70506fd9576b92b6e82bf",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update user settings",
+                "operationId": "f1ca230bad78c77d7b9dd6269ba918f9",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "setting-key": {
+                                        "description": "Example setting",
+                                        "type": "object",
+                                        "example": "example-value"
+                                    },
+                                    "setting-key2": {
+                                        "description": "Example setting",
+                                        "type": "object",
+                                        "example": "example-value2"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "Register new user",
+                "operationId": "34fc21c478fa9f911cf3bed6ef92cbfd",
+                "parameters": [
+                    {
+                        "name": "first_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "last_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "return_url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "https://escolalms.com/email/verify"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
             }
         }
     },
     "components": {
         "schemas": {
-            "Setting": {
-                "required": [
-                    "title"
-                ],
+            "UserAvatar": {
                 "properties": {
-                    "id": {
-                        "description": "id",
-                        "type": "integer"
-                    },
-                    "key": {
-                        "description": "key",
-                        "type": "string"
-                    },
-                    "group": {
-                        "description": "group",
-                        "type": "string"
-                    },
-                    "value": {
-                        "description": "value",
-                        "type": "string"
-                    },
-                    "type": {
-                        "description": "type",
-                        "type": "string"
-                    },
-                    "public": {
-                        "description": "public",
-                        "type": "boolean"
-                    },
-                    "enumerable": {
-                        "description": "enumerable",
-                        "type": "boolean"
-                    },
-                    "sort": {
-                        "description": "sort",
-                        "type": "integer"
+                    "avatar": {
+                        "description": "avatar",
+                        "type": "file",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
+            },
+            "Group": {
+                "title": "Group",
+                "description": "Group model",
+                "required": [],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "registerable": {
+                        "type": "boolean"
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Group"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "required": [],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
             }
         }
     }
