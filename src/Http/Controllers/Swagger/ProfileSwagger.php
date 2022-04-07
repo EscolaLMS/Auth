@@ -50,7 +50,7 @@ interface ProfileSwagger
      *      },
      *      @OA\Parameter(
      *          name="first_name",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="string",
@@ -58,7 +58,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="last_name",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="string",
@@ -108,6 +108,15 @@ interface ProfileSwagger
      *      @OA\Parameter(
      *          name="postcode",
      *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="phone",
+     *          required=false,
+     *          description="phone",
      *          in="query",
      *          @OA\Schema(
      *              type="string",
