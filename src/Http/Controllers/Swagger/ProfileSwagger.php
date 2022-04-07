@@ -50,7 +50,7 @@ interface ProfileSwagger
      *      },
      *      @OA\Parameter(
      *          name="first_name",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="string",
@@ -58,7 +58,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="last_name",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="string",
@@ -66,7 +66,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="age",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="number",
@@ -74,7 +74,7 @@ interface ProfileSwagger
      *      ),
      *      @OA\Parameter(
      *          name="gender",
-     *          required=true,
+     *          required=false,
      *          description="1 - male, 2 - female",
      *          in="query",
      *          @OA\Schema(
@@ -108,6 +108,15 @@ interface ProfileSwagger
      *      @OA\Parameter(
      *          name="postcode",
      *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="phone",
+     *          required=false,
+     *          description="phone",
      *          in="query",
      *          @OA\Schema(
      *              type="string",
