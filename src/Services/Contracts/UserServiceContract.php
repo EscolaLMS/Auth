@@ -34,7 +34,14 @@ interface UserServiceContract
 
     public function search(CriteriaDto $criteriaDto, PaginationDto $paginationDto): Collection;
 
-    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator;
+    public function searchAndPaginate(
+        CriteriaDto $criteriaDto,
+        ?array $columns = [],
+        ?array $with = [],
+        ?array $appends = [],
+        ?int $perPage = null,
+        ?int $page = null
+    ): LengthAwarePaginator;
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void;
 }
