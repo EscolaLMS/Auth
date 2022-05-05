@@ -31,7 +31,7 @@ Route::group(['prefix' => 'api'], function () {
 
         Route::group(['prefix' => 'email'], function () {
             Route::get('verify/{id}/{hash}', [AuthApiController::class, 'verifyEmail'])->name('verification.verify');
-            Route::post('resend', [AuthApiController::class, 'resendEmailVerification'])->middleware([Route::apply(['auth:api', 'throttle:6,1'])])->name('verification.send');
+            Route::post('resend', [AuthApiController::class, 'resendEmailVerification'])->middleware(Route::apply(['auth:api', 'throttle:6,1']))->name('verification.send');
         });
 
         Route::group(['middleware' => Route::apply(['auth:api'])], function () {
@@ -39,7 +39,6 @@ Route::group(['prefix' => 'api'], function () {
             Route::get('refresh', [AuthApiController::class, 'refresh']);
         });
     });
-
     Route::middleware(Route::apply(['auth:api']))->prefix('profile')->group(function () {
         Route::get('/me', [ProfileAPIController::class, 'me']);
         Route::put('/me', [ProfileAPIController::class, 'update']);
