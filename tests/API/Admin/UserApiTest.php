@@ -640,6 +640,10 @@ class UserApiTest extends TestCase
             ->assertJsonMissing([
                 'email' => $user->email
             ]);
+
+        $this->assertSoftDeleted('users', [
+            'id' => $user->getKey(),
+        ]);
     }
 
     public function testUploadAndDeleteAvatar(): void
