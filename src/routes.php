@@ -10,7 +10,7 @@ use EscolaLms\Auth\Http\Controllers\LogoutApiController;
 use EscolaLms\Auth\Http\Controllers\ProfileAPIController;
 use EscolaLms\Auth\Http\Controllers\RegisterApiController;
 use EscolaLms\Auth\Http\Middleware\RegistrationEnabled;
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'api'], function () {
     Route::group(['prefix' => 'auth'], function () {
