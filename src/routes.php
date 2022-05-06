@@ -34,13 +34,12 @@ Route::group(['prefix' => 'api'], function () {
             Route::post('resend', [AuthApiController::class, 'resendEmailVerification'])->middleware(['auth:api', 'throttle:6,1'])->name('verification.send');
         });
 
-        Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['middleware' => ['auth:api']], function () {
             Route::post('logout', [LogoutApiController::class, 'logout'])->name('logout.api');
             Route::get('refresh', [AuthApiController::class, 'refresh']);
         });
     });
-
-    Route::middleware('auth:api')->prefix('profile')->group(function () {
+    Route::middleware(['auth:api'])->prefix('profile')->group(function () {
         Route::get('/me', [ProfileAPIController::class, 'me']);
         Route::put('/me', [ProfileAPIController::class, 'update']);
         Route::put('/me-auth', [ProfileAPIController::class, 'updateAuthData']);
@@ -52,7 +51,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::delete('/delete-avatar', [ProfileAPIController::class, 'deleteAvatar']);
     });
 
-    Route::middleware('auth:api')->prefix('admin')->group(function () {
+    Route::middleware(['auth:api'])->prefix('admin')->group(function () {
         Route::group(['prefix' => 'users'], function () {
             // Users
             Route::get('/', [UserController::class, 'listUsers']);
