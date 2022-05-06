@@ -10,6 +10,7 @@ use EscolaLms\Auth\Models\Traits\HasOnboardingStatus;
 use EscolaLms\Auth\Models\Traits\UserHasSettings;
 use EscolaLms\Categories\Models\Traits\HasInterests;
 use EscolaLms\ModelFields\Traits\ModelFields;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @OA\Schema(
@@ -32,7 +33,7 @@ use EscolaLms\ModelFields\Traits\ModelFields;
  */
 class User extends \EscolaLms\Core\Models\User
 {
-    use HasInterests, HasOnboardingStatus, UserHasSettings, HasGroups, ModelFields;
+    use HasInterests, HasOnboardingStatus, UserHasSettings, HasGroups, ModelFields, SoftDeletes;
 
     public const PASSWORD_RULES = [
         'required',
