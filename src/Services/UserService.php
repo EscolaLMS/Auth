@@ -122,6 +122,7 @@ class UserService implements UserServiceContract
 
     public function login(string $email, string $password): User
     {
+
         $user = $this->userRepository->findByEmail($email);
 
         if (is_null($user) || !Hash::check($password, $user->password)) {
