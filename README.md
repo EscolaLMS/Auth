@@ -22,6 +22,12 @@ Package for user authentication. In addition, the package includes:
 - `php artisan migrate`
 - `php artisan db:seed --class="EscolaLms\Auth\Database\Seeders\AuthPermissionSeeder"`
 
+Optional: 
+- Run command `escolalms:admin`. 
+
+## Commands
+- `escolalms:admin` - create account with role admin
+
 ## Database
 
 1. `category_user` - Table is used to store the user categories.
