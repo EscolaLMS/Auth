@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth;
 
+use EscolaLms\Auth\Console\Commands\CreateAdminCommand;
 use EscolaLms\Auth\Providers\AuthServiceProvider;
 use EscolaLms\Auth\Providers\EventServiceProvider;
 use EscolaLms\Auth\Providers\SettingsServiceProvider;
@@ -63,5 +64,8 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config.php' => config_path(self::CONFIG_KEY . '.php'),
         ], self::CONFIG_KEY . '.config');
+        $this->commands([
+            CreateAdminCommand::class
+        ]);
     }
 }
