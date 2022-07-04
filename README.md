@@ -7,6 +7,7 @@
 [![downloads](https://img.shields.io/packagist/v/escolalms/auth)](https://packagist.org/packages/escolalms/auth)
 [![downloads](https://img.shields.io/packagist/l/escolalms/auth)](https://packagist.org/packages/escolalms/auth)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b8df1362d2c9363e6e6e/maintainability)](https://codeclimate.com/github/EscolaLMS/Auth/maintainability)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FEscolaLMS%2FAuth%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/EscolaLMS/Auth/main)
 
 ## What does it do
 
