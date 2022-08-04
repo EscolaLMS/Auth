@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Rules\NoHtmlTags;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Validation\Rule;
 
@@ -16,8 +17,8 @@ class UserUpdateRequest extends AbstractUserIdInRouteRequest
     public function rules()
     {
         $rules = [
-            'first_name' => [$this->requiredIfPut(), 'string', 'max:255'],
-            'last_name' => [$this->requiredIfPut(), 'string', 'max:255'],
+            'first_name' => [$this->requiredIfPut(), 'string', 'max:255', new NoHtmlTags()],
+            'last_name' => [$this->requiredIfPut(), 'string', 'max:255', new NoHtmlTags()],
             // email, password and roles are optional even when using Put
             'email' => [
                 'sometimes',

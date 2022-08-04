@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Enums\GenderType;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Rules\NoHtmlTags;
 use EscolaLms\ModelFields\Facades\ModelFields;
 
 class ProfileUpdateRequest extends ExtendableRequest
@@ -21,8 +22,8 @@ class ProfileUpdateRequest extends ExtendableRequest
     public function rules()
     {
         $rules = [
-            'first_name' => ['string', 'max:255'],
-            'last_name' => ['string', 'max:255'],
+            'first_name' => ['string', 'max:255', new NoHtmlTags()],
+            'last_name' => ['string', 'max:255', new NoHtmlTags()],
             'age' => ['numeric'],
             'gender' => ['in:' . implode(',', GenderType::getValues())],
         ];
