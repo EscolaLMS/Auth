@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Http\Requests;
 
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
+use EscolaLms\Auth\Rules\NoHtmlTags;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Validation\Rule;
 
@@ -27,8 +28,8 @@ class RegisterRequest extends ExtendableRequest
     public function rules()
     {
         $rules =  [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255', new NoHtmlTags()],
+            'last_name' => ['required', 'string', 'max:255', new NoHtmlTags()],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => [...User::PASSWORD_RULES, 'confirmed'],
             'verified' => ['prohibited'],
