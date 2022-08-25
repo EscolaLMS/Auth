@@ -287,10 +287,10 @@ class AuthApiTest extends TestCase
         $user = $this->makeStudent();
         Passport::actingAs($user);
         $tokenConfig = config('passport.personal_access_client.secret');
-        $token = $user->createToken($tokenConfig)->accessToken;
-        $this->response = $this->json('POST', '/api/auth/logout', [], [
-            'Authorization' => "Bearer $token",
-        ]);
+        $token = $user->createToken($tokenConfig)->token;
+        $user->withAccessToken($token);
+        $this->response = $this->actingAs($user, 'api')->json('POST', '/api/auth/logout');
+
         $this->assertApiSuccess();
         Event::assertDispatched(Logout::class);
     }
