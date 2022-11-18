@@ -42,6 +42,7 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/auth'),
         ]);
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'user');
 
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
