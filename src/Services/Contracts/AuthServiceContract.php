@@ -14,4 +14,6 @@ interface AuthServiceContract
     public function getTokenBySocial(string $provider): string;
 
     public function createTokenForUser(User $user, bool $rememberMe = false): PersonalAccessTokenResult;
+
+    public function refreshToken(User $user): PersonalAccessTokenResult;
 }

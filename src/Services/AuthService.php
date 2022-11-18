@@ -96,4 +96,12 @@ class AuthService implements AuthServiceContract
 
         return $user->createToken(config('passport.personal_access_client.secret'));
     }
+
+    public function refreshToken(User $user): PersonalAccessTokenResult
+    {
+        $token = $user->token();
+        $rememberMe = $token->expires_at->diffInMinutes($token->created_at) > TokenExpirationEnum::SHORT_TIME_IN_MINUTES;
+
+        return $this->createTokenForUser($user, $rememberMe);
+    }
 }
