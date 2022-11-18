@@ -15,7 +15,7 @@
   "require-dev": {
     "maatwebsite/excel": "^3.1",
     "phpunit/phpunit": "^9.0",
-    "orchestra/testbench": ">=5.0",
+    "orchestra/testbench": "^6",
     "escolalms/settings": "^0.1.3",
     "escolalms/notifications": "^0"
   },
