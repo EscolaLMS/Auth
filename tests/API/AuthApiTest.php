@@ -475,6 +475,10 @@ class AuthApiTest extends TestCase
     public function testRefreshToken(): void
     {
         $user = $this->makeStudent();
+        Passport::actingAs($user);
+        $tokenConfig = config('passport.personal_access_client.secret');
+        $token = $user->createToken($tokenConfig)->token;
+        $user->withAccessToken($token);
         $this->response = $this->actingAs($user)->json('GET', '/api/auth/refresh');
         $this->assertApiSuccess();
 

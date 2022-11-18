@@ -21,6 +21,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
@@ -64,7 +65,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function refresh(RefreshTokenRequest $request): JsonResponse
     {
-        $token = $this->authService->createTokenForUser($request->user());
+        $token = $this->authService->refreshToken($request->user());
 
         return $this->sendResponse(LoginResource::make($token), __('Token refreshed'));
     }
