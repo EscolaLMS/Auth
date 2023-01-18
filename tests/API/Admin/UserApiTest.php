@@ -135,6 +135,52 @@ class UserApiTest extends TestCase
         Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
+    public function testCreateUserWithDeletedUserEmail()
+    {
+        Event::fake();
+        Notification::fake();
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'roles' => [UserRole::STUDENT],
+            'password' => $password,
+            'phone' => '+48600600600',
+            'email' => 'exsitingemail@example.com',
+        ]);
+
+        $userCreated = User::factory()->create([
+            'email' => 'exsitingemail@example.com',
+        ]);
+        $userCreated->delete();
+
+        $this->assertSoftDeleted($userCreated);
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+
+        unset($userData['password']);
+        unset($userData['roles']);
+
+        $this->response
+            ->assertCreated()
+            ->assertJsonFragment($userData);
+
+        Event::assertDispatched(Registered::class, function (Registered $event) use ($userData) {
+            return $userData['email'] === $event->user->email && is_null($event->user->email_verified_at);
+        });
+        Event::assertDispatched(AccountRegistered::class);
+
+        $newUser = User::where('email', $userData['email'])->first();
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
+
+        Notification::assertSentTo($newUser, VerifyEmail::class);
+    }
+
     public function testCreateUserWithSettingsAndGroup()
     {
         Event::fake();

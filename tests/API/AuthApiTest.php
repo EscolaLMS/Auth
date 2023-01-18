@@ -72,6 +72,46 @@ class AuthApiTest extends TestCase
         Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
+    public function testRegisterWithDeletedUserEmail(): void
+    {
+        Event::fake();
+        Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
+
+        $deletedUser = User::factory()->create([
+            'email' => 'test@test.test',
+        ]);
+        $deletedUser->delete();
+        $this->assertSoftDeleted($deletedUser);
+
+        $this->response = $this->json(
+            'POST',
+            '/api/auth/register',
+            [
+                'email' => 'test@test.test',
+                'first_name' => 'tester',
+                'last_name' => 'tester',
+                'password' => 'testtest',
+                'password_confirmation' => 'testtest',
+                'return_url' => 'https://escolalms.com/email/verify',
+            ]
+        );
+
+        $this->assertApiSuccess();
+        Event::assertDispatched(AccountRegistered::class);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'deleted_at' => null
+        ]);
+        $newUser = User::where('email', 'test@test.test')->first();
+        $listener = app(SendEmailVerificationNotification::class);
+        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
+        Notification::assertSentTo($newUser, VerifyEmail::class);
+    }
+
     public function testRegisterWithSettingsAndGroup(): void
     {
         Event::fake();
