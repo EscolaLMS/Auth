@@ -26,7 +26,6 @@ use Illuminate\Support\ServiceProvider;
 class EscolaLmsAuthServiceProvider extends ServiceProvider
 {
     const CONFIG_KEY = 'escola_auth';
-    const VIEW_ROUTING_KEY = 'escola_view_routing';
 
     public array $bindings = [
         AuthServiceContract::class => AuthService::class,
@@ -39,7 +38,6 @@ class EscolaLmsAuthServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/config.php', self::CONFIG_KEY);
-        $this->mergeConfigFrom(__DIR__ . '/view_routing.php', self::VIEW_ROUTING_KEY);
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'auth');
         $this->publishes([
