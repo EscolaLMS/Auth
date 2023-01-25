@@ -30,13 +30,7 @@ class RegisterRequest extends ExtendableRequest
         $rules =  [
             'first_name' => ['required', 'string', 'max:255', new NoHtmlTags()],
             'last_name' => ['required', 'string', 'max:255', new NoHtmlTags()],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->whereNull('deleted_at'),
-            ],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => [...User::PASSWORD_RULES, 'confirmed'],
             'verified' => ['prohibited'],
             'groups' => ['sometimes', 'array'],

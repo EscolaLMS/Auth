@@ -74,8 +74,6 @@ class AuthApiTest extends TestCase
 
     public function testRegisterWithDeletedUserEmail(): void
     {
-        Event::fake();
-        Notification::fake();
         Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
 
         $deletedUser = User::factory()->create([
@@ -83,6 +81,9 @@ class AuthApiTest extends TestCase
         ]);
         $deletedUser->delete();
         $this->assertSoftDeleted($deletedUser);
+
+        Event::fake();
+        Notification::fake();
 
         $this->response = $this->json(
             'POST',

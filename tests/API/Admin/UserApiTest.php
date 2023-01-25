@@ -137,9 +137,6 @@ class UserApiTest extends TestCase
 
     public function testCreateUserWithDeletedUserEmail()
     {
-        Event::fake();
-        Notification::fake();
-
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
@@ -155,6 +152,9 @@ class UserApiTest extends TestCase
             'email' => 'exsitingemail@example.com',
         ]);
         $userCreated->delete();
+
+        Event::fake();
+        Notification::fake();
 
         $this->assertSoftDeleted($userCreated);
         unset($userData['email_verified_at']);

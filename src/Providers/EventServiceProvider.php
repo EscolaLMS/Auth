@@ -2,9 +2,11 @@
 
 namespace EscolaLms\Auth\Providers;
 
+use EscolaLms\Auth\Events\AccountDeleted;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Events\ForgotPassword;
 use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
+use EscolaLms\Auth\Listeners\EmailAnonymisation;
 use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
 
 class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\EventServiceProvider
@@ -15,6 +17,9 @@ class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\Even
         ],
         ForgotPassword::class => [
             CreatePasswordResetToken::class,
+        ],
+        AccountDeleted::class => [
+            EmailAnonymisation::class,
         ],
     ];
 
