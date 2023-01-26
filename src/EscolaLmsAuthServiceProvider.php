@@ -17,6 +17,7 @@ use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Auth\Services\UserGroupService;
 use EscolaLms\Auth\Services\UserService;
 use EscolaLms\ModelFields\ModelFieldsServiceProvider;
+use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Support\ServiceProvider;
 
 /**

@@ -26,7 +26,7 @@ class UserUpdateRequest extends AbstractUserIdInRouteRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique(User::query()->getQuery()->from)->ignore($this->route('id'))
+                Rule::unique(User::query()->getQuery()->from)->ignore($this->route('id')),
             ],
             'email_verified' => [
                 'sometimes',

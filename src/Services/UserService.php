@@ -212,6 +212,13 @@ class UserService implements UserServiceContract
         $this->userRepository->update($fields, $user->getKey());
     }
 
+    public function anonymiseEmail(AuthUser $user): void
+    {
+        $this->userRepository->update([
+            'email' => $user->email . '+deleted+' . now()->timestamp,
+        ], $user->getKey());
+    }
+
     private function makeColumns(?array $columns): array
     {
         if (!$columns) {

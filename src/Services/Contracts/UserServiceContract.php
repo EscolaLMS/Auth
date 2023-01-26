@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Services\Contracts;
 
+use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use EscolaLms\Auth\Dtos\UserSaveDto;
@@ -44,4 +45,6 @@ interface UserServiceContract
     ): LengthAwarePaginator;
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void;
+
+    public function anonymiseEmail(AuthUser $user): void;
 }
