@@ -114,7 +114,9 @@ class UserApiTest extends TestCase
         unset($userData['email_verified_at']);
         unset($userData['remember_token']);
 
-        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('POST', '/api/admin/users/', $userData + ['return_url' => 'https://escolalms.com/email/verify']);
 
         unset($userData['password']);
         unset($userData['roles']);
@@ -160,7 +162,9 @@ class UserApiTest extends TestCase
         unset($userData['email_verified_at']);
         unset($userData['remember_token']);
 
-        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('POST', '/api/admin/users/', $userData + ['return_url' => 'https://escolalms.com/email/verify']);
 
         unset($userData['password']);
         unset($userData['roles']);
@@ -209,7 +213,9 @@ class UserApiTest extends TestCase
         unset($userData['email_verified_at']);
         unset($userData['remember_token']);
 
-        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('POST', '/api/admin/users/', $userData + ['return_url' => 'https://escolalms.com/email/verify']);
 
         unset($userData['password']);
         unset($userData['roles']);
@@ -270,7 +276,8 @@ class UserApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)
             ->json('POST', '/api/admin/users/', array_merge($userData, [
-                'additional_field_visibility_for_admin' => 123
+                'additional_field_visibility_for_admin' => 123,
+                'return_url' => 'https://escolalms.com/email/verify',
             ]))
             ->assertStatus(422);
 
@@ -283,6 +290,7 @@ class UserApiTest extends TestCase
             ->json('POST', '/api/admin/users/', array_merge($userData, [
                 'additional_field_a' => 'string1',
                 'additional_field_visibility_for_admin' => 'string2',
+                'return_url' => 'https://escolalms.com/email/verify',
             ]))
             ->assertCreated()
             ->assertJsonFragment([
@@ -311,7 +319,9 @@ class UserApiTest extends TestCase
         unset($userData['remember_token']);
         $userData['verified'] = true;
 
-        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/users/', $userData);
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('POST', '/api/admin/users/', $userData + ['return_url' => 'https://escolalms.com/email/verify']);
 
         unset($userData['password']);
         unset($userData['roles']);
