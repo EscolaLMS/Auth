@@ -66,7 +66,7 @@ class UserController extends AbstractUserController implements UserSwagger
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
             if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
-                event(new AccountRegistered($user, null));
+                event(new AccountRegistered($user, $request->input('return_url')));
             }
             return $this->sendResponseForResource(UserFullResource::make($user->refresh()), __('Created user'));
         } catch (Exception $ex) {

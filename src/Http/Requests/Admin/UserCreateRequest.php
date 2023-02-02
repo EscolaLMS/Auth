@@ -43,6 +43,7 @@ class UserCreateRequest extends ExtendableRequest
                 'nullable',
                 'string',
             ],
+            'return_url' => ['required', 'url'],
         ];
 
         return array_merge($rules, ModelFields::getFieldsMetadataRules(User::class));
