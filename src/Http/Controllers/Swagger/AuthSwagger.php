@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Swagger;
 
+use EscolaLms\Auth\Http\Requests\CompleteSocialDataRequest;
 use EscolaLms\Auth\Http\Requests\ForgotPasswordRequest;
 use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
 use EscolaLms\Auth\Http\Requests\ResendVerificationEmailRequest;
@@ -147,6 +148,44 @@ interface AuthSwagger
      * )
      */
     public function socialCallback(SocialAuthRequest $request): RedirectResponse;
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/social/complete/{token}",
+     *     summary="Complete the missing data from socials",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *          name="token",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 example="user@escola-lms.com",
+     *             ),
+     *             @OA\Property(
+     *                 property="return_url",
+     *                 type="string",
+     *                 example="https://escolalms.com/email/verify",
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     * )
+     */
+    public function completeSocialData(CompleteSocialDataRequest $request): JsonResponse;
 
     /**
      * @OA\Get(
