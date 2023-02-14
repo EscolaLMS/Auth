@@ -2,9 +2,9 @@
 
 namespace Database\Factories\EscolaLms\Auth\Models;
 
-use App\Models\User;
 use EscolaLms\Auth\Enums\SocialiteProvidersEnum;
 use EscolaLms\Auth\Models\SocialAccount;
+use EscolaLms\Auth\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SocialAccountFactory extends Factory

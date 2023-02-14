@@ -4,7 +4,7 @@ namespace EscolaLms\Auth\Repositories;
 
 use EscolaLms\Auth\Models\SocialAccount;
 use EscolaLms\Auth\Repositories\Contracts\SocialAccountRepositoryContract;
-use EscolaLms\Courses\Repositories\BaseRepository;
+use EscolaLms\Core\Repositories\BaseRepository;
 
 class SocialAccountRepository extends BaseRepository implements SocialAccountRepositoryContract
 {
