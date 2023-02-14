@@ -1173,6 +1173,52 @@
                 }
             }
         },
+        "/api/auth/social/complete/{token}": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Complete the missing data from socials",
+                "operationId": "96cb7a6094f620ab3d5962b6f7595754",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@escola-lms.com"
+                                    },
+                                    "return_url": {
+                                        "type": "string",
+                                        "example": "https://escolalms.com/email/verify"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/email/verify/{id}/{hash}": {
             "get": {
                 "tags": [
@@ -1845,6 +1891,32 @@
                 "xml": {
                     "name": "Group"
                 }
+            },
+            "pre-user": {
+                "required": [
+                    "email",
+                    "first_name",
+                    "last_name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "id",
+                        "type": "integer"
+                    },
+                    "email": {
+                        "description": "email",
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "description": "first_name",
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "description": "last_name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
             },
             "User": {
                 "title": "User",
