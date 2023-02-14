@@ -4,7 +4,9 @@ namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\AccountRegistered;
+use EscolaLms\Auth\Exceptions\AuthException;
 use EscolaLms\Auth\Http\Controllers\Swagger\AuthSwagger;
+use EscolaLms\Auth\Http\Requests\CompleteSocialDataRequest;
 use EscolaLms\Auth\Http\Requests\ForgotPasswordRequest;
 use EscolaLms\Auth\Http\Requests\RefreshTokenRequest;
 use EscolaLms\Auth\Http\Requests\ResendVerificationEmailRequest;
@@ -14,6 +16,7 @@ use EscolaLms\Auth\Http\Resources\LoginResource;
 use EscolaLms\Auth\Http\Resources\UserGroupResource;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
+use EscolaLms\Auth\Services\Contracts\SocialAccountServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -27,14 +30,20 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 {
     private AuthServiceContract $authService;
     private UserRepositoryContract $userRepository;
+    private SocialAccountServiceContract $socialAccountService;
 
     /**
      * @param AuthServiceContract $authService
      */
-    public function __construct(AuthServiceContract $authService, UserRepositoryContract $userRepository)
+    public function __construct(
+        AuthServiceContract $authService,
+        UserRepositoryContract $userRepository,
+        SocialAccountServiceContract $socialAccountService
+    )
     {
         $this->authService = $authService;
         $this->userRepository = $userRepository;
+        $this->socialAccountService = $socialAccountService;
     }
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
@@ -88,31 +97,28 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function socialCallback(SocialAuthRequest $request): RedirectResponse
     {
-        $token = $this->authService->getTokenBySocial($request->route('provider'));
-
-        $returnUrl = $request->input('return_url')
-            ?? $this->getSocialReturnUrlFromState($request->input('state'))
-            ?? (config('app.frontend_url') . '/authentication');
-
-        $returnUrl .= '?token=' . $token;
+        $returnUrl = $this->socialAccountService->getReturnUrl(
+            $request->route('provider'),
+            $request->input('return_url'),
+            $request->input('state')
+        );
 
         return redirect($returnUrl);
     }
 
-    private function getSocialReturnUrlFromState(?string $state): ?string
+    public function completeSocialData(CompleteSocialDataRequest $request): JsonResponse
     {
-        if (is_null($state)) {
-            return null;
+        try {
+            $this->socialAccountService->completeData(
+                $request->input('token'),
+                $request->input('email'),
+                $request->input('return_url')
+            );
+        } catch (AuthException $e) {
+            return $this->sendError($e->getMessage(), $e->getCode());
         }
-        $decoded = base64_decode($state, true);
-        if (!$decoded || base64_encode($decoded) !== $state) {
-            return null;
-        }
-        $json = json_decode($decoded, true);
-        if (is_null($json) || !array_key_exists('return_url', $json)) {
-            return null;
-        }
-        return $json['return_url'];
+
+        return $this->sendSuccess(__('The data has been completed. Verification email has been sent.'));
     }
 
     public function verifyEmail(Request $request, string $id, string $hash)

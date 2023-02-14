@@ -2,32 +2,25 @@
 
 namespace EscolaLms\Auth\Services;
 
-use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\Events\ForgotPassword;
 use EscolaLms\Auth\Events\ResetPassword;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
-use EscolaLms\Auth\Services\Contracts\UserServiceContract;
-use EscolaLms\Core\Enums\UserRole;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PersonalAccessTokenResult;
-use Laravel\Socialite\Facades\Socialite;
 
 class AuthService implements AuthServiceContract
 {
-    private UserServiceContract $userService;
     private UserRepositoryContract $userRepository;
 
-    public function __construct(UserServiceContract $userService, UserRepositoryContract $userRepository)
+    public function __construct(UserRepositoryContract $userRepository)
     {
-        $this->userService = $userService;
         $this->userRepository = $userRepository;
     }
 
@@ -57,33 +50,6 @@ class AuthService implements AuthServiceContract
             'password_reset_token' => null,
         ], $user->getKey());
         event(new ResetPassword($user));
-    }
-
-    public function getTokenBySocial(string $provider): string
-    {
-        /** @var \Laravel\Socialite\AbstractUser $socialUser */
-        $socialUser = Socialite::driver($provider)->stateless()->user();
-        $user = $this->userRepository->findByEmail($socialUser->email);
-
-        if (is_null($user)) {
-            $name = Str::of($socialUser->name);
-            $firstName = Str::of($name->explode(' ')->first())->trim();
-            $lastName = $name->after($firstName)->trim();
-
-            $userSaveDto = new UserSaveDto(
-                $firstName,
-                $lastName,
-                true,
-                [UserRole::STUDENT],
-                $socialUser->email,
-                null,
-                true,
-            );
-
-            $user = $this->userService->create($userSaveDto);
-        }
-
-        return $this->createTokenForUser($user, true)->accessToken;
     }
 
     public function createTokenForUser(User $user, bool $rememberMe = false): PersonalAccessTokenResult

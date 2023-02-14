@@ -27,6 +27,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::group(['prefix' => 'social'], function () {
             Route::get('{provider}', [AuthApiController::class, 'socialRedirect']);
             Route::get('{provider}/callback', [AuthApiController::class, 'socialCallback']);
+            Route::post('complete/{token}', [AuthApiController::class, 'completeSocialData']);
         });
 
         Route::group(['prefix' => 'email'], function () {
