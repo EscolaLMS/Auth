@@ -113,6 +113,15 @@ interface AuthSwagger
      *              enum={"facebook", "google"},
      *          ),
      *      ),
+     *     @OA\Parameter(
+     *          name="return_url",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="https://escolalms.com/auth/return",
+     *          ),
+     *      ),
      *     @OA\Response(
      *          response=302,
      *          description="successful operation",
