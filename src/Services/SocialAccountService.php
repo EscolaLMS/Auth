@@ -162,7 +162,9 @@ class SocialAccountService implements SocialAccountServiceContract
             ?? $this->getSocialReturnUrlFromState($sate)
             ?? (config('app.frontend_url') . '/authentication');
 
-        return $returnUrl . '?token=' . $token . '&complete=' . ($isComplete ? 'true' : 'false');
+        $sep = parse_url($returnUrl, PHP_URL_QUERY) ? '&' : '?';
+
+        return $returnUrl . $sep . 'token=' . $token . '&complete=' . ($isComplete ? 'true' : 'false');
     }
 
     private function getSocialReturnUrlFromState(?string $state): ?string
