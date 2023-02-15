@@ -1130,6 +1130,15 @@
                                 "google"
                             ]
                         }
+                    },
+                    {
+                        "name": "return_url",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "https://escolalms.com/auth/return"
+                        }
                     }
                 ],
                 "responses": {
