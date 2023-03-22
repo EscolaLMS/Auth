@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers;
 
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Exceptions\AuthException;
@@ -24,6 +25,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
@@ -147,7 +149,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
         $user = $this->userRepository->findByEmail($request->input('email'));
 
         if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
-            event(new AccountRegistered($user, $request->input('return_url')));
+            event(new AccountRegistered($user, $request->input('return_url', Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.return_url'))));
         }
 
         return $this->sendSuccess(__('Verification message resent if email exists in database'));

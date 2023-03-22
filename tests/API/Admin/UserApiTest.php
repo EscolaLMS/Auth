@@ -137,6 +137,29 @@ class UserApiTest extends TestCase
         Notification::assertSentTo($newUser, VerifyEmail::class);
     }
 
+    public function testCreateUserWithoutReturnUrl()
+    {
+        Event::fake();
+        Notification::fake();
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $password = 'secret';
+        $userData = User::factory()->raw([
+            'roles' => [UserRole::STUDENT],
+            'password' => $password,
+            'phone' => '+48600600600'
+        ]);
+        unset($userData['email_verified_at']);
+        unset($userData['remember_token']);
+
+        $this->response = $this
+            ->actingAs($admin)
+            ->json('POST', '/api/admin/users/', $userData)
+            ->assertUnprocessable();
+    }
+
     public function testCreateUserWithDeletedUserEmail()
     {
         /** @var User $admin */

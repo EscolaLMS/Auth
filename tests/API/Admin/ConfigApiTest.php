@@ -63,6 +63,17 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
+                    'return_url' => [
+                        'full_key' => 'escola_auth.return_url',
+                        'key' => 'return_url',
+                        'rules' => [
+                            'required',
+                            'url',
+                        ],
+                        'value' => null,
+                        'readonly' => false,
+                        'public' => true,
+                    ],
                 ],
                 'services' => [
                     'facebook' => [
@@ -150,6 +161,10 @@ class ConfigApiTest extends TestCase
                         'key' => 'escola_auth.account_must_be_enabled_by_admin',
                         'value' => SettingStatusEnum::ENABLED,
                     ],
+                    [
+                        'key' => 'escola_auth.return_url',
+                        'value' => 'https://example.com',
+                    ],
                 ]
             ]
         );
@@ -164,6 +179,7 @@ class ConfigApiTest extends TestCase
             'escola_auth' => [
                 'registration' => SettingStatusEnum::DISABLED,
                 'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
+                'return_url' => 'https://example.com',
             ]
         ]);
     }
