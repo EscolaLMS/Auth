@@ -8,4 +8,5 @@ return [
     ],
     'registration' => SettingStatusEnum::ENABLED,
     'account_must_be_enabled_by_admin' => SettingStatusEnum::DISABLED,
+    'return_url' => null,
 ];

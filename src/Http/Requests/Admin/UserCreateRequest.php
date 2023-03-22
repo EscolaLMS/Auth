@@ -2,11 +2,14 @@
 
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
+use EscolaLms\Auth\Enums\SettingStatusEnum;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Rules\NoHtmlTags;
 use EscolaLms\ModelFields\Facades\ModelFields;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 
 class UserCreateRequest extends ExtendableRequest
@@ -43,7 +46,7 @@ class UserCreateRequest extends ExtendableRequest
                 'nullable',
                 'string',
             ],
-            'return_url' => ['required', 'url'],
+            'return_url' => ['url', Rule::requiredIf(fn () => !Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.return_url'))],
         ];
 
         return array_merge($rules, ModelFields::getFieldsMetadataRules(User::class));

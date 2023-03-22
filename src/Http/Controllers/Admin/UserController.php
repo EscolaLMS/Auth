@@ -7,6 +7,8 @@ use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserFilterCriteriaDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
+use EscolaLms\Auth\Enums\SettingStatusEnum;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Controllers\Admin\Swagger\UserSwagger;
@@ -24,6 +26,7 @@ use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Config;
 
 class UserController extends AbstractUserController implements UserSwagger
 {
@@ -66,7 +69,10 @@ class UserController extends AbstractUserController implements UserSwagger
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
             event(new Registered($user));
             if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
-                event(new AccountRegistered($user, $request->input('return_url')));
+                event(new AccountRegistered($user, $request->input(
+                    'return_url',
+                    Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.return_url')
+                )));
             }
             return $this->sendResponseForResource(UserFullResource::make($user->refresh()), __('Created user'));
         } catch (Exception $ex) {

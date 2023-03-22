@@ -19,6 +19,7 @@ class SettingsServiceProvider extends ServiceProvider
             }
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.registration', ['required', 'string', 'in:' . implode(',', SettingStatusEnum::getValues())]);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', ['required', 'string', 'in:' . implode(',', SettingStatusEnum::getValues())]);
+            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.return_url', ['required', 'url']);
 
             // SOCIALITE
             AdministrableConfig::registerConfig('services.facebook.client_id', ['required', 'string'], false);
