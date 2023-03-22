@@ -63,7 +63,7 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
-                    'redirect_url' => [
+                    'return_url' => [
                         'full_key' => 'escola_auth.return_url',
                         'key' => 'return_url',
                         'rules' => [
