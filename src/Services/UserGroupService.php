@@ -89,7 +89,13 @@ class UserGroupService implements UserGroupServiceContract
 
     public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
     {
-        return $this->userGroupRepository->queryWithAppliedCriteria($criteriaDto->toArray())->paginate($perPage, ['*'], 'page', $page)->appends($appends);
+        $query = $this->userGroupRepository->queryWithAppliedCriteria($criteriaDto->toArray());
+
+        if ($perPage === -1 || $page === -1) {
+            return $query->paginate($query->count())->appends($appends);
+        } else {
+            return $query->paginate($perPage, ['*'], 'page', $page)->appends($appends);
+        }
     }
 
     public function getRegisterableGroups(): Collection

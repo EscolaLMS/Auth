@@ -73,12 +73,12 @@ class UserGroupApiTest extends TestCase
         /** @var User $admin */
         $admin = $this->makeAdmin();
 
-        $groups = Group::factory()->count(4)->create();
+        $groups = Group::factory()->count(100)->create();
         /** @var Group $group */
         $group = Group::factory()->create(['name' => 'Parent']);
         $group->children()->saveMany($groups);
 
-        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/tree/');
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/tree?per_page=-1');
         $this->response->assertOk();
 
         $count = Group::where('parent_id', null)->count();
@@ -88,7 +88,7 @@ class UserGroupApiTest extends TestCase
         $data = $this->response->json('data');
         foreach ($data as $parent_group) {
             if ($parent_group['name'] === 'Parent') {
-                $this->assertEquals(4, count($parent_group['subgroups']));
+                $this->assertEquals(100, count($parent_group['subgroups']));
                 $this->assertEquals('Parent. ' . ucfirst($groups->get(0)->name), $parent_group['subgroups'][0]['name_with_breadcrumbs']);
             }
         }

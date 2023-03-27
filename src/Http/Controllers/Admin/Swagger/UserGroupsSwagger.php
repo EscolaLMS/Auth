@@ -22,6 +22,22 @@ interface UserGroupsSwagger
      *      security={
      *          {"passport": {}},
      *      },
+     *      @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="per_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
      *     @OA\Parameter(
      *          name="search",
      *          required=false,
@@ -64,6 +80,22 @@ interface UserGroupsSwagger
      *      security={
      *          {"passport": {}},
      *      },
+     *      @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="per_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
      *     @OA\Parameter(
      *          name="search",
      *          required=false,
