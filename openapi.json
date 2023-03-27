@@ -15,6 +15,22 @@
                 "operationId": "b4631bcf8030edaa73072b86b87a2f23",
                 "parameters": [
                     {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "required": false,
@@ -92,6 +108,22 @@
                 "description": "",
                 "operationId": "6655f9b0a9e4a3b5091bd2ac677e757a",
                 "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
                     {
                         "name": "search",
                         "in": "query",
