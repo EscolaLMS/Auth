@@ -19,7 +19,10 @@ class UserGroupFilterCriteriaDto extends CriteriaDto implements DtoContract, Ins
     {
         $criteria = new Collection();
 
-        if ($request->user()->can(AuthPermissionsEnum::USER_GROUP_LIST_SELF)) {
+        if (
+            $request->user()->can(AuthPermissionsEnum::USER_GROUP_LIST_SELF)
+            && !$request->user()->can(AuthPermissionsEnum::USER_GROUP_LIST)
+        ) {
             $criteria->push(
                 new HasCriterion('users', fn ($query) => $query->where('user_id', $request->user()->getKey()))
             );
