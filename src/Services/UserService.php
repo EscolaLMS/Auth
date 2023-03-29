@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Services;
 
+use EscolaLms\Auth\Dtos\Admin\UserAssignableDto;
 use EscolaLms\Auth\Dtos\Admin\UserUpdateDto as AdminUserUpdateDto;
 use EscolaLms\Auth\Dtos\Admin\UserUpdateKeysDto as AdminUserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserSaveDto;
@@ -217,6 +218,12 @@ class UserService implements UserServiceContract
         $this->userRepository->update([
             'email' => $user->email . '+deleted+' . now()->timestamp,
         ], $user->getKey());
+    }
+
+    public function assignableUsers(string $assignableBy, ?int $perPage = null, ?int $page = null): LengthAwarePaginator
+    {
+        $dto = UserAssignableDto::instantiateFromArray(['assignable_by' => $assignableBy]);
+        return $this->searchAndPaginate($dto, [], [], [], $perPage, $page);
     }
 
     private function makeColumns(?array $columns): array
