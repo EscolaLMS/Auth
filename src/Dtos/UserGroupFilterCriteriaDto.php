@@ -33,6 +33,9 @@ class UserGroupFilterCriteriaDto extends CriteriaDto implements DtoContract, Ins
         if ($request->has('parent_id')) {
             $criteria->push(new EqualCriterion('parent_id', $request->get('parent_id')));
         }
+        if ($request->has('user_id')) {
+            $criteria->push(new HasCriterion('users', fn ($query) => $query->where('user_id', $request->get('user_id'))));
+        }
         if ($criteria->isEmpty() && $tree) {
             $criteria->push(new UserGroupRootCriterion());
         }
