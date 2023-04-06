@@ -55,6 +55,14 @@ interface UserGroupsSwagger
      *              format="int64",
      *          ),
      *      ),
+     *     @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          ),
+     *      ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation, returns list of groups",

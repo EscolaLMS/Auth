@@ -94,6 +94,20 @@ class UserGroupApiTest extends TestCase
         ]);
     }
 
+    public function testFilterListGroupsByUserId(): void
+    {
+        Group::factory()->count(5)->create();
+        $student = $this->makeStudent();
+        $studentGroup = Group::factory()->create();
+        $studentGroup->users()->sync($student);
+
+        $this->response = $this->actingAs($this->makeAdmin())
+            ->getJson('api/admin/user-groups?user_id=' . $student->getKey())
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $studentGroup->getKey());
+    }
+
     public function testListTree()
     {
         /** @var User $admin */
