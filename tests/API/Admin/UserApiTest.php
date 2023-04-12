@@ -728,7 +728,7 @@ class UserApiTest extends TestCase
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
         $this->response
-            ->assertStatus(404)
+            ->assertStatus(422)
             ->assertJsonMissing([
                 'email' => $user->email
             ]);
