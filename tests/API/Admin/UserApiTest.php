@@ -59,6 +59,20 @@ class UserApiTest extends TestCase
             ]);
     }
 
+    public function testGetUserNotFound(): void
+    {
+        /** @var User $user */
+        $user = $this->makeStudent();
+        $user->delete();
+
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
+
+        $this->response->assertStatus(422);
+    }
+
     public function testGetSelf(): void
     {
         /** @var User $tutor */

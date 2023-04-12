@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Requests\Admin;
 
+use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Http\Requests\ExtendableRequest;
 use EscolaLms\Auth\Models\User;
 
@@ -25,6 +26,13 @@ abstract class AbstractUserIdInRouteRequest extends ExtendableRequest
 
     public function getRouteUser(): User
     {
-        return User::query()->findOrFail($this->route('id'));
+        /** @var User $user */
+        $user = User::query()->find($this->route('id'));
+
+        if (is_null($user)) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
     }
 }
