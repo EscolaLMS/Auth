@@ -8,6 +8,7 @@ use EscolaLms\Auth\Events\AccountDeleted;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
 use EscolaLms\Auth\Models\Group;
+use EscolaLms\Auth\Models\SocialAccount;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Categories\Models\Category;
@@ -1163,6 +1164,28 @@ class UserApiTest extends TestCase
             'data',
             'meta',
             'message',
+        ]);
+    }
+
+    public function testUserAccountDeletionTriggersSocialAccountsRemoval(): void
+    {
+        Notification::fake();
+
+        /** @var User $user */
+        $user = $this->makeStudent();
+
+        SocialAccount::factory()->state(['user_id' => $user->getKey()])->create();
+
+        $this->response = $this->actingAs($this->makeAdmin())
+            ->deleteJson('/api/admin/users/' . $user->getKey())
+            ->assertStatus(200);
+
+        $this->assertSoftDeleted('users', [
+            'id' => $user->getKey(),
+        ]);
+
+        $this->assertDatabaseMissing('social_accounts', [
+            'user_id' => $user->getKey(),
         ]);
     }
 }
