@@ -69,7 +69,6 @@ class UserApiTest extends TestCase
         $admin = $this->makeAdmin();
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
-
         $this->response->assertStatus(422);
     }
 
