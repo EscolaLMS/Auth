@@ -33,6 +33,9 @@ jobs:
 
       - name: Instantiate package
         uses: actions/checkout@v2
+        
+      - name: SafeDirFix
+        run: git config --global safe.directory '*'
 
       - name: Setup environment
         run: cp -r env/codecov/. .
