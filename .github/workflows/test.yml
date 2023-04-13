@@ -42,7 +42,7 @@ jobs:
   php74-laravel-latest-phpunit-mysql:
     runs-on: ubuntu-latest
     container:
-      image: escolalms/php:7.4
+      image: escolalms/php:8.2
 
     services:
       mysql:
@@ -78,7 +78,7 @@ jobs:
   php74-laravel-latest-phpunit-postgres:
     runs-on: ubuntu-latest
     container:
-      image: escolalms/php:7.4
+      image: escolalms/php:8.2
 
     services:
       postgres:
