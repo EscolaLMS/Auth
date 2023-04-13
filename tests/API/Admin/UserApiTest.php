@@ -42,6 +42,134 @@ class UserApiTest extends TestCase
         Cache::flush();
     }
 
+    public function testUsersList(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin([
+            'first_name' => 'Admin',
+            'last_name' => 'Admin',
+            'email' => 'admin@example.com',
+            'email_verified_at' => now()->subDay(),
+            'is_active' => true,
+        ]);
+
+        $userOne = $this->makeStudent([
+            'first_name' => 'First',
+            'last_name' => 'User',
+            'email' => 'firstuser@example.com',
+            'email_verified_at' => now()->addDay(),
+            'is_active' => false,
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'id',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'id',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'first_name',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'first_name',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'last_name',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'last_name',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'email',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'email',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'email_verified_at',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'email_verified_at',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'is_active',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'is_active',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+    }
+
     public function testGetUser(): void
     {
         /** @var User $user */

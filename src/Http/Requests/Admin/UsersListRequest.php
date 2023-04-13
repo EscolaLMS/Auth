@@ -24,7 +24,8 @@ class UsersListRequest extends FormRequest
             'status' => ['nullable', new EnumValue(StatusEnum::class, false)],
             'onboarding' => ['nullable', new EnumValue(OnboardingStatus::class, false)],
             'from' => ['date', 'nullable'],
-            'to' => ['date', 'nullable']
+            'to' => ['date', 'nullable'],
+            'order_by' => ['sometimes', 'in:id,created_at,first_name,last_name,email,is_active,email_verified_at'],
         ];
     }
 }
