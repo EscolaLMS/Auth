@@ -21,7 +21,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserFullCollection;
 use EscolaLms\Auth\Http\Resources\UserFullResource;
-use EscolaLms\Auth\Models\User;
+use EscolaLms\Core\Dtos\OrderDto;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -33,8 +33,10 @@ class UserController extends AbstractUserController implements UserSwagger
     public function listUsers(UsersListRequest $request): JsonResponse
     {
         $userFilterDto = UserFilterCriteriaDto::instantiateFromRequest($request);
+
         $paginator = $this->userService->searchAndPaginate(
             $userFilterDto,
+            OrderDto::instantiateFromRequest($request),
             $request->get('fields'),
             $request->get('relations'),
             $request->except('page'),

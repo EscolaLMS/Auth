@@ -4,6 +4,7 @@ namespace EscolaLms\Auth\Services\Contracts;
 
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Core\Dtos\CriteriaDto;
+use EscolaLms\Core\Dtos\OrderDto;
 use Illuminate\Contracts\Auth\Authenticatable as User;
 use EscolaLms\Auth\Dtos\UserSaveDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
@@ -37,6 +38,7 @@ interface UserServiceContract
 
     public function searchAndPaginate(
         CriteriaDto $criteriaDto,
+        OrderDto $orderDto,
         ?array $columns = [],
         ?array $with = [],
         ?array $appends = [],

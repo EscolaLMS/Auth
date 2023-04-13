@@ -15,9 +15,9 @@ use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Dtos\PaginationDto;
 use EscolaLms\Files\Helpers\FileHelper;
-use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as User;
@@ -189,6 +189,7 @@ class UserService implements UserServiceContract
 
     public function searchAndPaginate(
         CriteriaDto $criteriaDto,
+        OrderDto $orderDto,
         ?array $columns = [],
         ?array $with = [],
         ?array $appends = [],
@@ -199,9 +200,15 @@ class UserService implements UserServiceContract
         $columns = $this->makeColumns($columns);
         $with = $this->makeRelations($with);
 
-        return $this->userRepository
+        $query = $this->userRepository
             ->queryWithAppliedCriteria($criteriaDto->toArray())
-            ->with($with)
+            ->with($with);
+
+        if ($orderDto->getOrderBy() !== null) {
+            $query->orderBy($orderDto->getOrderBy(), $orderDto->getOrder() ?? 'asc');
+        }
+
+        return $query
             ->paginate($perPage, $columns, 'page', $page)
             ->appends($appends);
     }
