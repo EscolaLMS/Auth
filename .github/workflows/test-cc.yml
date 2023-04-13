@@ -13,7 +13,7 @@ jobs:
   phpunit-code-coverage:
     runs-on: ubuntu-latest
     container:
-      image: escolalms/php:7.4
+      image: escolalms/php:8.2
 
     services:
       mysql:
@@ -33,6 +33,9 @@ jobs:
 
       - name: Instantiate package
         uses: actions/checkout@v2
+        
+      - name: SafeDirFix
+        run: git config --global safe.directory '*'
 
       - name: Setup environment
         run: cp -r env/codecov/. .
