@@ -36,12 +36,12 @@ class UserController extends AbstractUserController implements UserSwagger
 
         $paginator = $this->userService->searchAndPaginate(
             $userFilterDto,
-            OrderDto::instantiateFromRequest($request),
             $request->get('fields'),
             $request->get('relations'),
             $request->except('page'),
             $request->get('per_page'),
-            $request->get('page')
+            $request->get('page'),
+            OrderDto::instantiateFromRequest($request),
         );
 
         return $this->sendResponseForResource(

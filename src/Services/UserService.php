@@ -189,12 +189,12 @@ class UserService implements UserServiceContract
 
     public function searchAndPaginate(
         CriteriaDto $criteriaDto,
-        OrderDto $orderDto,
         ?array $columns = [],
         ?array $with = [],
         ?array $appends = [],
         ?int $perPage = null,
-        ?int $page = null
+        ?int $page = null,
+        ?OrderDto $orderDto = null
     ): LengthAwarePaginator
     {
         $columns = $this->makeColumns($columns);
@@ -204,7 +204,7 @@ class UserService implements UserServiceContract
             ->queryWithAppliedCriteria($criteriaDto->toArray())
             ->with($with);
 
-        if ($orderDto->getOrderBy() !== null) {
+        if (!is_null($orderDto) && !is_null($orderDto->getOrderBy())) {
             $query->orderBy($orderDto->getOrderBy(), $orderDto->getOrder() ?? 'asc');
         }
 

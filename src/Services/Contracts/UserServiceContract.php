@@ -38,12 +38,12 @@ interface UserServiceContract
 
     public function searchAndPaginate(
         CriteriaDto $criteriaDto,
-        OrderDto $orderDto,
         ?array $columns = [],
         ?array $with = [],
         ?array $appends = [],
         ?int $perPage = null,
-        ?int $page = null
+        ?int $page = null,
+        ?OrderDto $orderDto = null
     ): LengthAwarePaginator;
 
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void;
