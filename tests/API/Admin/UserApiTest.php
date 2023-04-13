@@ -51,6 +51,7 @@ class UserApiTest extends TestCase
             'email' => 'admin@example.com',
             'email_verified_at' => now()->subDay(),
             'is_active' => true,
+            'created_at' => now()->subDay(),
         ]);
 
         $userOne = $this->makeStudent([
@@ -59,6 +60,7 @@ class UserApiTest extends TestCase
             'email' => 'firstuser@example.com',
             'email_verified_at' => now()->addDay(),
             'is_active' => false,
+            'created_at' => now()->addDay(),
         ]);
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
@@ -168,6 +170,24 @@ class UserApiTest extends TestCase
 
         $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
         $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'created_at',
+            'order' => 'ASC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $userOne->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'order_by' => 'created_at',
+            'order' => 'DESC'
+        ]);
+        $this->response->assertOk();
+
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
+        $this->assertTrue($this->response->json('data.1.id') === $admin->getKey());
     }
 
     public function testGetUser(): void
