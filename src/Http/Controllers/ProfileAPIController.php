@@ -40,7 +40,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
-        var_dump($userUpdateDto->toArray(true));
+
         /** @var User $user */
         $user = $this->userRepository->update(
             $userUpdateDto->toArray(true),
