@@ -43,13 +43,8 @@ class ExtendableDto implements InstantiateFromRequest, DtoContract
 
     public function toArray(): array
     {
-        return array_filter(
-            array_map(function ($returnType) {
-                return $returnType($this);
-            }, self::$returnTypes),
-            function ($item) {
-                return isset($item);
-            }
-        );
+        return array_map(function ($returnType) {
+            return $returnType($this);
+        }, self::$returnTypes);
     }
 }

@@ -84,6 +84,34 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('+48600600600', $user->phone);
     }
 
+    public function testUpdateProfileDeletePhone(): void
+    {
+        $user = $this->makeStudent([
+            'phone' => '+48600600600',
+        ]);
+
+        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+            'first_name' => 'Janusz',
+            'last_name' => 'Claus',
+            'gender' => GenderType::Female,
+            'age' => 28,
+            'country' => 'Poland',
+            'city' => 'Gdańsk',
+            'phone' => null,
+            'street' => 'Strzelecka',
+        ]);
+        $this->assertApiSuccess();
+        $user->refresh();
+        $this->assertEquals('Janusz', $user->first_name);
+        $this->assertEquals('Claus', $user->last_name);
+        $this->assertEquals(GenderType::Female, $user->gender);
+        $this->assertEquals(28, $user->age);
+        $this->assertEquals('Poland', $user->country);
+        $this->assertEquals('Gdańsk', $user->city);
+        $this->assertEquals('Strzelecka', $user->street);
+        $this->assertEquals(null, $user->phone);
+    }
+
     public function testUpdateProfileWithAdditionalFields(): void
     {
         ModelFields::addOrUpdateMetadataField(
@@ -110,6 +138,13 @@ class ProfileApiTest extends TestCase
 
         $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
             'first_name' => 'Janusz',
+            'last_name' => 'Claus',
+            'gender' => GenderType::Female,
+            'age' => 28,
+            'country' => 'Poland',
+            'city' => 'Gdańsk',
+            'phone' => null,
+            'street' => 'Strzelecka',
             'additional_field_a' => 'new string',
             'additional_field_visibility_for_admin' => 'new string2',
             ])
