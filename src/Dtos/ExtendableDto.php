@@ -41,14 +41,14 @@ class ExtendableDto implements InstantiateFromRequest, DtoContract
         return $value;
     }
 
-    public function toArray(): array
+    public function toArray(bool $allowNulls = false): array
     {
         return array_filter(
-            array_map(function ($returnType) {
+            array_map(function ($returnType) use ($allowNulls) {
                 return $returnType($this);
             }, self::$returnTypes),
-            function ($item) {
-                return isset($item);
+            function ($item) use ($allowNulls) {
+                return $allowNulls || isset($item);
             }
         );
     }

@@ -43,7 +43,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
 
         /** @var User $user */
         $user = $this->userRepository->update(
-            $userUpdateDto->toArray(),
+            $userUpdateDto->toArray(true),
             $request->user()->getKey(),
         );
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
