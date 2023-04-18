@@ -11,6 +11,8 @@ class UserUpdateDto extends BasicUserUpdateDto
     public static function instantiateFromRequest(Request $request): self
     {
         $value = new self();
+        self::$keys = $request->keys();
+
         foreach (self::$constructorTypes as $key => $valueCallable) {
             $value->$key = $valueCallable($request);
         }

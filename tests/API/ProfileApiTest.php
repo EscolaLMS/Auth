@@ -84,6 +84,19 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('+48600600600', $user->phone);
     }
 
+    public function testUpdateProfileDeletePhone(): void
+    {
+        $user = $this->makeStudent([
+            'phone' => '+48600600600',
+        ]);
+        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+            'phone' => null
+        ]);
+        $this->assertApiSuccess();
+        $user->refresh();
+        $this->assertEquals(null, $user->phone);
+    }
+
     public function testUpdateProfileWithAdditionalFields(): void
     {
         ModelFields::addOrUpdateMetadataField(
