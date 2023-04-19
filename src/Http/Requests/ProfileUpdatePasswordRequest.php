@@ -25,7 +25,7 @@ class ProfileUpdatePasswordRequest extends ExtendableRequest
     public function rules()
     {
         return [
-            'current_password' => [...User::PASSWORD_RULES, new MatchOldPassword],
+            'current_password' => ['required', new MatchOldPassword],
             'new_password' => User::PASSWORD_RULES,
             'new_confirm_password' => ['same:new_password'],
         ];

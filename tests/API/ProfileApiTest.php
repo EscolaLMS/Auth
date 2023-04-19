@@ -168,6 +168,20 @@ class ProfileApiTest extends TestCase
         $this->assertTrue(Hash::check('zmienionetestowehasło', $user->password));
     }
 
+    public function testUpdateProfileInvalidCurrentPassword(): void
+    {
+        $user = $this->makeStudent([
+            'password' => Hash::make('testowehasło'),
+        ]);
+        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/password', [
+            'current_password' => 'testowehasłozłe',
+            'new_password' => 'zmienionetestowehasło',
+            'new_confirm_password' => 'zmienionetestowehasło',
+        ])->assertUnprocessable();
+        $user->refresh();
+        $this->assertFalse(Hash::check('zmienionetestowehasło', $user->password));
+    }
+
     public function testUpdateInterests(): void
     {
         $user = $this->makeStudent();
