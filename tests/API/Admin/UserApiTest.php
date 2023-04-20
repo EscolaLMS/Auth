@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Testing\Fluent\AssertableJson;
 
 
 class UserApiTest extends TestCase
@@ -63,6 +62,20 @@ class UserApiTest extends TestCase
             'is_active' => false,
             'created_at' => now()->addDay(),
         ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'role' => 'admin',
+        ]);
+
+        $this->response->assertJsonCount(1, 'data');
+        $this->assertTrue($this->response->json('data.0.id') === $admin->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
+            'role' => 'student',
+        ]);
+
+        $this->response->assertJsonCount(1, 'data');
+        $this->assertTrue($this->response->json('data.0.id') === $userOne->getKey());
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/', [
             'order_by' => 'id',
