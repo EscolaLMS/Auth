@@ -11,9 +11,10 @@ use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Repositories\Contracts\UserGroupRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
 use EscolaLms\Core\Dtos\CriteriaDto;
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserGroupService implements UserGroupServiceContract
 {
@@ -87,9 +88,13 @@ class UserGroupService implements UserGroupServiceContract
         return $group->refresh()->users;
     }
 
-    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator
+    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null, ?OrderDto $orderDto = null): LengthAwarePaginator
     {
         $query = $this->userGroupRepository->queryWithAppliedCriteria($criteriaDto->toArray())->with('children');
+
+        if ($orderDto) {
+            $query = $this->userGroupRepository->orderBy($query, $orderDto);
+        }
 
         if ($perPage === -1 || $page === -1) {
             return $query->paginate($query->count())->appends($appends);
