@@ -32,7 +32,7 @@ class UserGroupRepository extends BaseRepository implements UserGroupRepositoryC
     {
         return match ($orderDto->getOrderBy()) {
             'parent_name' => $query->withAggregate('parent', 'name')->orderBy('parent_name', $orderDto->getOrder() ?? 'asc'),
-            default => $query->orderBy($orderDto->getOrderBy() ?? 'id', $orderDto->getOrder() ?? 'desc'),
+            default => $query->orderBy($orderDto->getOrderBy() ?? 'id', $orderDto->getOrder() ?? 'asc'),
         };
     }
 }
