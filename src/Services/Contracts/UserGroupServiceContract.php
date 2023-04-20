@@ -6,6 +6,7 @@ use EscolaLms\Auth\Dtos\UserGroupDto;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Core\Dtos\CriteriaDto;
+use EscolaLms\Core\Dtos\OrderDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -17,7 +18,7 @@ interface UserGroupServiceContract
 
     public function delete(Group $group): ?bool;
 
-    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null): LengthAwarePaginator;
+    public function searchAndPaginate(CriteriaDto $criteriaDto, array $appends = [], int $perPage = null, int $page = null, ?OrderDto $orderDto = null): LengthAwarePaginator;
 
     public function getRegisterableGroups(): Collection;
 

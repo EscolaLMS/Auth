@@ -5,7 +5,6 @@ namespace EscolaLms\Auth\Tests\API\Admin;
 use EscolaLms\Auth\Events\UserAddedToGroup;
 use EscolaLms\Auth\Events\UserRemovedFromGroup;
 use EscolaLms\Auth\Models\Group;
-use EscolaLms\Auth\Models\GroupUser;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Core\Tests\ApiTestTrait;
@@ -13,7 +12,6 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Testing\Fluent\AssertableJson;
 
 class UserGroupApiTest extends TestCase
 {
@@ -51,6 +49,109 @@ class UserGroupApiTest extends TestCase
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/');
         $this->response->assertOk();
         $this->assertGreaterThanOrEqual(5, count($this->response->getData()->data));
+    }
+
+    public function testListGroupsWithSorts(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $parentGroupOne = Group::factory()->create([
+            'name' => 'C parent',
+            'registerable' => true,
+        ]);
+
+        $parentGroupTwo = Group::factory()->create([
+            'name' => 'D parent',
+            'registerable' => true,
+        ]);
+
+        $groupOne = Group::factory()->create([
+            'name' => 'A child',
+            'registerable' => false,
+            'parent_id' => $parentGroupOne->getKey(),
+        ]);
+        $groupOne = Group::factory()->create([
+            'name' => 'B child',
+            'registerable' => true,
+            'parent_id' => $parentGroupTwo->getKey(),
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'name',
+            'order' => 'ASC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'A child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'B child');
+        $this->assertTrue($this->response->getData()->data[2]->name === 'C parent');
+        $this->assertTrue($this->response->getData()->data[3]->name === 'D parent');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'name',
+            'order' => 'DESC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'D parent');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'C parent');
+        $this->assertTrue($this->response->getData()->data[2]->name === 'B child');
+        $this->assertTrue($this->response->getData()->data[3]->name === 'A child');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'id',
+            'order' => 'ASC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'C parent');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'D parent');
+        $this->assertTrue($this->response->getData()->data[2]->name === 'A child');
+        $this->assertTrue($this->response->getData()->data[3]->name === 'B child');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'id',
+            'order' => 'DESC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'B child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'A child');
+        $this->assertTrue($this->response->getData()->data[2]->name === 'D parent');
+        $this->assertTrue($this->response->getData()->data[3]->name === 'C parent');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'search' => 'child',
+            'order_by' => 'registerable',
+            'order' => 'DESC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'B child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'A child');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'search' => 'child',
+            'order_by' => 'registerable',
+            'order' => 'ASC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'A child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'B child');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'search' => 'child',
+            'order_by' => 'parent_name',
+            'order' => 'ASC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'A child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'B child');
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'search' => 'child',
+            'order_by' => 'parent_name',
+            'order' => 'DESC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->name === 'B child');
+        $this->assertTrue($this->response->getData()->data[1]->name === 'A child');
     }
 
     public function testListSelfGroups(): void

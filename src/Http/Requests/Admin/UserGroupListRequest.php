@@ -17,6 +17,8 @@ class UserGroupListRequest extends ExtendableRequest
         return [
             'search' => ['sometimes', 'string'],
             'parent_id' => ['sometimes', 'integer'],
+            'order_by' => ['sometimes', 'string', 'in:id,name,registerable,parent_name'],
+            'order' => ['sometimes', 'string', 'in:ASC,DESC'],
         ];
     }
 }

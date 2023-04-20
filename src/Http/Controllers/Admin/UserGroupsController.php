@@ -17,6 +17,7 @@ use EscolaLms\Auth\Http\Resources\UserGroupResource;
 use EscolaLms\Auth\Http\Resources\UserGroupTreeResource;
 use EscolaLms\Auth\Http\Resources\UserResource;
 use EscolaLms\Auth\Services\Contracts\UserGroupServiceContract;
+use EscolaLms\Core\Dtos\OrderDto;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -33,7 +34,7 @@ class UserGroupsController extends EscolaLmsBaseController implements UserGroups
     public function listGroups(UserGroupListRequest $request): JsonResponse
     {
         $filterDto = UserGroupFilterCriteriaDto::instantiateFromRequest($request);
-        $paginator = $this->userGroupService->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'));
+        $paginator = $this->userGroupService->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'), OrderDto::instantiateFromRequest($request));
         return $this->sendResponseForResource(UserGroupResource::collection($paginator), __('Group list'));
     }
 
