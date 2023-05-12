@@ -188,7 +188,7 @@ interface UserGroupsSwagger
      *          ),
      *      ),
      *     @OA\Parameter(
-     *          name="id",
+     *          name="id[]",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
