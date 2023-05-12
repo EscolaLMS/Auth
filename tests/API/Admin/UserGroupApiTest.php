@@ -442,4 +442,24 @@ class UserGroupApiTest extends TestCase
                 'first_name' => $user->first_name
             ]);
     }
+
+    public function testListGroupsWithUsers(): void
+    {
+        $groups = Group::factory()
+            ->count(5)
+            ->has(User::factory()->count(2))
+            ->create();
+
+        $this->actingAs($this->makeAdmin(), 'api')
+            ->getJson('api/admin/user-groups/users')
+            ->assertOk()
+            ->assertJsonCount(5, 'data')
+            ->assertJsonCount(2, 'data.0.users');
+
+        $this->actingAs($this->makeAdmin(), 'api')
+            ->getJson('api/admin/user-groups/users?id[]=' . $groups->first()->getKey())
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonCount(2, 'data.0.users');
+    }
 }

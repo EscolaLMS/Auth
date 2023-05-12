@@ -80,6 +80,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::group(['prefix' => 'user-groups'], function () {
             Route::get('/', [UserGroupsController::class, 'listGroups']);
             Route::get('/tree', [UserGroupsController::class, 'listGroupsTree']);
+            Route::get('/users', [UserGroupsController::class, 'listWithUsers']);
             Route::post('/', [UserGroupsController::class, 'createGroup']);
             Route::get('/{id}', [UserGroupsController::class, 'getGroup']);
             Route::put('/{id}', [UserGroupsController::class, 'updateGroup']);

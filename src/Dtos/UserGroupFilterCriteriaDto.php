@@ -10,6 +10,7 @@ use EscolaLms\Core\Dtos\Contracts\InstantiateFromRequest;
 use EscolaLms\Core\Dtos\CriteriaDto;
 use EscolaLms\Core\Repositories\Criteria\Primitives\EqualCriterion;
 use EscolaLms\Core\Repositories\Criteria\Primitives\HasCriterion;
+use EscolaLms\Core\Repositories\Criteria\Primitives\InCriterion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -35,6 +36,9 @@ class UserGroupFilterCriteriaDto extends CriteriaDto implements DtoContract, Ins
         }
         if ($request->has('user_id')) {
             $criteria->push(new HasCriterion('users', fn ($query) => $query->where('user_id', $request->get('user_id'))));
+        }
+        if ($request->has('id')) {
+            $criteria->push(new InCriterion('id', $request->get('id', [])));
         }
         if ($criteria->isEmpty() && $tree) {
             $criteria->push(new UserGroupRootCriterion());
