@@ -45,6 +45,14 @@ class UserGroupsController extends EscolaLmsBaseController implements UserGroups
         return $this->sendResponseForResource(UserGroupTreeResource::collection($paginator), __('Group tree list'));
     }
 
+    public function listWithUsers(UserGroupListRequest $request): JsonResponse
+    {
+        $filterDto = UserGroupFilterCriteriaDto::instantiateFromRequest($request);
+        $paginator = $this->userGroupService->searchAndPaginate($filterDto, $request->except('page'), $request->get('per_page'), $request->get('page'), OrderDto::instantiateFromRequest($request));
+
+        return $this->sendResponseForResource(UserGroupDetailedResource::collection($paginator), __('Group list'));
+    }
+
     public function getGroup(UserGroupGetRequest $request): JsonResponse
     {
         return $this->sendResponseForResource(UserGroupDetailedResource::make($request->getGroupFromRoute()), __('Group details'));

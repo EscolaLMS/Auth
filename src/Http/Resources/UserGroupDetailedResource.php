@@ -22,7 +22,7 @@ class UserGroupDetailedResource extends JsonResource
         return [
             'id' => $this->getResource()->getKey(),
             'name' => $this->getResource()->name,
-            'users' => $this->getResource()->users,
+            'users' => UserSimpleResource::collection($this->getResource()->users),
             'parent_id' => $this->getResource()->parent_id,
             'registerable' => $this->getResource()->registerable,
             'name_with_breadcrumbs' => $this->getResource()->name_with_breadcrumbs,

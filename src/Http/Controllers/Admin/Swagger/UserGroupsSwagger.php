@@ -139,6 +139,83 @@ interface UserGroupsSwagger
 
     /**
      * @OA\Get(
+     *     path="/api/admin/user-groups/users",
+     *     summary="List of groups with users",
+     *     description="",
+     *     tags={"Admin User Groups"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *      @OA\Parameter(
+     *          name="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *      @OA\Parameter(
+     *          name="per_page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="search",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="parent_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="user_id",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="id[]",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(
+     *                  type="integer"
+     *              )
+     *          ),
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation, returns list of groups",
+     *          @OA\JsonContent(
+     *              @OA\Schema(
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Group"
+     *                  )
+     *              )
+     *          )
+     *     ),
+     * )
+     */
+    public function listWithUsers(UserGroupListRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
      *     path="/api/admin/user-groups/{id}",
      *     summary="Get group details",
      *     description="",
