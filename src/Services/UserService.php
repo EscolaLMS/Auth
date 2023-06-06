@@ -227,9 +227,8 @@ class UserService implements UserServiceContract
         ], $user->getKey());
     }
 
-    public function assignableUsers(string $assignableBy, ?int $perPage = null, ?int $page = null): LengthAwarePaginator
+    public function assignableUsers(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator
     {
-        $dto = UserAssignableDto::instantiateFromArray(['assignable_by' => $assignableBy]);
         return $this->searchAndPaginate($dto, [], [], [], $perPage, $page);
     }
 
