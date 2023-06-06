@@ -92,4 +92,9 @@ class UserPolicy
         return $user->can(AuthPermissionsEnum::USER_SETTING_UPDATE)
             || ($user->can(AuthPermissionsEnum::USER_SETTING_UPDATE_SELF) && $user->getKey() === $target->getKey());
     }
+
+    public function impersonate(User $user): bool
+    {
+        return $user->can(AuthPermissionsEnum::USER_IMPERSONATE);
+    }
 }
