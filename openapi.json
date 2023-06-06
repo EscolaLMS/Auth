@@ -1489,6 +1489,39 @@
                 }
             }
         },
+        "/api/auth/impersonate": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "User impersonate",
+                "operationId": "72147baba922afdb63fab79b0aa8f50c",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/logout": {
             "post": {
                 "tags": [
