@@ -59,23 +59,48 @@ class UserGroupApiTest extends TestCase
         $parentGroupOne = Group::factory()->create([
             'name' => 'C parent',
             'registerable' => true,
+            'created_at' => now()->subDays(3),
         ]);
 
         $parentGroupTwo = Group::factory()->create([
             'name' => 'D parent',
             'registerable' => true,
+            'created_at' => now()->subDays(2),
         ]);
 
         $groupOne = Group::factory()->create([
             'name' => 'A child',
             'registerable' => false,
             'parent_id' => $parentGroupOne->getKey(),
+            'created_at' => now()->subDays(1),
         ]);
-        $groupOne = Group::factory()->create([
+
+        $groupTwo = Group::factory()->create([
             'name' => 'B child',
             'registerable' => true,
             'parent_id' => $parentGroupTwo->getKey(),
+            'created_at' => now(),
         ]);
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'created_at',
+            'order' => 'ASC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->id === $parentGroupOne->getKey());
+        $this->assertTrue($this->response->getData()->data[1]->id === $parentGroupTwo->getKey());
+        $this->assertTrue($this->response->getData()->data[2]->id === $groupOne->getKey());
+        $this->assertTrue($this->response->getData()->data[3]->id === $groupTwo->getKey());
+
+        $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
+            'order_by' => 'created_at',
+            'order' => 'DESC',
+        ]);
+
+        $this->assertTrue($this->response->getData()->data[0]->id === $groupTwo->getKey());
+        $this->assertTrue($this->response->getData()->data[1]->id === $groupOne->getKey());
+        $this->assertTrue($this->response->getData()->data[2]->id === $parentGroupTwo->getKey());
+        $this->assertTrue($this->response->getData()->data[3]->id === $parentGroupOne->getKey());
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/', [
             'order_by' => 'name',
