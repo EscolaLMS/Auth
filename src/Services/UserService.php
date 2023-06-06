@@ -10,6 +10,7 @@ use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Events\AccountConfirmed;
+use EscolaLms\Auth\Events\Impersonate;
 use EscolaLms\Auth\Events\Login;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
@@ -147,6 +148,17 @@ class UserService implements UserServiceContract
         }
 
         event(new Login($user));
+
+        return $user;
+    }
+
+    public function impersonate(int $id): User
+    {
+        $user = $this->userRepository->find($id);
+
+        assert($user instanceof AuthUser);
+
+        event(new Impersonate($user));
 
         return $user;
     }

@@ -13,6 +13,10 @@ use EscolaLms\Auth\Http\Middleware\RegistrationEnabled;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'api'], function () {
+    Route::prefix('admin/auth')->group(function () {
+        Route::post('/impersonate', [LoginApiController::class, 'impersonate'])->middleware(['auth:api'])->name('impersonate');
+    });
+
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', [RegisterApiController::class, 'register'])->name('register.api')->middleware(RegistrationEnabled::class);
         Route::post('login', [LoginApiController::class, 'login'])->name('login.api');

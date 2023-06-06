@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Http\Controllers;
 
 use EscolaLms\Auth\Http\Controllers\Swagger\LoginSwagger;
+use EscolaLms\Auth\Http\Requests\ImpersonateRequest;
 use EscolaLms\Auth\Http\Requests\LoginRequest;
 use EscolaLms\Auth\Http\Resources\LoginResource;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
@@ -33,6 +34,22 @@ class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
             $token = $this->authService->createTokenForUser($user, $request->boolean('remember_me'));
 
             return $this->sendResponseForResource(LoginResource::make($token), __('Login successful'));
+        } catch (Exception $exception) {
+            return new JsonResponse(['message' => $exception->getMessage()], 422);
+            return $this->sendError($exception->getMessage(), 422);
+        }
+    }
+
+    public function impersonate(ImpersonateRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->userService->impersonate(
+                $request->get('user_id')
+            );
+
+            $token = $this->authService->createTokenForUser($user);
+
+            return $this->sendResponseForResource(LoginResource::make($token), __('Impersonate successful'));
         } catch (Exception $exception) {
             return new JsonResponse(['message' => $exception->getMessage()], 422);
             return $this->sendError($exception->getMessage(), 422);
