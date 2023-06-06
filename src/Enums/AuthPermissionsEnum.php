@@ -35,4 +35,6 @@ class AuthPermissionsEnum extends BasicEnum
     //
     const USER_SETTING_UPDATE      = 'user-setting_update';
     const USER_SETTING_UPDATE_SELF = 'user-setting_update_self';
+
+    const USER_IMPERSONATE = 'user_impersonate';
 }

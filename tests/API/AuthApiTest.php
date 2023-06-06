@@ -9,6 +9,7 @@ use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Events\ForgotPassword;
+use EscolaLms\Auth\Events\Impersonate;
 use EscolaLms\Auth\Events\Login;
 use EscolaLms\Auth\Events\Logout;
 use EscolaLms\Auth\Events\ResetPassword as ResetPasswordEvent;
@@ -319,6 +320,36 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->response->assertStatus(422);
+    }
+
+    public function testImpersonate(): void
+    {
+        Event::fake();
+
+        $admin = $this->makeAdmin();
+        $admin->givePermissionTo(AuthPermissionsEnum::USER_IMPERSONATE);
+
+        $user = $this->makeStudent([
+            'email' => 'test@test.test',
+            'password' => Hash::make('testtest'),
+            'email_verified_at' => Carbon::now(),
+        ]);
+
+        $this->response = $this->actingAs($admin)->json('POST', '/api/admin/auth/impersonate', [
+            'user_id' => $user->getKey(),
+        ]);
+
+        $this->assertApiSuccess();
+        Event::assertDispatched(Impersonate::class);
+        $this->response->assertJsonStructure([
+            'data' => [
+                'token',
+                'expires_at',
+            ]
+        ]);
+
+        $responseContent = $this->response->json();
+        $this->assertGreaterThan(0, strlen($responseContent['data']['token']));
     }
 
     public function testLogout(): void
