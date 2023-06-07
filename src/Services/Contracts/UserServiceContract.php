@@ -49,5 +49,10 @@ interface UserServiceContract
     public function updateAdditionalFieldsFromRequest(User $user, FormRequest $request): void;
 
     public function anonymiseEmail(AuthUser $user): void;
-    public function assignableUsers(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
+
+    /**
+     * @deprecated
+     */
+    public function assignableUsers(string $assignableBy, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
+    public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
 }
