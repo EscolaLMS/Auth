@@ -6,6 +6,7 @@ use EscolaLms\Auth\Dtos\UserUpdateAuthDataDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Http\Controllers\Swagger\ProfileSwagger;
 use EscolaLms\Auth\Http\Requests\MyProfileRequest;
+use EscolaLms\Auth\Http\Requests\ProfileDeleteRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdatePasswordRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateRequest;
@@ -131,5 +132,16 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         $user = $request->user();
         $this->userRepository->updateSettings($user, $request->getSettingsWithoutAdditionalFields());
         return $this->sendResponseForResource(UserSettingCollection::make($user->settings), __('User interests'));
+    }
+
+    public function delete(ProfileDeleteRequest $request): JsonResponse
+    {
+        $deleted = $this->userRepository->delete($request->user()->getKey());
+
+        if ($deleted) {
+            return $this->sendSuccess(__('User deleted'));
+        }
+
+        return $this->sendError(__('User not deleted'), 422);
     }
 }

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileApiTest extends TestCase
 {
-    use CreatesUsers, ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
+    use CreatesUsers, ApiTestTrait, DatabaseTransactions;
 
     public function testMyProfile(): void
     {
@@ -45,7 +45,7 @@ class ProfileApiTest extends TestCase
             'additional_field_visibility_for_admin' => 'string2',
         ]);
 
-        $this->response = $this->actingAs($user)->json('GET', '/api/profile/me');
+        $this->response = $this->actingAs($user, 'api')->json('GET', '/api/profile/me');
 
         $this->response
             ->assertOk()
@@ -62,7 +62,7 @@ class ProfileApiTest extends TestCase
     public function testUpdateProfile(): void
     {
         $user = $this->makeStudent();
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/me', [
             'first_name' => 'Janusz',
             'last_name' => 'Claus',
             'gender' => GenderType::Female,
@@ -89,7 +89,7 @@ class ProfileApiTest extends TestCase
         $user = $this->makeStudent([
             'phone' => '+48600600600',
         ]);
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/me', [
             'phone' => null
         ]);
         $this->assertApiSuccess();
@@ -121,7 +121,7 @@ class ProfileApiTest extends TestCase
             'additional_field_visibility_for_admin' => 'string2',
         ]);
 
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/me', [
             'first_name' => 'Janusz',
             'additional_field_a' => 'new string',
             'additional_field_visibility_for_admin' => 'new string2',
@@ -150,7 +150,7 @@ class ProfileApiTest extends TestCase
 
         $user = $this->makeStudent();
 
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/me', [
             'additional_field_short' => 'aabbcc',
         ])->assertJsonValidationErrors(['additional_field_short']);
     }
@@ -158,7 +158,7 @@ class ProfileApiTest extends TestCase
     public function testUpdateProfileAuthData(): void
     {
         $user = $this->makeStudent();
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/me-auth', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/me-auth', [
             'email' => 'test@test.test',
         ]);
         $this->assertApiSuccess();
@@ -171,7 +171,7 @@ class ProfileApiTest extends TestCase
         $user = $this->makeStudent([
             'password' => Hash::make('testowehasło'),
         ]);
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/password', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/password', [
             'current_password' => 'testowehasło',
             'new_password' => 'zmienionetestowehasło',
             'new_confirm_password' => 'zmienionetestowehasło',
@@ -186,7 +186,7 @@ class ProfileApiTest extends TestCase
         $user = $this->makeStudent([
             'password' => Hash::make('testowehasło'),
         ]);
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/password', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/password', [
             'current_password' => 'testowehasłozłe',
             'new_password' => 'zmienionetestowehasło',
             'new_confirm_password' => 'zmienionetestowehasło',
@@ -202,7 +202,7 @@ class ProfileApiTest extends TestCase
         $category = Category::factory()->create();
         $category2 = Category::factory()->create();
 
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/interests', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/interests', [
             'interests' => [
                 $category->getKey(),
                 $category2->getKey(),
@@ -234,7 +234,7 @@ class ProfileApiTest extends TestCase
             'value' => 'value2',
         ]);
 
-        $this->response = $this->actingAs($user)->json('GET', '/api/profile/settings');
+        $this->response = $this->actingAs($user, 'api')->json('GET', '/api/profile/settings');
         $this->response
             ->assertOk()
             ->assertJsonFragment(['test-key' => 'test-value'])
@@ -245,7 +245,7 @@ class ProfileApiTest extends TestCase
     {
         $user = $this->makeStudent();
 
-        $this->response = $this->actingAs($user)->json('PUT', '/api/profile/settings', [
+        $this->response = $this->actingAs($user, 'api')->json('PUT', '/api/profile/settings', [
             'key-test' => 'value-test',
             'key2' => 'value2',
         ]);
@@ -271,7 +271,7 @@ class ProfileApiTest extends TestCase
     {
         $user = $this->makeStudent();
 
-        $this->response = $this->actingAs($user)->json('POST', '/api/profile/upload-avatar', [
+        $this->response = $this->actingAs($user, 'api')->json('POST', '/api/profile/upload-avatar', [
             'avatar' => UploadedFile::fake()->image('mj.png')
         ]);
 
@@ -289,8 +289,60 @@ class ProfileApiTest extends TestCase
     {
         [$user] = $payload;
 
-        $this->response = $this->actingAs($user)->json('DELETE', '/api/profile/delete-avatar');
+        $this->response = $this->actingAs($user, 'api')->json('DELETE', '/api/profile/delete-avatar');
         $this->response->assertOk();
         $this->assertEmpty($user->path_avatar);
+    }
+
+    public function testDeleteProfile(): void
+    {
+        $user = $this->makeStudent();
+
+        $this
+            ->actingAs($user, 'api')
+            ->deleteJson('/api/profile')
+            ->assertOk();
+
+        $this->assertSoftDeleted($user);
+    }
+
+    public function testDeleteProfileAndLogin(): void
+    {
+        $user = $this->makeStudent([
+            'email' => 'test@email.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $this
+            ->actingAs($user, 'api')
+            ->deleteJson('/api/profile')
+            ->assertOk();
+
+        $this->assertSoftDeleted($user);
+
+        $this
+            ->postJson('/api/auth/login', [
+                'email' => $user->email,
+                'password' => 'password'
+            ])
+            ->assertForbidden();
+    }
+
+    public function testDeleteProfileForbidden(): void
+    {
+        $user = $this->makeStudent();
+        $user->syncRoles([]);
+
+        $this
+            ->actingAs($user, 'api')
+            ->deleteJson('/api/profile')
+            ->assertForbidden();
+    }
+
+    public function testDeleteProfileUnauthorized(): void
+    {
+        $this
+            ->deleteJson('/api/profile')
+            ->assertUnauthorized();
     }
 }

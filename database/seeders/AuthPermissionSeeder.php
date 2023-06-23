@@ -44,6 +44,7 @@ class AuthPermissionSeeder extends Seeder
             AuthPermissionsEnum::USER_READ_SELF,
             AuthPermissionsEnum::USER_SETTING_UPDATE_SELF,
             AuthPermissionsEnum::USER_UPDATE_SELF,
+            AuthPermissionsEnum::USER_DELETE_SELF,
             AuthPermissionsEnum::USER_IMPERSONATE,
         ]);
         $tutor->givePermissionTo([
@@ -55,6 +56,7 @@ class AuthPermissionSeeder extends Seeder
             AuthPermissionsEnum::USER_READ_SELF,
             AuthPermissionsEnum::USER_SETTING_UPDATE_SELF,
             AuthPermissionsEnum::USER_UPDATE_SELF,
+            AuthPermissionsEnum::USER_DELETE_SELF,
         ]);
         $student->givePermissionTo([
             AuthPermissionsEnum::USER_GROUP_LIST_SELF,
@@ -63,6 +65,7 @@ class AuthPermissionSeeder extends Seeder
             AuthPermissionsEnum::USER_READ_SELF,
             AuthPermissionsEnum::USER_SETTING_UPDATE_SELF,
             AuthPermissionsEnum::USER_UPDATE_SELF,
+            AuthPermissionsEnum::USER_DELETE_SELF,
         ]);
     }
 }
