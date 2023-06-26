@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Swagger;
 
+use EscolaLms\Auth\Http\Requests\ProfileDeleteRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdatePasswordRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateRequest;
@@ -375,4 +376,30 @@ interface ProfileSwagger
      * )
      */
     public function settingsUpdate(UserSettingsUpdateRequest $request): JsonResponse;
+
+    /**
+     * @OA\Delete(
+     *      path="/api/profile",
+     *      description="Delete user profile",
+     *      tags={"Profile"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Bad request",
+     *          @OA\MediaType(
+     *              mediaType="application/json"
+     *          )
+     *      )
+     *   )
+     */
+    public function delete(ProfileDeleteRequest $request): JsonResponse;
 }
