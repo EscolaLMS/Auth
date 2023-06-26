@@ -1941,6 +1941,34 @@
                 ]
             }
         },
+        "/api/profile": {
+            "delete": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Delete user profile",
+                "operationId": "35a7831cdacd9b609539597fbb6c44d1",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "tags": [
