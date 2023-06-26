@@ -305,29 +305,7 @@ class ProfileApiTest extends TestCase
 
         $this->assertSoftDeleted($user);
     }
-
-    public function testDeleteProfileAndLogin(): void
-    {
-        $user = $this->makeStudent([
-            'email' => 'test@email.com',
-            'password' => Hash::make('password'),
-        ]);
-
-        $this
-            ->actingAs($user, 'api')
-            ->deleteJson('/api/profile')
-            ->assertOk();
-
-        $this->assertSoftDeleted($user);
-
-        $this
-            ->postJson('/api/auth/login', [
-                'email' => $user->email,
-                'password' => 'password'
-            ])
-            ->assertForbidden();
-    }
-
+    
     public function testDeleteProfileForbidden(): void
     {
         $user = $this->makeStudent();

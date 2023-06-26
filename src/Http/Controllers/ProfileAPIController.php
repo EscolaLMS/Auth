@@ -137,6 +137,7 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
     public function delete(ProfileDeleteRequest $request): JsonResponse
     {
         $deleted = $this->userRepository->delete($request->user()->getKey());
+        $request->user()->tokens()->get()->each(fn ($token) => $token->revoke());
 
         if ($deleted) {
             return $this->sendSuccess(__('User deleted'));
