@@ -35,8 +35,14 @@ class RegisterApiController extends EscolaLmsBaseController implements RegisterS
         $mustBeEnabledByAdmin = Config::get(
             EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED
         );
+
+        $autoVerifiedEmail = Config::get(
+            EscolaLmsAuthServiceProvider::CONFIG_KEY . '.auto_verified_email', SettingStatusEnum::DISABLED
+        );
+
         $userSaveDto = UserSaveDto::instantiateFromRequest($request)->setRoles([UserRole::STUDENT]);
         $userSaveDto->setIsActive($mustBeEnabledByAdmin === SettingStatusEnum::DISABLED);
+        $userSaveDto->setVerified($autoVerifiedEmail === SettingStatusEnum::ENABLED);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
         $this->userService->updateAdditionalFieldsFromRequest($user, $request);
