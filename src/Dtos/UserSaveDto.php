@@ -124,11 +124,6 @@ class UserSaveDto implements InstantiateFromRequest, DtoContract
         $this->isActive = $isActive;
     }
 
-    public function setVerified(bool $verified): void
-    {
-        $this->verified = $verified;
-    }
-
     public function toArray(): array
     {
         return [

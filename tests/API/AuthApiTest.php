@@ -6,6 +6,7 @@ use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
+use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Events\ForgotPassword;
@@ -90,7 +91,8 @@ class AuthApiTest extends TestCase
         ]);
 
         $this->assertApiSuccess();
-        Event::assertDispatched(AccountRegistered::class);
+        Event::assertDispatched(AccountConfirmed::class);
+        Event::assertNotDispatched(AccountRegistered::class);
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.test',
@@ -101,8 +103,6 @@ class AuthApiTest extends TestCase
         $newUser = User::where('email', 'test@test.test')->first();
         $this->assertNotNull($newUser->email_verified_at);
 
-        $listener = app(SendEmailVerificationNotification::class);
-        $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
         Notification::assertNotSentTo($newUser, VerifyEmail::class);
     }
 
