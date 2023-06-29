@@ -6,6 +6,7 @@ use EscolaLms\Auth\Enums\AuthPermissionsEnum;
 use EscolaLms\Auth\Enums\SettingStatusEnum;
 use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
+use EscolaLms\Auth\Events\AccountConfirmed;
 use EscolaLms\Auth\Events\AccountMustBeEnableByAdmin;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Events\ForgotPassword;
@@ -71,6 +72,38 @@ class AuthApiTest extends TestCase
         $listener = app(SendEmailVerificationNotification::class);
         $listener->handle(new AccountRegistered($newUser, 'https://escolalms.com/email/verify'));
         Notification::assertSentTo($newUser, VerifyEmail::class);
+    }
+
+    public function testRegisterWithAutoVerifiedEmail(): void
+    {
+        Event::fake();
+        Notification::fake();
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.account_must_be_enabled_by_admin', SettingStatusEnum::DISABLED);
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.auto_verified_email', SettingStatusEnum::ENABLED);
+
+        $this->response = $this->json('POST', '/api/auth/register', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+            'password' => 'testtest',
+            'password_confirmation' => 'testtest',
+            'return_url' => 'https://escolalms.com/email/verify',
+        ]);
+
+        $this->assertApiSuccess();
+        Event::assertDispatched(AccountConfirmed::class);
+        Event::assertNotDispatched(AccountRegistered::class);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@test.test',
+            'first_name' => 'tester',
+            'last_name' => 'tester',
+        ]);
+
+        $newUser = User::where('email', 'test@test.test')->first();
+        $this->assertNotNull($newUser->email_verified_at);
+
+        Notification::assertNotSentTo($newUser, VerifyEmail::class);
     }
 
     public function testRegisterWithDeletedUserEmail(): void

@@ -63,6 +63,18 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
+                    'auto_verified_email' => [
+                        'full_key' => 'escola_auth.auto_verified_email',
+                        'key' => 'auto_verified_email',
+                        'rules' => [
+                            'required',
+                            'string',
+                            'in:' . implode(',', SettingStatusEnum::getValues()),
+                        ],
+                        'value' => SettingStatusEnum::DISABLED,
+                        'readonly' => false,
+                        'public' => true,
+                    ],
                     'return_url' => [
                         'full_key' => 'escola_auth.return_url',
                         'key' => 'return_url',
@@ -162,6 +174,10 @@ class ConfigApiTest extends TestCase
                         'value' => SettingStatusEnum::ENABLED,
                     ],
                     [
+                        'key' => 'escola_auth.auto_verified_email',
+                        'value' => SettingStatusEnum::ENABLED,
+                    ],
+                    [
                         'key' => 'escola_auth.return_url',
                         'value' => 'https://example.com',
                     ],
@@ -179,6 +195,7 @@ class ConfigApiTest extends TestCase
             'escola_auth' => [
                 'registration' => SettingStatusEnum::DISABLED,
                 'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
+                'auto_verified_email' => SettingStatusEnum::ENABLED,
                 'return_url' => 'https://example.com',
             ]
         ]);
