@@ -405,6 +405,17 @@ class ProfileApiTest extends TestCase
         Event::assertDispatched(AccountDeleted::class);
     }
 
+    public function testConfirmDeletionProfileStringUserId(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $this
+            ->getJson('/api/profile/delete/' . '123a' . '/' . Crypt::encrypt('invalid_token'))
+            ->assertNotFound();
+
+        Event::assertNotDispatched(AccountDeleted::class);
+    }
+
     public function testConfirmDeletionProfileInvalidToken(): void
     {
         Event::fake([AccountDeleted::class]);

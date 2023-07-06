@@ -58,7 +58,9 @@ Route::group(['prefix' => 'api'], function () {
         Route::post('/delete/init', [ProfileAPIController::class, 'initProfileDeletion']);
     });
 
-    Route::get('/profile/delete/{userId}/{token}', [ProfileAPIController::class, 'confirmDeletionProfile'])->name('profile.delete.confirmation');
+    Route::get('/profile/delete/{userId}/{token}', [ProfileAPIController::class, 'confirmDeletionProfile'])
+        ->whereNumber('userId')
+        ->name('profile.delete.confirmation');
 
     Route::middleware(['auth:api'])->prefix('admin')->group(function () {
         Route::group(['prefix' => 'users'], function () {

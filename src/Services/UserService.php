@@ -14,8 +14,6 @@ use EscolaLms\Auth\Events\AccountDeletionRequested;
 use EscolaLms\Auth\Events\Impersonate;
 use EscolaLms\Auth\Events\Login;
 use EscolaLms\Auth\Exceptions\DeletionTokenExpiredException;
-use EscolaLms\Auth\Exceptions\TokenExpiredException;
-use EscolaLms\Auth\Exceptions\UserNotFoundException;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
@@ -268,8 +266,7 @@ class UserService implements UserServiceContract
     }
 
     /**
-     * @throws UserNotFoundException
-     * @throws TokenExpiredException
+     * @throws DeletionTokenExpiredException
      */
     public function confirmDeletionProfile(int $userId, string $token): void
     {
