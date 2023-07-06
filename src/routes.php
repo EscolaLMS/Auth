@@ -60,7 +60,6 @@ Route::group(['prefix' => 'api'], function () {
 
     Route::get('/profile/delete/{userId}/{token}', [ProfileAPIController::class, 'confirmDeletionProfile'])->name('profile.delete.confirmation');
 
-
     Route::middleware(['auth:api'])->prefix('admin')->group(function () {
         Route::group(['prefix' => 'users'], function () {
             // Users

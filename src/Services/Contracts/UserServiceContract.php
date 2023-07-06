@@ -54,9 +54,11 @@ interface UserServiceContract
      * @deprecated
      */
     public function assignableUsers(string $assignableBy, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
+
     public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
 
     public function initProfileDeletion(User $user, string $returnUrl): void;
+    
     public function confirmDeletionProfile(int $userId, string $hash): void;
 
 }
