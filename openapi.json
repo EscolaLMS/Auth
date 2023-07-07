@@ -1969,6 +1969,91 @@
                 ]
             }
         },
+        "/api/profile/delete/init": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Create user deletion request",
+                "operationId": "6efc959b0a531572e76edb7c24993226",
+                "parameters": [
+                    {
+                        "name": "return_url",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "https://escolalms.com/delete-account"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/profile/delete/{userId}/{token}": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "description": "Create user deletion request",
+                "operationId": "5b249d99aa2af98fe349cd1d4d6552c2",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "tags": [
