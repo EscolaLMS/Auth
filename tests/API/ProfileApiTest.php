@@ -3,6 +3,8 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use EscolaLms\Auth\Enums\GenderType;
+use EscolaLms\Auth\Events\AccountDeleted;
+use EscolaLms\Auth\Events\AccountDeletionRequested;
 use EscolaLms\Auth\Models\User;
 use EscolaLms\Categories\Models\Category;
 use EscolaLms\Auth\Tests\TestCase;
@@ -11,9 +13,10 @@ use EscolaLms\Core\Tests\CreatesUsers;
 use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileApiTest extends TestCase
@@ -305,7 +308,7 @@ class ProfileApiTest extends TestCase
 
         $this->assertSoftDeleted($user);
     }
-    
+
     public function testDeleteProfileForbidden(): void
     {
         $user = $this->makeStudent();
@@ -322,5 +325,159 @@ class ProfileApiTest extends TestCase
         $this
             ->deleteJson('/api/profile')
             ->assertUnauthorized();
+    }
+
+    public function testInitProfileDeletion(): void
+    {
+        Event::fake([AccountDeletionRequested::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertOk();
+
+        $user = User::find($user->getKey());
+
+        $this->assertNotNull($user->delete_user_token);
+        Event::assertDispatchedTimes(AccountDeletionRequested::class);
+        Event::assertDispatched(AccountDeletionRequested::class, function (AccountDeletionRequested $event) use ($user) {
+            return $event->getToken() === $user->delete_user_token;
+        });
+    }
+
+    public function testInitProfileDeletionValidation(): void
+    {
+        Event::fake([AccountDeletionRequested::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => null])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['return_url']);
+
+        Event::assertNotDispatched(AccountDeletionRequested::class);
+    }
+
+    public function testInitProfileDeletionForbidden(): void
+    {
+        Event::fake([AccountDeletionRequested::class]);
+
+        $user = $this->makeStudent();
+        $user->syncRoles([]);
+
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertForbidden();
+
+        Event::assertNotDispatched(AccountDeletionRequested::class);
+    }
+
+    public function testInitProfileDeletionUnauthorized(): void
+    {
+        Event::fake([AccountDeletionRequested::class]);
+
+        $this
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertUnauthorized();
+
+        Event::assertNotDispatched(AccountDeletionRequested::class);
+    }
+
+    public function testConfirmDeletionProfile(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertOk();
+        $user->refresh();
+
+        $this
+            ->getJson('/api/profile/delete/' . $user->getKey() . '/' . $user->delete_user_token)
+            ->assertOk();
+
+        $this->assertSoftDeleted($user);
+        Event::assertDispatched(AccountDeleted::class);
+    }
+
+    public function testConfirmDeletionProfileStringUserId(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $this
+            ->getJson('/api/profile/delete/' . '123a' . '/' . Crypt::encrypt('invalid_token'))
+            ->assertNotFound();
+
+        Event::assertNotDispatched(AccountDeleted::class);
+    }
+
+    public function testConfirmDeletionProfileInvalidToken(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertOk();
+        $user->refresh();
+
+        $this
+            ->getJson('/api/profile/delete/' . $user->getKey() . '/' . Crypt::encrypt('invalid_token'))
+            ->assertUnauthorized()
+            ->assertJsonFragment([
+                'message' => 'Deletion token is invalid'
+            ]);
+
+        Event::assertNotDispatched(AccountDeleted::class);
+    }
+
+    public function testConfirmDeletionProfileUserNotFound(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertOk();
+        $user->refresh();
+
+        $this
+            ->getJson('/api/profile/delete/' . 123 . '/' . $user->delete_user_token)
+            ->assertUnauthorized()
+            ->assertJsonFragment([
+                'message' => 'Deletion token is invalid'
+            ]);
+
+        Event::assertNotDispatched(AccountDeleted::class);
+    }
+
+    public function testConfirmDeletionProfileExpiredToken(): void
+    {
+        Event::fake([AccountDeleted::class]);
+
+        $user = $this->makeStudent();
+        $this
+            ->actingAs($user, 'api')
+            ->postJson('/api/profile/delete/init', ['return_url' => 'https://escolalms.com/delete-account'])
+            ->assertOk();
+        $user->refresh();
+
+        $this->travel(2)->hours();
+
+        $this
+            ->getJson('/api/profile/delete/' . $user->getKey() . '/' . $user->delete_user_token)
+            ->assertUnauthorized()
+            ->assertJsonFragment([
+                'message' => 'Deletion token has expired'
+            ]);
+
+        Event::assertNotDispatched(AccountDeleted::class);
     }
 }

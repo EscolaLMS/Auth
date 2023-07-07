@@ -2,6 +2,7 @@
 
 namespace EscolaLms\Auth\Http\Controllers\Swagger;
 
+use EscolaLms\Auth\Http\Requests\InitProfileDeletionRequest;
 use EscolaLms\Auth\Http\Requests\ProfileDeleteRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdatePasswordRequest;
@@ -402,4 +403,81 @@ interface ProfileSwagger
      *   )
      */
     public function delete(ProfileDeleteRequest $request): JsonResponse;
+
+    /**
+     * @OA\Post(
+     *      path="/api/profile/delete/init",
+     *      description="Create user deletion request",
+     *      tags={"Profile"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="return_url",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *              example="https://escolalms.com/delete-account",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Bad request",
+     *          @OA\MediaType(
+     *              mediaType="application/json"
+     *          )
+     *      )
+     *   )
+     */
+    public function initProfileDeletion(InitProfileDeletionRequest $request): JsonResponse;
+
+    /**
+     * @OA\Get(
+     *      path="/api/profile/delete/{userId}/{token}",
+     *      description="Create user deletion request",
+     *      tags={"Profile"},
+     *      security={
+     *          {"passport": {}},
+     *      },
+     *     @OA\Parameter(
+     *          name="userId",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *          ),
+     *      ),
+     *     @OA\Parameter(
+     *          name="token",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Bad request",
+     *          @OA\MediaType(
+     *              mediaType="application/json"
+     *          )
+     *      )
+     *   )
+     */
+    public function confirmDeletionProfile(Request $request, int $userId, string $token): JsonResponse;
 }

@@ -5,6 +5,7 @@ namespace EscolaLms\Auth\Http\Controllers;
 use EscolaLms\Auth\Dtos\UserUpdateAuthDataDto;
 use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Http\Controllers\Swagger\ProfileSwagger;
+use EscolaLms\Auth\Http\Requests\InitProfileDeletionRequest;
 use EscolaLms\Auth\Http\Requests\MyProfileRequest;
 use EscolaLms\Auth\Http\Requests\ProfileDeleteRequest;
 use EscolaLms\Auth\Http\Requests\ProfileUpdateAuthDataRequest;
@@ -144,5 +145,19 @@ class ProfileAPIController extends EscolaLmsBaseController implements ProfileSwa
         }
 
         return $this->sendError(__('User not deleted'), 422);
+    }
+
+    public function initProfileDeletion(InitProfileDeletionRequest $request): JsonResponse
+    {
+        $this->userService->initProfileDeletion($request->user(), $request->getReturnUrl());
+
+        return $this->sendSuccess(__('User deletion request created'));
+    }
+
+    public function confirmDeletionProfile(Request $request, int $userId, string $token): JsonResponse
+    {
+        $this->userService->confirmDeletionProfile($userId, $token);
+
+        return $this->sendSuccess(__('User deleted'));
     }
 }

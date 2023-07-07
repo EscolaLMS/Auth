@@ -10,8 +10,10 @@ use EscolaLms\Auth\Dtos\UserUpdateDto;
 use EscolaLms\Auth\Dtos\UserUpdateKeysDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Auth\Events\AccountConfirmed;
+use EscolaLms\Auth\Events\AccountDeletionRequested;
 use EscolaLms\Auth\Events\Impersonate;
 use EscolaLms\Auth\Events\Login;
+use EscolaLms\Auth\Exceptions\DeletionTokenExpiredException;
 use EscolaLms\Auth\Models\User as AuthUser;
 use EscolaLms\Auth\Repositories\Contracts\UserRepositoryContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
@@ -25,7 +27,9 @@ use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -251,6 +255,33 @@ class UserService implements UserServiceContract
     public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator
     {
         return $this->searchAndPaginate($dto, [], [], [], $perPage, $page);
+    }
+
+    public function initProfileDeletion(User $user, string $returnUrl): void
+    {
+        $token = Crypt::encrypt(Carbon::now()->addHour());
+        $user = $this->userRepository->update(['delete_user_token' => $token], $user->getKey());
+
+        event(new AccountDeletionRequested($user, $returnUrl));
+    }
+
+    /**
+     * @throws DeletionTokenExpiredException
+     */
+    public function confirmDeletionProfile(int $userId, string $token): void
+    {
+        $user = $this->userRepository->find($userId);
+        $expiredAt = Crypt::decrypt($token);
+
+        if (!$user || !$user->delete_user_token || $user->delete_user_token !== $token) {
+            throw new DeletionTokenExpiredException("Deletion token is invalid");
+        }
+
+        if (!$expiredAt instanceof Carbon || $expiredAt <= Carbon::now()) {
+            throw new DeletionTokenExpiredException();
+        }
+
+        $user->delete();
     }
 
     private function makeColumns(?array $columns): array
