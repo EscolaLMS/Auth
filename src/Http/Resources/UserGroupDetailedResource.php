@@ -25,6 +25,7 @@ class UserGroupDetailedResource extends JsonResource
         $fields = [
             'id' => $this->getResource()->getKey(),
             'name' => $this->getResource()->name,
+            'users_count' => $this->getResource()->users->count(),
             'users' => UserSimpleResource::collection($this->getResource()->users),
             'parent_id' => $this->getResource()->parent_id,
             'registerable' => $this->getResource()->registerable,
