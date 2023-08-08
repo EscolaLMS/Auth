@@ -28,11 +28,13 @@ class UserGroupApiTest extends TestCase
         $group->users()->attach($user);
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/user-groups/' . $group->getKey());
+
         $this->response
             ->assertOk()
             ->assertJsonFragment([
                 'id' => $group->getKey(),
                 'name' => $group->name,
+                'users_count' => $group->users->count(),
             ])
             ->assertJsonFragment([
                 'id' => $user->getKey(),
