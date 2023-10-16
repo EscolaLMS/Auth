@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Tests\API;
 
 use EscolaLms\Auth\Enums\SocialiteProvidersEnum;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Models\PreUser;
 use EscolaLms\Auth\Models\SocialAccount;
@@ -11,6 +12,8 @@ use EscolaLms\Auth\Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
@@ -33,6 +36,7 @@ class SocialAuthApiTest extends TestCase
         $this->socialite->shouldReceive('stateless', 'with')->andReturn($this->socialite);
         Socialite::shouldReceive('driver')->with($this->provider)->andReturn($this->socialite);
         $this->socialUser = Mockery::mock('Laravel\Socialite\Two\User');
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.socialite_remember_me', false);
     }
 
     public function testShouldReturnValidationErrorIllegalProvider(): void
@@ -65,6 +69,29 @@ class SocialAuthApiTest extends TestCase
 
         $this->getJson('api/auth/social/' . $this->provider . '/callback')
             ->assertRedirect();
+    }
+
+    public function testShouldFindSocialAccountAndRedirectWithUserRememberMeToken(): void
+    {
+        Config::set(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.socialite_remember_me', true);
+
+        $user = User::factory()->create();
+        $socialAccount = SocialAccount::factory([
+            'user_id' => $user->getKey(),
+            'provider' => $this->provider,
+        ])->create();
+
+        $this->socialUser->shouldReceive('getId')->andReturn($socialAccount->provider_id);
+        $this->socialite->shouldReceive('user')->andReturn($this->socialUser);
+
+        $this->getJson('api/auth/social/' . $this->provider . '/callback')
+            ->assertRedirect();
+
+        $token = $user->tokens->first();
+        $createdAt = new Carbon($token->created_at);
+        $expiresAt = new Carbon($token->expires_at);
+
+        $this->assertEquals($expiresAt->format('Y-m-d'), $createdAt->addMonth()->format('Y-m-d'));
     }
 
     public function testShouldFindUserBySocialEmailAndRedirect(): void

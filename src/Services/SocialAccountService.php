@@ -3,6 +3,7 @@
 namespace EscolaLms\Auth\Services;
 
 use EscolaLms\Auth\Dtos\UserSaveDto;
+use EscolaLms\Auth\EscolaLmsAuthServiceProvider;
 use EscolaLms\Auth\Events\AccountRegistered;
 use EscolaLms\Auth\Exceptions\TokenExpiredException;
 use EscolaLms\Auth\Models\PreUser;
@@ -15,6 +16,7 @@ use EscolaLms\Auth\Services\Contracts\SocialAccountServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Enums\UserRole;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Laravel\Socialite\AbstractUser;
 use Laravel\Socialite\Facades\Socialite;
@@ -66,7 +68,12 @@ class SocialAccountService implements SocialAccountServiceContract
                 return $this->generateReturnUrl($returnUrl, $state, '') . '&error=true';
             }
 
-            $token = $this->authService->createTokenForUser($user)->accessToken;
+            $token = $this->authService
+                ->createTokenForUser(
+                    $user,
+                    Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.socialite_remember_me', false)
+                )
+                ->accessToken;
 
             return $this->generateReturnUrl($returnUrl, $state, $token);
         }
