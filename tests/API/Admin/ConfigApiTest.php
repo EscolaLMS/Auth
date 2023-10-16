@@ -86,6 +86,17 @@ class ConfigApiTest extends TestCase
                         'readonly' => false,
                         'public' => true,
                     ],
+                    'socialite_remember_me' => [
+                        'full_key' => 'escola_auth.socialite_remember_me',
+                        'key' => 'socialite_remember_me',
+                        'rules' => [
+                            'required',
+                            'boolean',
+                        ],
+                        'value' => false,
+                        'readonly' => false,
+                        'public' => true,
+                    ],
                 ],
                 'services' => [
                     'facebook' => [
@@ -181,6 +192,10 @@ class ConfigApiTest extends TestCase
                         'key' => 'escola_auth.return_url',
                         'value' => 'https://example.com',
                     ],
+                    [
+                        'key' => 'escola_auth.socialite_remember_me',
+                        'value' => true,
+                    ],
                 ]
             ]
         );
@@ -197,6 +212,7 @@ class ConfigApiTest extends TestCase
                 'account_must_be_enabled_by_admin' => SettingStatusEnum::ENABLED,
                 'auto_verified_email' => SettingStatusEnum::ENABLED,
                 'return_url' => 'https://example.com',
+                'socialite_remember_me' => true,
             ]
         ]);
     }
