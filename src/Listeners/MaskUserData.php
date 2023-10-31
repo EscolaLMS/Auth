@@ -18,6 +18,7 @@ class MaskUserData
         'gender',
         'delete_user_token',
         'current_timezone',
+        'password',
     ];
 
     public function __construct(private Generator $faker)
