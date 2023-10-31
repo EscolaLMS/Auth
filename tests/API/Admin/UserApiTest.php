@@ -878,15 +878,24 @@ class UserApiTest extends TestCase
         $admin = $this->makeAdmin();
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
+
         $this->response
             ->assertStatus(200)
             ->assertJsonFragment([
                 'email' => $user->email
             ]);
 
+        $oldData = $user->toArray();
+
         $this->response = $this->actingAs($admin)->json('DELETE', '/api/admin/users/' . $user->getKey());
         $this->response
             ->assertStatus(200);
+
+        $newData = $user->refresh()->toArray();
+
+        $this->assertNotEquals($oldData['first_name'], $newData['first_name']);
+        $this->assertNotEquals($oldData['last_name'], $newData['last_name']);
+        $this->assertNotEquals($oldData['email'], $newData['email']);
 
         $this->response = $this->actingAs($admin)->json('GET', '/api/admin/users/' . $user->getKey());
         $this->response

@@ -9,6 +9,7 @@ use EscolaLms\Auth\Listeners\CreatePasswordResetToken;
 use EscolaLms\Auth\Listeners\EmailAnonymisation;
 use EscolaLms\Auth\Listeners\RemoveUserSocialAccounts;
 use EscolaLms\Auth\Listeners\SendEmailVerificationNotification;
+use EscolaLms\Auth\Listeners\MaskUserData;
 
 class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\EventServiceProvider
 {
@@ -22,6 +23,7 @@ class EventServiceProvider extends \Illuminate\Foundation\Support\Providers\Even
         AccountDeleted::class => [
             EmailAnonymisation::class,
             RemoveUserSocialAccounts::class,
+            MaskUserData::class,
         ],
     ];
 
