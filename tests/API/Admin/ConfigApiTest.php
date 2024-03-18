@@ -104,7 +104,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.facebook.client_id',
                             'key' => 'facebook.client_id',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'string',
                             ],
                             'value' => null,
@@ -114,7 +114,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.facebook.client_secret',
                             'key' => 'facebook.client_secret',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'string',
                             ],
                             'value' => null,
@@ -125,7 +125,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.facebook.redirect',
                             'key' => 'facebook.redirect',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'url',
                             ],
                             'value' => null,
@@ -138,7 +138,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.google.client_id',
                             'key' => 'google.client_id',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'string',
                             ],
                             'value' => null,
@@ -148,7 +148,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.google.client_secret',
                             'key' => 'google.client_secret',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'string',
                             ],
                             'value' => null,
@@ -159,7 +159,7 @@ class ConfigApiTest extends TestCase
                             'full_key' => 'services.google.redirect',
                             'key' => 'google.redirect',
                             'rules' => [
-                                'required',
+                                'nullable',
                                 'url',
                             ],
                             'value' => null,
