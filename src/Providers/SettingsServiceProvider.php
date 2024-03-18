@@ -24,12 +24,12 @@ class SettingsServiceProvider extends ServiceProvider
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.socialite_remember_me', ['required', 'boolean']);
 
             // SOCIALITE
-            AdministrableConfig::registerConfig('services.facebook.client_id', ['required', 'string'], false);
-            AdministrableConfig::registerConfig('services.facebook.client_secret',  ['required', 'string'], false);
-            AdministrableConfig::registerConfig('services.facebook.redirect', ['required', 'url'], false);
-            AdministrableConfig::registerConfig('services.google.client_id', ['required', 'string'], false);
-            AdministrableConfig::registerConfig('services.google.client_secret', ['required', 'string'], false);
-            AdministrableConfig::registerConfig('services.google.redirect', ['required', 'url'], false);
+            AdministrableConfig::registerConfig('services.facebook.client_id', ['nullable', 'string'], false);
+            AdministrableConfig::registerConfig('services.facebook.client_secret',  ['nullable', 'string'], false);
+            AdministrableConfig::registerConfig('services.facebook.redirect', ['nullable', 'url'], false);
+            AdministrableConfig::registerConfig('services.google.client_id', ['nullable', 'string'], false);
+            AdministrableConfig::registerConfig('services.google.client_secret', ['nullable', 'string'], false);
+            AdministrableConfig::registerConfig('services.google.redirect', ['nullable', 'url'], false);
         }
     }
 }
