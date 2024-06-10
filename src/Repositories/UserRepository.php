@@ -182,5 +182,8 @@ class UserRepository extends BaseRepository implements UserRepositoryContract
         return false;
     }
 
-
+    public function findByIdWithRelations(int $id, array $relations = []): ?User
+    {
+        return $this->model->newQuery()->where('id', '=', $id)->with($relations)->first();
+    }
 }
