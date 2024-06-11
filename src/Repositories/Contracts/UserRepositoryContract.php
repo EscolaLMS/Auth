@@ -27,4 +27,6 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function updateInterests(Authenticatable $user, array $interests): Collection;
 
     public function updatePassword(Authenticatable $user, string $newPassword): bool;
+
+    public function findByIdWithRelations(int $id, array $relations = []): ?Authenticatable;
 }
