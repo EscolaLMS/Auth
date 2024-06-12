@@ -259,7 +259,6 @@ class UserService implements UserServiceContract
 
     public function initProfileDeletion(User $user, string $returnUrl): void
     {
-        // @phpstan-ignore-next-line
         $token = Crypt::encrypt(Carbon::now()->addHour());
         $user = $this->userRepository->update(['delete_user_token' => $token], $user->getKey());
 
@@ -272,7 +271,6 @@ class UserService implements UserServiceContract
     public function confirmDeletionProfile(int $userId, string $token): void
     {
         $user = $this->userRepository->find($userId);
-        // @phpstan-ignore-next-line
         $expiredAt = Crypt::decrypt($token);
 
         if (!$user || !$user->delete_user_token || $user->delete_user_token !== $token) {

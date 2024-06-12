@@ -11,6 +11,3 @@ parameters:
 
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
-
-    ignoreErrors:
-        - '#PHPDoc tag @mixin contains unknown class .*IdeHelper.*#'
