@@ -5,6 +5,7 @@ namespace EscolaLms\Auth\Models;
 use Database\Factories\EscolaLms\Auth\Models\PreUserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @OA\Schema(
@@ -42,6 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $provider
  * @property string $provider_id
  * @property string $token
+ * @property ?Carbon $created_at
  */
 class PreUser extends Model
 {

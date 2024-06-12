@@ -9,8 +9,8 @@ class LoginResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'token' => $this->accessToken,
-            'expires_at' => $this->token->expires_at,
+            'token' => $this->resource->accessToken,
+            'expires_at' => $this->resource->token->expires_at,
         ];
     }
 }

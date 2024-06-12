@@ -21,6 +21,7 @@ use EscolaLms\Auth\Http\Requests\Admin\UsersListRequest;
 use EscolaLms\Auth\Http\Requests\Admin\UserUpdateRequest;
 use EscolaLms\Auth\Http\Resources\UserFullCollection;
 use EscolaLms\Auth\Http\Resources\UserFullResource;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Core\Dtos\OrderDto;
 use Exception;
 use Illuminate\Auth\Events\Registered;
@@ -66,6 +67,7 @@ class UserController extends AbstractUserController implements UserSwagger
         $userSaveDto = UserSaveDto::instantiateFromRequest($request);
         $userSettingsDto = UserUpdateSettingsDto::instantiateFromRequest($request);
         try {
+            /** @var User $user */
             $user = $this->userService->createWithSettings($userSaveDto, $userSettingsDto);
             $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             $this->userGroupService->addMemberToMultipleGroups($request->input('groups', []), $user);
@@ -87,7 +89,9 @@ class UserController extends AbstractUserController implements UserSwagger
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         $userUpdateKeysDto = UserUpdateKeysDto::instantiateFromRequest($request);
         try {
-            $user = $this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $request->route('id'));
+            /** @var int $id */
+            $id = $request->route('id');
+            $user = $this->userService->patchUsingDto($userUpdateDto, $userUpdateKeysDto, $id);
             $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             return $this->sendResponseForResource(UserFullResource::make($user), __('Updated user'));
         } catch (Exception $ex) {
@@ -99,7 +103,9 @@ class UserController extends AbstractUserController implements UserSwagger
     {
         $userUpdateDto = UserUpdateDto::instantiateFromRequest($request);
         try {
-            $user = $this->userService->putUsingDto($userUpdateDto, $request->route('id'));
+            /** @var int $id */
+            $id = $request->route('id');
+            $user = $this->userService->putUsingDto($userUpdateDto, $id);
             $this->userService->updateAdditionalFieldsFromRequest($user, $request);
             return $this->sendResponseForResource(UserFullResource::make($user), __('Updated user'));
         } catch (\Exception $ex) {
@@ -110,7 +116,9 @@ class UserController extends AbstractUserController implements UserSwagger
     public function deleteUser(UserDeleteRequest $request): JsonResponse
     {
         try {
-            $deleted = $this->userRepository->delete($request->route('id'));
+            /** @var int $id */
+            $id = $request->route('id');
+            $deleted = $this->userRepository->delete($id);
             if ($deleted) {
                 return $this->sendSuccess("User deleted");
             }
@@ -122,6 +130,7 @@ class UserController extends AbstractUserController implements UserSwagger
 
     public function uploadAvatar(UserAvatarUploadRequest $request): JsonResponse
     {
+        /** @var User $user */
         $user = $this->userService->uploadAvatar(
             $this->fetchRequestedUser($request),
             $request->file('avatar') ?? $request->get('avatar'),

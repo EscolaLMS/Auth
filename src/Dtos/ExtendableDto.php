@@ -28,7 +28,7 @@ class ExtendableDto implements InstantiateFromRequest, DtoContract
      */
     public static function extendToArray(array $types)
     {
-        self::$returnTypes += $types;
+        return self::$returnTypes += $types;
     }
 
     public static function instantiateFromRequest(Request $request): self
