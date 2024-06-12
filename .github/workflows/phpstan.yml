@@ -35,8 +35,7 @@ jobs:
       - name: Publish things
         run: vendor/bin/testbench migrate:fresh
 
-      - name: Generate key
-        run: vendor/bin/testbench key:generate
-
       - name: Run tests
-        run: vendor/bin/phpstan
+        run: APP_KEY=$APP_KEY php ./vendor/bin/phpstan
+        env:
+          APP_KEY: base64:lpKhnIBk2xE/kmJajRxXqReh1+EKbvXUVTaN6MP2c+k=
