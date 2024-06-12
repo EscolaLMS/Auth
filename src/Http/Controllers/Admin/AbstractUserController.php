@@ -25,7 +25,10 @@ class AbstractUserController extends EscolaLmsBaseController
 
     protected function fetchRequestedUser(AbstractUserIdInRouteRequest $request): User
     {
-        $user = $this->userRepository->find($request->route('id'));
+        /** @var int $id */
+        $id = $request->route('id');
+        /** @var User|null $user */
+        $user = $this->userRepository->find($id);
         if (!$user) {
             throw new UserNotFoundException();
         }

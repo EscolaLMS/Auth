@@ -12,10 +12,10 @@ class UserSimpleResource extends JsonResource
     public function toArray($request): array
     {
         $fields = [
-            'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
+            'id' => $this->resource->getKey(),
+            'first_name' => $this->resource->first_name,
+            'last_name' => $this->resource->last_name,
+            'email' => $this->resource->email,
         ];
 
         return self::apply($fields, $this);

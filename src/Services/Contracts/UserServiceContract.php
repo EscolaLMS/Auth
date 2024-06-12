@@ -60,4 +60,5 @@ interface UserServiceContract
     public function initProfileDeletion(User $user, string $returnUrl): void;
 
     public function confirmDeletionProfile(int $userId, string $hash): void;
+    public function impersonate(int $id): User;
 }

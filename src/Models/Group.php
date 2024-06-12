@@ -46,7 +46,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          )
  *     )
  * )
- * 
+ *
+ * @property string $name
+ * @property bool $registerable
+ * @property ?int $parent_id
  * @property-read Collection $users
  * @property-read Group|null $parent
  */

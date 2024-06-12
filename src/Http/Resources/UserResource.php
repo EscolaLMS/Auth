@@ -8,10 +8,13 @@ use EscolaLms\ModelFields\Enum\MetaFieldVisibilityEnum;
 use EscolaLms\ModelFields\Facades\ModelFields;
 use Illuminate\Http\Resources\Json\JsonResource;
 use EscolaLms\Auth\Traits\ResourceExtandable;
+use Illuminate\Support\Collection;
 
 class UserResource extends JsonResource
 {
     use ResourceExtandable;
+
+    protected Collection $permissions;
 
     public function __construct(User $resource)
     {
@@ -28,27 +31,27 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         $fields = array_filter([
-            'id' => $this->id,
-            'name' => $this->name,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'age' => $this->age,
-            'gender' => $this->gender,
-            'country' => $this->country,
-            'city' => $this->city,
-            'street' => $this->street,
-            'postcode' => $this->postcode,
-            'phone' => $this->phone,
-            'is_active' => $this->is_active,
-            'created_at' => $this->created_at,
-            'onboarding_completed' => $this->onboarding_completed,
-            'email_verified' => $this->email_verified,
-            'interests' => CategoryResource::collection($this->interests),
-            'avatar' => $this->avatar_url,
-            'roles' => $this->roles ? array_map(function ($role) {
+            'id' => $this->resource->getKey(),
+            'name' => $this->resource->name,
+            'first_name' => $this->resource->first_name,
+            'last_name' => $this->resource->last_name,
+            'email' => $this->resource->email,
+            'age' => $this->resource->age,
+            'gender' => $this->resource->gender,
+            'country' => $this->resource->country,
+            'city' => $this->resource->city,
+            'street' => $this->resource->street,
+            'postcode' => $this->resource->postcode,
+            'phone' => $this->resource->phone,
+            'is_active' => $this->resource->is_active,
+            'created_at' => $this->resource->created_at,
+            'onboarding_completed' => $this->resource->onboarding_completed,
+            'email_verified' => $this->resource->email_verified,
+            'interests' => CategoryResource::collection($this->resource->interests),
+            'avatar' => $this->resource->avatar_url,
+            'roles' => $this->resource->roles ? array_map(function ($role) {
                 return $role['name'];
-            }, $this->roles->toArray()) : [],
+            }, $this->resource->roles->toArray()) : [],
             'permissions' => $this->permissions ? array_map(function ($role) {
                 return $role['name'];
             }, $this->permissions->toArray()) : [],

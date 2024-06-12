@@ -6,11 +6,13 @@ use EscolaLms\Auth\Http\Controllers\Swagger\LoginSwagger;
 use EscolaLms\Auth\Http\Requests\ImpersonateRequest;
 use EscolaLms\Auth\Http\Requests\LoginRequest;
 use EscolaLms\Auth\Http\Resources\LoginResource;
+use EscolaLms\Auth\Models\User;
 use EscolaLms\Auth\Services\Contracts\AuthServiceContract;
 use EscolaLms\Auth\Services\Contracts\UserServiceContract;
 use EscolaLms\Core\Http\Controllers\EscolaLmsBaseController;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Sentry\Tracing\TransactionContext;
 
 class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
 {
@@ -26,6 +28,7 @@ class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
     public function login(LoginRequest $request): JsonResponse
     {
         try {
+            /** @var User $user */
             $user = $this->userService->login(
                 $request->input('email'),
                 $request->input('password'),
@@ -43,6 +46,7 @@ class LoginApiController extends EscolaLmsBaseController implements LoginSwagger
     public function impersonate(ImpersonateRequest $request): JsonResponse
     {
         try {
+            /** @var User $user */
             $user = $this->userService->impersonate(
                 $request->get('user_id')
             );

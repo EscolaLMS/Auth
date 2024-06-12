@@ -27,7 +27,10 @@ class UserGroupService implements UserGroupServiceContract
 
     public function create(UserGroupDto $userGroupDto): Group
     {
-        return $this->userGroupRepository->create($userGroupDto->toArray());
+
+        /** @var Group $group */
+        $group = $this->userGroupRepository->create($userGroupDto->toArray());
+        return $group;
     }
 
     public function update(Group $group, UserGroupDto $userGroupDto): Group

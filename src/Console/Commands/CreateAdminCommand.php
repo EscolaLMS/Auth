@@ -38,10 +38,8 @@ class CreateAdminCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): void
     {
         $email = $this->ask('Email', 'admin@escolalms.com');
         $data = [
@@ -57,7 +55,8 @@ class CreateAdminCommand extends Command
             Role::findOrCreate(UserRole::ADMIN, 'api');
             $user->assignRole(UserRole::ADMIN);
         } catch (\Exception $e) {
-            return $this->error($e->getMessage());
+            $this->error($e->getMessage());
+            return;
         }
 
         $this->line(__(':admin account created and :role roles have been assigned.', [

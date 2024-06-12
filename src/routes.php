@@ -54,7 +54,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::put('/settings', [ProfileAPIController::class, 'settingsUpdate']);
         Route::post('/upload-avatar', [ProfileAPIController::class, 'uploadAvatar']);
         Route::delete('/delete-avatar', [ProfileAPIController::class, 'deleteAvatar']);
-        Route::delete(null, [ProfileAPIController::class, 'delete']);
+        Route::delete('', [ProfileAPIController::class, 'delete']);
         Route::post('/delete/init', [ProfileAPIController::class, 'initProfileDeletion']);
     });
 

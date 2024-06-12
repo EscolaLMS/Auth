@@ -39,6 +39,7 @@ class AuthService implements AuthServiceContract
 
     public function resetPassword(string $email, string $token, string $password): void
     {
+        /** @var User $user */
         $user = $this->userRepository->findByEmailOrFail($email);
 
         if ($token !== $user->password_reset_token) {

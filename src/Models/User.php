@@ -30,6 +30,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          type="string"
  *     )
  * )
+ *
+ * @property string $first_name
+ * @property ?string $delete_user_token
+ * @property ?string $path_avatar
+ * @property bool $is_active
+ * @property ?string $password_reset_token
+ * @property string $password
  */
 class User extends \EscolaLms\Core\Models\User
 {
