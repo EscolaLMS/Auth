@@ -82,7 +82,7 @@ class AuthApiController extends EscolaLmsBaseController implements AuthSwagger
 
     public function socialRedirect(SocialAuthRequest $request): RedirectResponse
     {
-        /** @var \Laravel\Socialite\SocialiteManager&\Laravel\Socialite\Two\AbstractProvider $socialite */
+        /** @var \Laravel\Socialite\SocialiteManager|\Laravel\Socialite\Two\AbstractProvider $socialite */
         $socialite = Socialite::driver($request->route('provider'));
         return $socialite
             ->stateless()

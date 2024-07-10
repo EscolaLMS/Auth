@@ -6,6 +6,7 @@ use EscolaLms\Auth\Dtos\UserUpdateInterestsDto;
 use EscolaLms\Auth\Dtos\UserUpdateSettingsDto;
 use EscolaLms\Core\Repositories\Contracts\BaseRepositoryContract;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -29,4 +30,5 @@ interface UserRepositoryContract extends BaseRepositoryContract
     public function updatePassword(Authenticatable $user, string $newPassword): bool;
 
     public function findByIdWithRelations(int $id, array $relations = []): ?Authenticatable;
+    public function findByEmailOrFail(string $email): ?User;
 }

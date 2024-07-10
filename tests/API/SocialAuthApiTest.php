@@ -190,7 +190,6 @@ class SocialAuthApiTest extends TestCase
             'email' => $email,
             'first_name' => $preUser->first_name,
             'last_name' => $preUser->last_name,
-            'email_verified_at' => null,
         ]);
 
         Event::assertDispatched(AccountRegistered::class);

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 
 class UserUpdateDto extends BasicUserUpdateDto
 {
+    protected ?array $roles;
+    protected ?bool $email_verified;
+
     public static function instantiateFromRequest(Request $request): self
     {
         $value = new self();

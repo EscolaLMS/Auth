@@ -101,6 +101,7 @@ class SocialAccountService implements SocialAccountServiceContract
             [UserRole::STUDENT],
             $email,
             null,
+            null,
             true,
         );
 
