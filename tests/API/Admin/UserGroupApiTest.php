@@ -222,6 +222,64 @@ class UserGroupApiTest extends TestCase
         ]);
     }
 
+    public function testSearchGroupsWithParents(): void
+    {
+        /** @var User $admin */
+        $admin = $this->makeAdmin();
+
+        $parent = Group::factory()->create(['name' => 'Parent group']);
+        $child1 = Group::factory()->create(['name' => 'Child 1', 'parent_id' => $parent->getKey()]);
+        $child2 = Group::factory()->create(['name' => 'Child 2', 'parent_id' => $parent->getKey()]);
+        $subChild11 = Group::factory()->create(['name' => 'Subchild 1-1', 'parent_id' => $child1->getKey()]);
+        $subChild12 = Group::factory()->create(['name' => 'Subchild 1-2', 'parent_id' => $child1->getKey()]);
+        $subChild21 = Group::factory()->create(['name' => 'Subchild 2-1', 'parent_id' => $child2->getKey()]);
+        $subChild22 = Group::factory()->create(['name' => 'Subchild 2-2', 'parent_id' => $child2->getKey()]);
+
+        $this
+            ->actingAs($admin)->json('GET', '/api/admin/user-groups/', ['search' => 'Parent group. Child 1'])
+            ->assertOk()
+            ->assertJsonCount(3, 'data')
+            ->assertJsonFragment([
+                'id' => $child1->getKey(),
+                'name' => $child1->name,
+            ])
+            ->assertJsonFragment([
+                'id' => $subChild11->getKey(),
+                'name' => $subChild11->name,
+            ])
+            ->assertJsonFragment([
+                'id' => $subChild12->getKey(),
+                'name' => $subChild12->name,
+            ]);
+
+        $this
+            ->actingAs($admin)->json('GET', '/api/admin/user-groups/', ['search' => 'Parent group. Child 1. Subchild 1-2'])
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $subChild12->getKey(),
+                'name' => $subChild12->name,
+            ]);
+
+        $this
+            ->actingAs($admin)->json('GET', '/api/admin/user-groups/', ['search' => 'Parent group. Child 2. Subchild 2-1'])
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment([
+                'id' => $subChild21->getKey(),
+                'name' => $subChild21->name,
+            ]);
+
+        $this
+            ->actingAs($admin)->json('GET', '/api/admin/user-groups/', ['search' => 'child'])
+            ->assertOk()
+            ->assertJsonCount(6, 'data')
+            ->assertJsonMissing([
+                'id' => $parent->getKey(),
+                'name' => $parent->name,
+            ]);
+    }
+
     public function testFilterListGroupsByUserId(): void
     {
         Group::factory()->count(5)->create();
