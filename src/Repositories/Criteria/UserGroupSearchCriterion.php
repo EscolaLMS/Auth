@@ -25,10 +25,11 @@ class UserGroupSearchCriterion extends Criterion
                 $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
                 if (version_compare($version, '5.7.44') <= 0) {
                     $initialId = 1;
+                    // TODO to nic nie zwraca i przez to następne też nic nie zwracają, bo tu musi jakaś lista trafiź
                     $allChild = DB::select("SELECT id, name, parent_id
                         FROM (SELECT * FROM groups
                               ORDER BY parent_id, id) AS sorted_groups,
-                             (SELECT @pv := '$initialId') AS init
+                             (SELECT @pv := 1) AS init
                         WHERE FIND_IN_SET(parent_id, @pv)
                         AND LENGTH(@pv := CONCAT(@pv, ',', id))");
                     $ids = collect($allChild)->pluck('id')->toArray();
