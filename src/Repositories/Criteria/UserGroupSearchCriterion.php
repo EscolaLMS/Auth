@@ -24,7 +24,7 @@ class UserGroupSearchCriterion extends Criterion
             if ($driver !== 'pgsql') {
                 $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
                 if (version_compare($version, '5.7.44') <= 0) {
-                    $initialId = '1';
+                    $initialId = 1;
                     $allChild = DB::select("SELECT id, name, parent_id
                         FROM (SELECT * FROM groups
                               ORDER BY parent_id, id) AS sorted_groups,
@@ -34,17 +34,19 @@ class UserGroupSearchCriterion extends Criterion
                     $ids = collect($allChild)->pluck('id')->toArray();
 
                     $groupIds = implode(',', $ids);
-                    $fullNames = DB::select("SELECT id, name, parent_id,
+                    if (count($groupIds) > 0) {
+                        $fullNames = DB::select("SELECT id, name, parent_id,
                         CONCAT_WS('. ', IFNULL((SELECT name FROM groups AS p WHERE p.id = g.parent_id), ''), g.name) AS full_name
                         FROM groups AS g
                         WHERE g.id IN ($groupIds)");
 
-                    $filteredGroups = collect($fullNames)->filter(function ($group) {
-                        return stripos($group->full_name, "%$this->value%") !== false;
-                    });
+                        $filteredGroups = collect($fullNames)->filter(function ($group) {
+                            return stripos($group->full_name, "%$this->value%") !== false;
+                        });
 
-                    if (count($filteredGroups) > 0) {
-                        $q->orWhereIn('id', $filteredGroups->pluck('id'));
+                        if (count($filteredGroups) > 0) {
+                            $q->orWhereIn('id', $filteredGroups->pluck('id'));
+                        }
                     }
 
                     return $q;
