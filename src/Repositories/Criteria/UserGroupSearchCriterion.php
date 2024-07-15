@@ -23,8 +23,7 @@ class UserGroupSearchCriterion extends Criterion
             // to check mysql version
             if ($driver !== 'pgsql') {
                 $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-                dd($version, version_compare($version, '5.7.0'));
-                if (version_compare($version, '5.7.0') <= 0) {
+                if (version_compare($version, '5.7.44') <= 0) {
                     $initialId = '1';
                     $allChild = DB::select("SELECT id, name, parent_id
                         FROM (SELECT * FROM groups
