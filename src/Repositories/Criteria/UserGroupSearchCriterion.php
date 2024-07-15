@@ -33,8 +33,8 @@ class UserGroupSearchCriterion extends Criterion
                         AND LENGTH(@pv := CONCAT(@pv, ',', id))");
                     $ids = collect($allChild)->pluck('id')->toArray();
 
-                    $groupIds = implode(',', $ids);
-                    if (count($groupIds) > 0) {
+                    if (count($ids) > 0) {
+                        $groupIds = implode(',', $ids);
                         $fullNames = DB::select("SELECT id, name, parent_id,
                         CONCAT_WS('. ', IFNULL((SELECT name FROM groups AS p WHERE p.id = g.parent_id), ''), g.name) AS full_name
                         FROM groups AS g
