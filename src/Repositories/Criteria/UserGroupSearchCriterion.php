@@ -21,7 +21,7 @@ class UserGroupSearchCriterion extends Criterion
             $driver = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
             $like = $driver === 'pgsql' ? 'ILIKE' : 'LIKE';
 
-            // to check mysql version
+            // check mysql version
             if ($driver !== 'pgsql') {
                 $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
                 if (version_compare($version, '5.7.44') <= 0) {
@@ -33,11 +33,8 @@ class UserGroupSearchCriterion extends Criterion
                         WHERE FIND_IN_SET(parent_id, @pv)
                         AND LENGTH(@pv := CONCAT(@pv, ',', id))");
                     $ids = collect($allChild)->pluck('id')->toArray();
-                    echo 'All child: ' . json_encode($allChild);
-                    echo '$ids: ' . json_encode($ids);
 
                     if (count($ids) > 0) {
-                        $groupIds = implode(',', $ids);
                         /** @var Collection $groups */
                         $groups = Group::query()->whereIn('id', $ids)->get();
                         $filteredGroups = $groups->filter(function (Group $group) {
@@ -51,7 +48,6 @@ class UserGroupSearchCriterion extends Criterion
 
                     return $q;
                 }
-
             }
 
             $q->where('name', $like, "%$this->value%");
