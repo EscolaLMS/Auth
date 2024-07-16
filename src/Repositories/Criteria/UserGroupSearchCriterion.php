@@ -33,6 +33,8 @@ class UserGroupSearchCriterion extends Criterion
                         WHERE FIND_IN_SET(parent_id, @pv)
                         AND LENGTH(@pv := CONCAT(@pv, ',', id))");
                     $ids = collect($allChild)->pluck('id')->toArray();
+                    echo 'All child: ' . json_encode($allChild);
+                    echo '$ids: ' . json_encode($ids);
 
                     if (count($ids) > 0) {
                         $groupIds = implode(',', $ids);
@@ -44,6 +46,7 @@ class UserGroupSearchCriterion extends Criterion
                         $filteredGroups = collect($fullNames)->filter(function ($group) {
                             return stripos($group->full_name, "%$this->value%") !== false;
                         });
+                        echo 'Filtered groups: ' . json_encode($filteredGroups);
 
                         if (count($filteredGroups) > 0) {
                             $q->orWhereIn('id', $filteredGroups->pluck('id'));
