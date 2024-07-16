@@ -21,6 +21,8 @@ class UserGroupSearchCriterion extends Criterion
             $driver = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
             $like = $driver === 'pgsql' ? 'ILIKE' : 'LIKE';
 
+            $q->where('name', $like, "%$this->value%");
+
             // check mysql version
             if ($driver !== 'pgsql') {
                 $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
@@ -49,8 +51,6 @@ class UserGroupSearchCriterion extends Criterion
                     return $q;
                 }
             }
-
-            $q->where('name', $like, "%$this->value%");
 
             $fullNameIds = DB::select("
             WITH RECURSIVE group_hierarchy AS (

@@ -149,7 +149,6 @@ class UserGroupApiTest extends TestCase
             'order_by' => 'registerable',
             'order' => 'DESC',
         ]);
-        echo json_encode($this->response->json());
 
         $this->assertTrue($this->response->getData()->data[0]->name === 'B child');
         $this->assertTrue($this->response->getData()->data[1]->name === 'A child');
