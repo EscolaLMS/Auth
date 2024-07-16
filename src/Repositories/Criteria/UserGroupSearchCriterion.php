@@ -5,7 +5,6 @@ namespace EscolaLms\Auth\Repositories\Criteria;
 use EscolaLms\Auth\Models\Group;
 use EscolaLms\Core\Repositories\Criteria\Criterion;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class UserGroupSearchCriterion extends Criterion
@@ -23,36 +22,31 @@ class UserGroupSearchCriterion extends Criterion
 
             $q->where('name', $like, "%$this->value%");
 
-            // check mysql version
-            if ($driver !== 'pgsql') {
-                $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-                if (version_compare($version, '5.7.44') <= 0) {
-                    $initialId = Group::min('id');
-                    $allChild = DB::select("SELECT id, name, parent_id
-                        FROM (SELECT * FROM groups
-                              ORDER BY parent_id, id) AS sorted_groups,
-                             (SELECT @pv := $initialId) AS init
-                        WHERE FIND_IN_SET(parent_id, @pv)
-                        AND LENGTH(@pv := CONCAT(@pv, ',', id))");
-                    $ids = collect($allChild)->pluck('id')->toArray();
+            return $this->searchNameWithBreadcrumbs($q, $driver, $like);
+        });
+    }
 
-                    if (count($ids) > 0) {
-                        /** @var Collection $groups */
-                        $groups = Group::query()->whereIn('id', $ids)->get();
-                        $filteredGroups = $groups->filter(function (Group $group) {
-                            return stripos($group->name_with_breadcrumbs, $this->value) !== false;
-                        });
+    private function searchNameWithBreadcrumbs(Builder $q, string $driver, string $like): Builder
+    {
+        // check mysql version
+        if ($driver !== 'pgsql') {
+            $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            if (version_compare($version, '5.7.44') <= 0) {
+                $groups = Group::query()->whereNotNull('parent_id')->get();
 
-                        if (count($filteredGroups) > 0) {
-                            $q->orWhereIn('id', $filteredGroups->pluck('id'));
-                        }
-                    }
+                $filteredGroups = $groups->filter(function (Group $group) {
+                    return stripos($group->name_with_breadcrumbs, $this->value) !== false;
+                });
 
-                    return $q;
+                if (count($filteredGroups) > 0) {
+                    $q->orWhereIn('id', $filteredGroups->pluck('id'));
                 }
-            }
 
-            $fullNameIds = DB::select("
+                return $q;
+            }
+        }
+
+        $fullNameIds = DB::select("
             WITH RECURSIVE group_hierarchy AS (
                 SELECT id, name, parent_id, name::varchar AS full_name
                 FROM groups
@@ -62,14 +56,13 @@ class UserGroupSearchCriterion extends Criterion
                 FROM groups g
                 INNER JOIN group_hierarchy gh ON g.parent_id = gh.id
                 )
-            SELECT * FROM group_hierarchy WHERE full_name like ?",
-                ["%$this->value%"]
-            );
-            if (count($fullNameIds) > 0) {
-                $q->orWhereIn('id', collect($fullNameIds)->pluck('id')->toArray());
-            }
+            SELECT * FROM group_hierarchy WHERE full_name {$like} ?",
+            ["%$this->value%"]
+        );
+        if (count($fullNameIds) > 0) {
+            $q->orWhereIn('id', collect($fullNameIds)->pluck('id')->toArray());
+        }
 
-            return $q;
-        });
+        return $q;
     }
 }
