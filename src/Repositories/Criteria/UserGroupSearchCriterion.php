@@ -28,8 +28,10 @@ class UserGroupSearchCriterion extends Criterion
 
     private function searchNameWithBreadcrumbs(Builder $q, string $driver, string $like): Builder
     {
+        $cast = 'name::varchar';
         // check mysql version
         if ($driver !== 'pgsql') {
+            $cast = 'CAST(name as VARCHAR(1000))';
             $version = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             if (version_compare($version, '5.7.44') <= 0) {
                 $groups = Group::query()->whereNotNull('parent_id')->get();
@@ -48,7 +50,7 @@ class UserGroupSearchCriterion extends Criterion
 
         $fullNameIds = DB::select("
             WITH RECURSIVE group_hierarchy AS (
-                SELECT id, name, parent_id, CAST(name as VARCHAR(1000)) AS full_name
+                SELECT id, name, parent_id, {$cast} AS full_name
                 FROM groups
                 WHERE parent_id IS NULL
                 UNION ALL
