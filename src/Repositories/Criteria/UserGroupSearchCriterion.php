@@ -48,7 +48,7 @@ class UserGroupSearchCriterion extends Criterion
 
         $fullNameIds = DB::select("
             WITH RECURSIVE group_hierarchy AS (
-                SELECT id, name, parent_id, CAST(name as VARCHAR) AS full_name
+                SELECT id, name, parent_id, CAST(name as VARCHAR(1000)) AS full_name
                 FROM groups
                 WHERE parent_id IS NULL
                 UNION ALL
