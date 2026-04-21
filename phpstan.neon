@@ -2,12 +2,8 @@ includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 
 parameters:
-
     paths:
         - src/
-    ignoreErrors:
-        - identifier: missing.iterableValue
-        - identifier: missingType.generics
 
     # The level 9 is the highest level
     level: 1
