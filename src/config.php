@@ -1,6 +1,7 @@
 <?php
 
 use EscolaLms\Auth\Enums\SettingStatusEnum;
+use EscolaLms\Auth\Enums\TokenExpirationEnum;
 
 return [
     'superadmins' => [
@@ -11,4 +12,5 @@ return [
     'auto_verified_email' => SettingStatusEnum::DISABLED,
     'return_url' => null,
     'socialite_remember_me' => false,
+    'token_expiration_minutes' => TokenExpirationEnum::SHORT_TIME_IN_MINUTES,
 ];

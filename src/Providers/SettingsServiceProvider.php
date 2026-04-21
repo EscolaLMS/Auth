@@ -22,6 +22,7 @@ class SettingsServiceProvider extends ServiceProvider
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.auto_verified_email', ['required', 'string', 'in:' . implode(',', SettingStatusEnum::getValues())]);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.return_url', ['required', 'url']);
             AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.socialite_remember_me', ['required', 'boolean']);
+            AdministrableConfig::registerConfig(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.token_expiration_minutes', ['required', 'integer']);
 
             // SOCIALITE
             AdministrableConfig::registerConfig('services.facebook.client_id', ['nullable', 'string'], false);
