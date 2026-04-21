@@ -573,7 +573,7 @@ class AuthApiTest extends TestCase
 
         $this->assertEquals(
             $expiresAt->format('Y-m-d H:i:s'),
-            $createdAt->addMinutes(TokenExpirationEnum::SHORT_TIME_IN_MINUTES)->format('Y-m-d H:i:s')
+            $createdAt->addMinutes(Config::get(EscolaLmsAuthServiceProvider::CONFIG_KEY . '.token_expiration_minutes'))->format('Y-m-d H:i:s')
         );
     }
 

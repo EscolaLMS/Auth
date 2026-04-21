@@ -58,15 +58,15 @@ jobs:
       - name: codecov upload
         uses: codecov/codecov-action@v1
 
-      - name: Setup Code Climate test-reporter
-        run: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-
-      - name: Convert
-        run: ./cc-test-reporter format-coverage coverage.xml -t clover -o codeclimate.0.json
-
-      - name: Upload
-        run: ./cc-test-reporter upload-coverage -i codeclimate.0.json
-        env:
-          CC_TEST_REPORTER_ID: 7c583e01120f08efb2d9ee73af06d958de3c2582d3ef90d12f6eb99fd06c62cd
+#      - name: Setup Code Climate test-reporter
+#        run: |
+#            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#            chmod +x ./cc-test-reporter
+#
+#      - name: Convert
+#        run: ./cc-test-reporter format-coverage coverage.xml -t clover -o codeclimate.0.json
+#
+#      - name: Upload
+#        run: ./cc-test-reporter upload-coverage -i codeclimate.0.json
+#        env:
+#          CC_TEST_REPORTER_ID: 7c583e01120f08efb2d9ee73af06d958de3c2582d3ef90d12f6eb99fd06c62cd
