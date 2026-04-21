@@ -94,7 +94,7 @@ class ConfigApiTest extends TestCase
                             'required',
                             'boolean',
                         ],
-                        'value' => TokenExpirationEnum::SHORT_TIME_IN_MINUTES,
+                        'value' => false,
                         'readonly' => false,
                         'public' => true,
                     ],
@@ -105,7 +105,7 @@ class ConfigApiTest extends TestCase
                             'required',
                             'integer',
                         ],
-                        'value' => false,
+                        'value' =>  TokenExpirationEnum::SHORT_TIME_IN_MINUTES,
                         'readonly' => false,
                         'public' => false,
                     ],
@@ -207,6 +207,10 @@ class ConfigApiTest extends TestCase
                     [
                         'key' => 'escola_auth.socialite_remember_me',
                         'value' => true,
+                    ],
+                    [
+                        'key' => 'escola_auth.token_expiration_minutes',
+                        'value' => TokenExpirationEnum::SHORT_TIME_IN_MINUTES,
                     ],
                 ]
             ]
