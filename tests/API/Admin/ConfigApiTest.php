@@ -3,6 +3,7 @@
 namespace Tests\API\Admin;
 
 use EscolaLms\Auth\Enums\SettingStatusEnum;
+use EscolaLms\Auth\Enums\TokenExpirationEnum;
 use EscolaLms\Auth\Tests\TestCase;
 use EscolaLms\Settings\Database\Seeders\PermissionTableSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -93,9 +94,20 @@ class ConfigApiTest extends TestCase
                             'required',
                             'boolean',
                         ],
-                        'value' => false,
+                        'value' => TokenExpirationEnum::SHORT_TIME_IN_MINUTES,
                         'readonly' => false,
                         'public' => true,
+                    ],
+                    'token_expiration_minutes' => [
+                        'full_key' => 'escola_auth.token_expiration_minutes',
+                        'key' => 'token_expiration_minutes',
+                        'rules' => [
+                            'required',
+                            'integer',
+                        ],
+                        'value' => false,
+                        'readonly' => false,
+                        'public' => false,
                     ],
                 ],
                 'services' => [
