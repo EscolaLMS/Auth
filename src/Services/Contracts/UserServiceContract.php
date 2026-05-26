@@ -55,7 +55,7 @@ interface UserServiceContract
      */
     public function assignableUsers(string $assignableBy, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
 
-    public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator;
+    public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null, ?OrderDto $orderDto = null): LengthAwarePaginator;
 
     public function initProfileDeletion(User $user, string $returnUrl): void;
 

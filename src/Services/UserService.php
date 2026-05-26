@@ -252,9 +252,9 @@ class UserService implements UserServiceContract
         return $this->searchAndPaginate($dto, [], [], [], $perPage, $page);
     }
 
-    public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null): LengthAwarePaginator
+    public function assignableUsersWithCriteria(CriteriaDto $dto, ?int $perPage = null, ?int $page = null, ?OrderDto $orderDto = null): LengthAwarePaginator
     {
-        return $this->searchAndPaginate($dto, [], [], [], $perPage, $page);
+        return $this->searchAndPaginate($dto, [], [], [], $perPage, $page, $orderDto);
     }
 
     public function initProfileDeletion(User $user, string $returnUrl): void
